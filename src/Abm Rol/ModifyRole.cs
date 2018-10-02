@@ -8,13 +8,23 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace PalcoNet.Abm_Cliente
+namespace PalcoNet.Abm_Rol
 {
-    public partial class Form1 : Form
+    public partial class CreateRole : Form
     {
-        public Form1()
+        public CreateRole()
         {
             InitializeComponent();
+        }
+
+        private void AcceptButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
