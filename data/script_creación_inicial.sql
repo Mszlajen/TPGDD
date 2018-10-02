@@ -1,6 +1,3 @@
-USE GD2C2018
-
-CREATE SCHEMA cheshire_jack
 
 BEGIN TRANSACTION
 
@@ -9,7 +6,8 @@ CREATE TABLE cheshire_jack.usuarios (
 	nombreUsuario VARCHAR(50) NOT NULL,
 	contrasenia CHAR(256) NOT NULL,
 	habilitado BIT NOT NULL DEFAULT(1),
-	ingresosRestantes TINYINT NOT NULL DEFAULT(3)
+	ingresosRestantes TINYINT NOT NULL DEFAULT(3),
+	tipo varchar(255) DEFAULT(NULL)
 	)
 
 CREATE TABLE cheshire_jack.roles (
@@ -19,7 +17,7 @@ CREATE TABLE cheshire_jack.roles (
 	)
 
 CREATE TABLE cheshire_jack.funcionalidades (
-	codFuncionalidad INT NOT NULL IDENTITY(1,1),
+	codFuncionalidad INT PRIMARY KEY NOT NULL IDENTITY(1,1),
 	descripcion varchar(255) NOT NULL
 	)
 
@@ -41,7 +39,7 @@ CREATE TABLE cheshire_jack.espectaculos (
 	)
 
 CREATE TABLE cheshire_jack.rubros (
-	codRubro INT PRIMARY KEY IDENTITY(1,1) NOT NULL ,
+	codRubro INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	descripcion varchar(255) NOT NULL
 	)
 
@@ -50,7 +48,7 @@ CREATE TABLE cheshire_jack.ubicaciones (
 	codPublicacion NUMERIC (18,0) NOT NULL,
 	fila CHAR(3) NOT NULL,
 	asiento SMALLINT NOT NULL,
-	sinNumerar BIT NOT NULL,
+	sinNumerar BIT NOT NULL DEFAULT(0),
 	precio NUMERIC(18,2) NOT NULL,
 	codTipo INT NOT NULL
 	)
@@ -100,7 +98,7 @@ CREATE TABLE cheshire_jack.compras (
 	codCliente INT NOT NULL,
 	fecha DATETIME NOT NULL,
 	codPublicacion NUMERIC(18,0) NOT NULL,
-	metodoPago varchar(255) NOT NULL,
+	metodoPago VARCHAR(255) NOT NULL,
 	codMetodo NUMERIC(18,0) DEFAULT(NULL)
 	)
 
@@ -120,16 +118,57 @@ CREATE TABLE cheshire_jack.items (
 	PRIMARY KEY(codItem, codCompra)
 	)
 
+CREATE TABLE cheshire_jack.puntos (
+	codPuntos INT NOT NULL identity(1,1),
+	codCliente INT NOT NULL,
+	cantidad NUMERIC(16,0) NOT NULL,
+	fechaVencimiento DATE NOT NULL,
+	PRIMARY KEY(codPuntos, codCliente) 
+	)
+
 CREATE TABLE cheshire_jack.usuariosXRoles (
-	codUsuario INT NOT NULL,
-	codRol INT NOT NULL,
+	codUsuario INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.usuarios(codUsuario),
+	codRol INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.roles(codRol),
 	PRIMARY KEY(codUsuario, codRol)
 	)
 
 CREATE TABLE cheshire_jack.RolesxFuncionalidades (
-	codRol INT NOT NULL,
-	codFuncionalidad INT NOT NULL,
+	codRol INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.roles(codRol),
+	codFuncionalidad INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.funcionalidades(codFuncionalidad),
 	PRIMARY KEY(codRol, codFuncionalidad)
 	)
+
+ALTER TABLE cheshire_jack.clientes
+ADD FOREIGN KEY (codUsuario) REFERENCES cheshire_jack.usuarios(codUsuario)
+
+ALTER TABLE cheshire_jack.empresas
+ADD FOREIGN KEY (codUsuario) REFERENCES cheshire_jack.usuarios(codUsuario)
+
+ALTER TABLE cheshire_jack.publicaciones
+ADD FOREIGN KEY (codEspectaculo) REFERENCES cheshire_jack.espectaculos(codEspectaculo)
+
+ALTER TABLE cheshire_jack.espectaculos
+ADD FOREIGN KEY (codRubro) REFERENCES cheshire_jack.rubros(codRubro)
+
+ALTER TABLE cheshire_jack.ubicaciones
+ADD FOREIGN KEY (codPublicacion) REFERENCES cheshire_jack.publicaciones(codpublicacion)
+
+ALTER TABLE cheshire_jack.ubicaciones
+ADD FOREIGN KEY (codTipo) REFERENCES cheshire_jack.tiposUbicaciones(codTipo)
+
+ALTER TABLE cheshire_jack.puntos
+ADD FOREIGN KEY (codCliente) REFERENCES cheshire_jack.clientes(codCliente)
+
+ALTER TABLE cheshire_jack.compras
+ADD FOREIGN KEY (codCliente) REFERENCES cheshire_jack.clientes(codCliente)
+
+ALTER TABLE cheshire_jack.compras
+ADD FOREIGN KEY (codPublicacion) REFERENCES cheshire_jack.publicaciones(codPublicacion)
+
+ALTER TABLE cheshire_jack.facturas
+ADD FOREIGN KEY (codCompra) REFERENCES cheshire_jack.compras(codCompra)
+
+ALTER TABLE cheshire_jack.items
+ADD FOREIGN KEY (codCompra) REFERENCES cheshire_jack.compras(codCompra)
 
 ROLLBACK
