@@ -31,6 +31,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.RolesBox = new System.Windows.Forms.ComboBox();
             this.AcceptButton = new System.Windows.Forms.Button();
+            this.LogoutButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -52,18 +53,28 @@
             // 
             // AcceptButton
             // 
-            this.AcceptButton.Location = new System.Drawing.Point(99, 58);
+            this.AcceptButton.Location = new System.Drawing.Point(53, 56);
             this.AcceptButton.Name = "AcceptButton";
             this.AcceptButton.Size = new System.Drawing.Size(81, 34);
             this.AcceptButton.TabIndex = 2;
             this.AcceptButton.Text = "Ingresar";
             this.AcceptButton.UseVisualStyleBackColor = true;
             // 
+            // LogoutButton
+            // 
+            this.LogoutButton.Location = new System.Drawing.Point(151, 56);
+            this.LogoutButton.Name = "LogoutButton";
+            this.LogoutButton.Size = new System.Drawing.Size(75, 34);
+            this.LogoutButton.TabIndex = 4;
+            this.LogoutButton.Text = "Cerrar Sesion";
+            this.LogoutButton.UseVisualStyleBackColor = true;
+            // 
             // RolSelection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 104);
+            this.Controls.Add(this.LogoutButton);
             this.Controls.Add(this.AcceptButton);
             this.Controls.Add(this.RolesBox);
             this.Controls.Add(this.label1);
@@ -79,5 +90,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox RolesBox;
         private System.Windows.Forms.Button AcceptButton;
+        private System.Windows.Forms.Button LogoutButton;
     }
 }
