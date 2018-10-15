@@ -1,3 +1,4 @@
+USE GD2C2018
 
 BEGIN TRANSACTION
 
@@ -23,7 +24,7 @@ CREATE TABLE cheshire_jack.funcionalidades (
 
 CREATE TABLE cheshire_jack.publicaciones (
 	codPublicacion NUMERIC(18,0) PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	grado CHAR(1) NOT NULL,
+	grado CHAR(1) NOT NULL CHECK(grado IN ('A', 'N', 'B')),
 	codEspectaculo NUMERIC(18,0) NOT NULL,
 	estado VARCHAR(255) NOT NULL,
 	fecha DATETIME NOT NULL,
@@ -32,8 +33,8 @@ CREATE TABLE cheshire_jack.publicaciones (
 	)
 
 CREATE TABLE cheshire_jack.espectaculos (
-	codEspectaculo NUMERIC(18,0) PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	codUsuario INT NOT NULL,
+	codEspectaculo NUMERIC(18,0) PRIMARY KEY NOT NULL,
+	codEmpresa NUMERIC(18,0) NOT NULL,
 	descripcion varchar(255) NOT NULL,
 	codRubro INT NOT NULL
 	)
@@ -62,13 +63,13 @@ CREATE TABLE cheshire_jack.clientes (
 	codCliente INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	tipoDocumento VARCHAR(255) NOT NULL,
 	nroDocumento NUMERIC(18,0) NOT NULL,
-	CUIL CHAR(14) NOT NULL,
+	CUIL CHAR(14),
 	apellido VARCHAR(255) NOT NULL,
 	nombre VARCHAR(255) NOT NULL,
 	fechaNacimiento DATE NOT NULL,
 	mail VARCHAR(255) CHECK(mail LIKE '%@%'),
 	telefono CHAR(13),
-	localidad VARCHAR(255) NOT NULL,
+	localidad VARCHAR(255),
 	domicilioCalle VARCHAR(255) NOT NULL,
 	nroCalle INT NOT NULL CHECK(nroCalle > 0),
 	piso TINYINT,
@@ -84,7 +85,7 @@ CREATE TABLE cheshire_jack.empresas (
 	fechaCreacion DATE,
 	mail VARCHAR(255) CHECK(mail LIKE '%@%'),
 	telefono char(13),
-	ciudad VARCHAR(255) NOT NULL,
+	ciudad VARCHAR(255),
 	domicilioCalle VARCHAR(255) NOT NULL,
 	nroCalle INT NOT NULL CHECK(nroCalle > 0),
 	piso TINYINT,
@@ -170,5 +171,33 @@ ADD FOREIGN KEY (codCompra) REFERENCES cheshire_jack.compras(codCompra)
 
 ALTER TABLE cheshire_jack.items
 ADD FOREIGN KEY (codCompra) REFERENCES cheshire_jack.compras(codCompra)
+
+INSERT INTO cheshire_jack.empresas 
+(razonSocial, CUIT, fechaCreacion, mail, domicilioCalle, nroCalle, piso, dept, codigoPostal)
+SELECT DISTINCT Espec_Empresa_Razon_Social, Espec_Empresa_Cuit, Espec_Empresa_Fecha_Creacion, Espec_Empresa_Mail, Espec_Empresa_Dom_Calle, Espec_Empresa_Nro_Calle, Espec_Empresa_Piso, Espec_Empresa_Depto, Espec_Empresa_Cod_Postal
+FROM gd_esquema.Maestra
+
+INSERT INTO cheshire_jack.clientes
+(nombre, apellido, fechaNacimiento, tipoDocumento, nroDocumento, mail, domicilioCalle, nroCalle, piso, dept, codigoPostal)
+SELECT DISTINCT Cli_Nombre, Cli_Apeliido, Cli_Fecha_Nac, 'DNI', Cli_Dni, Cli_Mail, Cli_Dom_Calle, Cli_Nro_Calle, Cli_Piso, Cli_Depto, Cli_Cod_Postal
+FROM gd_esquema.Maestra
+WHERE Cli_Nombre IS NOT NULL
+
+INSERT INTO cheshire_jack.rubros
+(descripcion)
+SELECT DISTINCT Espectaculo_Rubro_Descripcion 
+FROM gd_esquema.Maestra
+
+INSERT INTO cheshire_jack.espectaculos
+(codEspectaculo, descripcion, codEmpresa, codRubro)
+SELECT DISTINCT Espectaculo_Cod, Espectaculo_Descripcion, 
+				(SELECT codEmpresa FROM cheshire_jack.empresas E WHERE E.CUIT = M.Espec_Empresa_Cuit), 
+				(SELECT codRubro FROM cheshire_jack.rubros R WHERE R.descripcion = M.Espectaculo_Rubro_Descripcion)
+FROM gd_esquema.Maestra M
+
+INSERT INTO cheshire_jack.publicaciones
+(grado, estado, fecha, fechaVencimiento, codEspectaculo)
+SELECT DISTINCT 'B', Espectaculo_Estado, Espectaculo_Fecha, Espectaculo_Fecha_Venc, Espectaculo_Cod
+FROM gd_esquema.Maestra
 
 ROLLBACK

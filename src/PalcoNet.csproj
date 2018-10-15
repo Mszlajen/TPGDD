@@ -32,6 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualBasic.PowerPacks.Vs, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abm Cliente\CreateClient.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Cliente\CreateClient.Designer.cs">
+      <DependentUpon>CreateClient.cs</DependentUpon>
+    </Compile>
     <Compile Include="Abm Cliente\SelectClient.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -55,6 +63,12 @@
     </Compile>
     <Compile Include="Abm Cliente\Selection.Designer.cs">
       <DependentUpon>Selection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Abm Empresa Espectaculo\CreateCompany.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Empresa Espectaculo\CreateCompany.Designer.cs">
+      <DependentUpon>CreateCompany.cs</DependentUpon>
     </Compile>
     <Compile Include="Abm Empresa Espectaculo\SelectCompany.cs">
       <SubType>Form</SubType>
@@ -80,12 +94,6 @@
     <Compile Include="Abm Rol\ABMRol.Designer.cs">
       <DependentUpon>ABMRol.cs</DependentUpon>
     </Compile>
-    <Compile Include="Abm Rol\ModifyRole.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Abm Rol\ModifyRole.Designer.cs">
-      <DependentUpon>ModifyRole.cs</DependentUpon>
-    </Compile>
     <Compile Include="Abm Rol\CreateRole.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,23 +112,35 @@
     <Compile Include="Abm Rubro\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Canje Puntos\Form1.cs">
+    <Compile Include="Canje Puntos\PointExchange.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Canje Puntos\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Canje Puntos\PointExchange.Designer.cs">
+      <DependentUpon>PointExchange.cs</DependentUpon>
     </Compile>
-    <Compile Include="Comprar\Form1.cs">
+    <Compile Include="Comprar\Buy.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Comprar\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Comprar\Buy.Designer.cs">
+      <DependentUpon>Buy.cs</DependentUpon>
     </Compile>
-    <Compile Include="Editar Publicacion\Form1.cs">
+    <Compile Include="Comprar\SearchPublication.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Editar Publicacion\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Comprar\SearchPublication.Designer.cs">
+      <DependentUpon>SearchPublication.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editar Publicacion\EditPublication.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editar Publicacion\EditPublication.Designer.cs">
+      <DependentUpon>EditPublication.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editar Publicacion\SearchPublication.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editar Publicacion\SearchPublication.Designer.cs">
+      <DependentUpon>SearchPublication.cs</DependentUpon>
     </Compile>
     <Compile Include="FunctionSelection.cs">
       <SubType>Form</SubType>
@@ -128,17 +148,29 @@
     <Compile Include="FunctionSelection.Designer.cs">
       <DependentUpon>FunctionSelection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Generar Publicacion\BatchDates.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Generar Publicacion\BatchDates.Designer.cs">
+      <DependentUpon>BatchDates.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Generar Rendicion Comisiones\SelectCompany.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Generar Rendicion Comisiones\SelectCompany.Designer.cs">
+      <DependentUpon>SelectCompany.cs</DependentUpon>
+    </Compile>
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Login.Designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
-    <Compile Include="Generar Publicacion\Form1.cs">
+    <Compile Include="Generar Publicacion\GeneratePublication.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Generar Publicacion\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Generar Publicacion\GeneratePublication.Designer.cs">
+      <DependentUpon>GeneratePublication.cs</DependentUpon>
     </Compile>
     <Compile Include="Generar Rendicion Comisiones\Form1.cs">
       <SubType>Form</SubType>
@@ -146,17 +178,17 @@
     <Compile Include="Generar Rendicion Comisiones\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Historial Cliente\Form1.cs">
+    <Compile Include="Historial Cliente\History.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Historial Cliente\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Historial Cliente\History.Designer.cs">
+      <DependentUpon>History.cs</DependentUpon>
     </Compile>
-    <Compile Include="Listado Estadistico\Form1.cs">
+    <Compile Include="Listado Estadistico\StatList.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Listado Estadistico\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Listado Estadistico\StatList.Designer.cs">
+      <DependentUpon>StatList.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -172,11 +204,17 @@
     <Compile Include="RolSelection.Designer.cs">
       <DependentUpon>RolSelection.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Abm Cliente\CreateClient.resx">
+      <DependentUpon>CreateClient.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Abm Cliente\SelectClient.resx">
       <DependentUpon>SelectClient.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Cliente\Selection.resx">
       <DependentUpon>Selection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Abm Empresa Espectaculo\CreateCompany.resx">
+      <DependentUpon>CreateCompany.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Empresa Espectaculo\SelectCompany.resx">
       <DependentUpon>SelectCompany.cs</DependentUpon>
@@ -187,17 +225,44 @@
     <EmbeddedResource Include="Abm Rol\ABMRol.resx">
       <DependentUpon>ABMRol.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Abm Rol\ModifyRole.resx">
-      <DependentUpon>ModifyRole.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Abm Rol\CreateRole.resx">
       <DependentUpon>CreateRole.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Rol\RoleSelection.resx">
       <DependentUpon>RoleSelection.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Canje Puntos\PointExchange.resx">
+      <DependentUpon>PointExchange.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Comprar\Buy.resx">
+      <DependentUpon>Buy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Comprar\SearchPublication.resx">
+      <DependentUpon>SearchPublication.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editar Publicacion\EditPublication.resx">
+      <DependentUpon>EditPublication.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editar Publicacion\SearchPublication.resx">
+      <DependentUpon>SearchPublication.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FunctionSelection.resx">
       <DependentUpon>FunctionSelection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Generar Publicacion\BatchDates.resx">
+      <DependentUpon>BatchDates.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Generar Publicacion\GeneratePublication.resx">
+      <DependentUpon>GeneratePublication.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Generar Rendicion Comisiones\SelectCompany.resx">
+      <DependentUpon>SelectCompany.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Historial Cliente\History.resx">
+      <DependentUpon>History.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Listado Estadistico\StatList.resx">
+      <DependentUpon>StatList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Login.resx">
       <DependentUpon>Login.cs</DependentUpon>

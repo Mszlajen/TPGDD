@@ -8,23 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace PalcoNet.Abm_Rol
+namespace PalcoNet.Abm_Empresa_Espectaculo
 {
-    public partial class CreateRole : Form
+    public partial class CreateCompany : Form
     {
-        public CreateRole()
+        public CreateCompany()
         {
             InitializeComponent();
-        }
-
-        private void AcceptButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void CancelButton_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

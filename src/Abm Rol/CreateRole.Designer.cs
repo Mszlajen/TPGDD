@@ -34,6 +34,7 @@
             this.FunctionsList = new System.Windows.Forms.CheckedListBox();
             this.AcceptButton = new System.Windows.Forms.Button();
             this.CancelButton = new System.Windows.Forms.Button();
+            this.availabilityCheck = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -72,7 +73,7 @@
             // 
             // AcceptButton
             // 
-            this.AcceptButton.Location = new System.Drawing.Point(16, 198);
+            this.AcceptButton.Location = new System.Drawing.Point(16, 244);
             this.AcceptButton.Name = "AcceptButton";
             this.AcceptButton.Size = new System.Drawing.Size(90, 39);
             this.AcceptButton.TabIndex = 4;
@@ -81,18 +82,30 @@
             // 
             // CancelButton
             // 
-            this.CancelButton.Location = new System.Drawing.Point(182, 198);
+            this.CancelButton.Location = new System.Drawing.Point(182, 244);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(90, 39);
             this.CancelButton.TabIndex = 5;
             this.CancelButton.Text = "Cancelar";
             this.CancelButton.UseVisualStyleBackColor = true;
             // 
+            // availabilityCheck
+            // 
+            this.availabilityCheck.AutoSize = true;
+            this.availabilityCheck.Location = new System.Drawing.Point(16, 209);
+            this.availabilityCheck.Name = "availabilityCheck";
+            this.availabilityCheck.Size = new System.Drawing.Size(100, 17);
+            this.availabilityCheck.TabIndex = 10;
+            this.availabilityCheck.Text = "Deshabilitar Rol";
+            this.availabilityCheck.UseVisualStyleBackColor = true;
+            this.availabilityCheck.Visible = false;
+            // 
             // CreateRole
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.ClientSize = new System.Drawing.Size(284, 295);
+            this.Controls.Add(this.availabilityCheck);
             this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.AcceptButton);
             this.Controls.Add(this.FunctionsList);
@@ -114,5 +127,6 @@
         private System.Windows.Forms.CheckedListBox FunctionsList;
         private System.Windows.Forms.Button AcceptButton;
         private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.CheckBox availabilityCheck;
     }
 }

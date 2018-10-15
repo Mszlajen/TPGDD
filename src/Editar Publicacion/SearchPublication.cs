@@ -8,13 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace PalcoNet.Canje_Puntos
+namespace PalcoNet.Editar_Publicacion
 {
-    public partial class Form1 : Form
+    public partial class SearchPublication : Form
     {
-        public Form1()
+        public SearchPublication()
         {
             InitializeComponent();
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

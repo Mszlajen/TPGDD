@@ -8,13 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace PalcoNet.Generar_Publicacion
+namespace PalcoNet.Comprar
 {
-    public partial class Form1 : Form
+    public partial class SearchPublication : Form
     {
-        public Form1()
+        public SearchPublication()
         {
             InitializeComponent();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace PalcoNet.Comprar
+namespace PalcoNet.Historial_Cliente
 {
-    public partial class Form1 : Form
+    public partial class History : Form
     {
-        public Form1()
+        public History()
         {
             InitializeComponent();
         }
