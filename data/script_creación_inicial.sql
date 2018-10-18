@@ -3,182 +3,225 @@ USE GD2C2018
 BEGIN TRANSACTION
 
 CREATE TABLE cheshire_jack.usuarios (
-	codUsuario INT PRIMARY KEY IDENTITY(1,1) NOT NULL, 
-	nombreUsuario VARCHAR(50) NOT NULL,
+	cod_usuario INT PRIMARY KEY IDENTITY(1,1) NOT NULL, 
+	nombre_usuario VARCHAR(50) NOT NULL,
 	contrasenia CHAR(256) NOT NULL,
 	habilitado BIT NOT NULL DEFAULT(1),
-	ingresosRestantes TINYINT NOT NULL DEFAULT(3),
-	tipo varchar(255) DEFAULT(NULL)
+	ingresos_restantes TINYINT NOT NULL DEFAULT(3),
+	tipo varchar(255) DEFAULT(NULL),
+	contrasenia_automatica BIT NOT NULL DEFAULT(1)
 	)
 
 CREATE TABLE cheshire_jack.roles (
-	codRol INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	descripcion varchar(255) NOT NULL,
-	habilitado bit NOT NULL DEFAULT(1)
+	cod_rol INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	descripcion VARCHAR(255) NOT NULL,
+	habilitado BIT NOT NULL DEFAULT(1)
 	)
 
 CREATE TABLE cheshire_jack.funcionalidades (
-	codFuncionalidad INT PRIMARY KEY NOT NULL IDENTITY(1,1),
+	cod_funcionalidad INT PRIMARY KEY NOT NULL IDENTITY(1,1),
 	descripcion varchar(255) NOT NULL
 	)
 
-CREATE TABLE cheshire_jack.publicaciones (
-	codPublicacion NUMERIC(18,0) PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	grado CHAR(1) NOT NULL CHECK(grado IN ('A', 'N', 'B')),
-	codEspectaculo NUMERIC(18,0) NOT NULL,
-	estado VARCHAR(255) NOT NULL,
-	fecha DATETIME NOT NULL,
-	fechaVencimiento DATETIME NOT NULL,
-	CHECK(fecha < fechaVencimiento)
+CREATE TABLE cheshire_jack.grados (
+	cod_grado TINYINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	nombre char(5) NOT NULL,
+	comision numeric(2,2) NOT NULL
 	)
 
+CREATE TABLE cheshire_jack.estados (
+	cod_estado TINYINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	nombre CHAR(10) NOT NULL
+	)
+
+CREATE TABLE cheshire_jack.publicaciones (
+	cod_publicacion NUMERIC(18,0) PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	cod_grado TINYINT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.grados(cod_grado),
+	cod_espectaculo NUMERIC(18,0) NOT NULL,
+	cod_estado TINYINT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.estados(cod_estado),
+	fecha_evento DATETIME NOT NULL,
+	fecha_vencimiento DATETIME,
+	fecha_publicacion DATETIME NOT NULL,
+	CHECK(fecha_publicacion < fecha_evento)
+	)
+
+
 CREATE TABLE cheshire_jack.espectaculos (
-	codEspectaculo NUMERIC(18,0) PRIMARY KEY NOT NULL,
-	codEmpresa NUMERIC(18,0) NOT NULL,
-	descripcion varchar(255) NOT NULL,
-	codRubro INT NOT NULL
+	cod_espectaculo NUMERIC(18,0) PRIMARY KEY NOT NULL IDENTITY(1,1),
+	cod_empresa INT NOT NULL,
+	descripcion VARCHAR(255) NOT NULL,
+	cod_rubro INT NOT NULL,
+	direccion varchar(50) NOT NULL,
+	altura numeric(18,0) NOT NULL
 	)
 
 CREATE TABLE cheshire_jack.rubros (
-	codRubro INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	cod_rubro INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	descripcion varchar(255) NOT NULL
 	)
 
 CREATE TABLE cheshire_jack.ubicaciones (
-	codUbicacion NUMERIC(18,0) PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	codPublicacion NUMERIC (18,0) NOT NULL,
+	cod_ubicacion NUMERIC(18,0) PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	cod_publicacion NUMERIC (18,0) NOT NULL,
 	fila CHAR(3) NOT NULL,
-	asiento SMALLINT NOT NULL,
-	sinNumerar BIT NOT NULL DEFAULT(0),
-	precio NUMERIC(18,2) NOT NULL,
-	codTipo INT NOT NULL
+	asiento NUMERIC(18,0) NOT NULL,
+	sin_numerar BIT NOT NULL DEFAULT(0),
+	precio NUMERIC(18,0) NOT NULL,
+	cod_tipo INT NOT NULL,
+	disponible BIT NOT NULL DEFAULT(1)
 	)
 
-CREATE TABLE cheshire_jack.tiposUbicaciones (
-	codTipo INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	descripcion varchar(255) NOT NULL
+CREATE TABLE cheshire_jack.tipos_de_ubicacion (
+	cod_tipo INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	descripcion VARCHAR(255) NOT NULL
 	)
 
 CREATE TABLE cheshire_jack.clientes (
-	codCliente INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	tipoDocumento VARCHAR(255) NOT NULL,
-	nroDocumento NUMERIC(18,0) NOT NULL,
+	cod_cliente INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	tipo_documento VARCHAR(255) NOT NULL,
+	nro_documento NUMERIC(18,0) NOT NULL,
 	CUIL CHAR(14),
 	apellido VARCHAR(255) NOT NULL,
 	nombre VARCHAR(255) NOT NULL,
-	fechaNacimiento DATE NOT NULL,
-	mail VARCHAR(255) CHECK(mail LIKE '%@%'),
-	telefono CHAR(13),
+	fecha_nacimiento DATE NOT NULL,
+	mail VARCHAR(255) CHECK(mail LIKE '%@%') NOT NULL,
+	telefono CHAR(14),
 	localidad VARCHAR(255),
-	domicilioCalle VARCHAR(255) NOT NULL,
-	nroCalle INT NOT NULL CHECK(nroCalle > 0),
+	domicilio_calle VARCHAR(255) NOT NULL,
+	nro_calle NUMERIC(18,0) NOT NULL CHECK(nro_calle > 0),
 	piso TINYINT,
 	dept VARCHAR(50),
-	codigoPostal VARCHAR(25),
-	codUsuario INT
+	codigo_postal VARCHAR(25),
+	fecha_creacion DATETIME,
+	cod_usuario INT
 	)
 
 CREATE TABLE cheshire_jack.empresas (
-	codEmpresa INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	razonSocial VARCHAR(255) NOT NULL,
+	cod_empresa INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	razon_social VARCHAR(255) NOT NULL,
 	CUIT CHAR(14) NOT NULL,
-	fechaCreacion DATE,
+	fecha_creacion DATE,
 	mail VARCHAR(255) CHECK(mail LIKE '%@%'),
-	telefono char(13),
+	telefono char(14),
 	ciudad VARCHAR(255),
-	domicilioCalle VARCHAR(255) NOT NULL,
-	nroCalle INT NOT NULL CHECK(nroCalle > 0),
+	domicilio_calle VARCHAR(255) NOT NULL,
+	nro_calle INT NOT NULL CHECK(nro_calle > 0),
 	piso TINYINT,
 	dept VARCHAR(50),
-	codigoPostal VARCHAR(25),
-	codUsuario INT
+	codigo_postal VARCHAR(25),
+	cod_usuario INT
 	)
-
+		
 CREATE TABLE cheshire_jack.compras (
-	codCompra NUMERIC(18,0) PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	codCliente INT NOT NULL,
+	cod_compra NUMERIC(18,0) PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	cod_cliente INT NOT NULL,
 	fecha DATETIME NOT NULL,
-	codPublicacion NUMERIC(18,0) NOT NULL,
-	metodoPago VARCHAR(255) NOT NULL,
-	codMetodo NUMERIC(18,0) DEFAULT(NULL)
+	cod_publicacion NUMERIC(18,0) NOT NULL,
+	metodo_pago VARCHAR(255) NOT NULL,
+	cod_metodo NUMERIC(18,0) DEFAULT(NULL)
 	)
 
 CREATE TABLE cheshire_jack.facturas (
-	nroFactura NUMERIC(18,0) PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	codCompra NUMERIC(18,0) NOT NULL,
+	nro_factura NUMERIC(18,0) PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	cod_compra NUMERIC(18,0) NOT NULL,
 	fecha DATETIME NOT NULL,
 	total NUMERIC(18,2) NOT NULL,
-	formaPago VARCHAR(255) NOT NULL
+	forma_pago VARCHAR(255) NOT NULL
 	)
 
 CREATE TABLE cheshire_jack.items (
-	codItem TINYINT NOT NULL,
-	codCompra NUMERIC(18,0) NOT NULL,
+	cod_item TINYINT NOT NULL,
+	cod_compra NUMERIC(18,0) NOT NULL,
 	monto NUMERIC(18,2) NOT NULL check(monto > 0),
-	cantidad SMALLINT NOT NULL check(cantidad > 0),
-	PRIMARY KEY(codItem, codCompra)
+	comision NUMERIC(18,2) NOT NULL check(comision > 0),
+	PRIMARY KEY(cod_item, cod_compra)
 	)
 
 CREATE TABLE cheshire_jack.puntos (
-	codPuntos INT NOT NULL identity(1,1),
-	codCliente INT NOT NULL,
-	cantidad NUMERIC(16,0) NOT NULL,
-	fechaVencimiento DATE NOT NULL,
-	PRIMARY KEY(codPuntos, codCliente) 
+	cod_puntos INT NOT NULL,
+	cod_cliente INT NOT NULL,
+	cantidad NUMERIC(18,0) NOT NULL,
+	fecha_vencimiento DATE NOT NULL,
+	PRIMARY KEY(cod_puntos, cod_cliente) 
+	)
+
+CREATE TABLE cheshire_jack.premios (
+	cod_premio INT PRIMARY KEY NOT NULL IDENTITY(1,1),
+	nombre VARCHAR(50) NOT NULL,
+	descripcion VARCHAR(255),
+	stock INT DEFAULT(0) NOT NULL,
+	valor NUMERIC(18,0) NOT NULL
+	)
+
+CREATE TABLE cheshire_jack.canjes (
+	cod_usuario INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.usuarios(cod_Usuario),
+	cod_premio INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.premios(cod_premio),
+	PRIMARY KEY(cod_usuario, cod_premio)
+	)
+
+CREATE TABLE cheshire_jack.tarjetas_de_credito (
+	cod_tarjeta NUMERIC(18,0) NOT NULL IDENTITY(1,1),
+	cod_cliente INT NOT NULL,
+	hash_nro_tarjeta char(256) NOT NULL,
+	ultimos_digitos char(4) NOT NULL,
+	cod_seguridad char(4) NOT NULL
 	)
 
 CREATE TABLE cheshire_jack.usuariosXRoles (
-	codUsuario INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.usuarios(codUsuario),
-	codRol INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.roles(codRol),
-	PRIMARY KEY(codUsuario, codRol)
+	cod_usuario INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.usuarios(cod_Usuario),
+	cod_rol INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.roles(cod_rol),
+	PRIMARY KEY(cod_usuario, cod_rol)
 	)
 
 CREATE TABLE cheshire_jack.RolesxFuncionalidades (
-	codRol INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.roles(codRol),
-	codFuncionalidad INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.funcionalidades(codFuncionalidad),
-	PRIMARY KEY(codRol, codFuncionalidad)
+	cod_rol INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.roles(cod_rol),
+	cod_funcionalidad INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.funcionalidades(cod_funcionalidad),
+	PRIMARY KEY(cod_rol, cod_funcionalidad)
 	)
 
 ALTER TABLE cheshire_jack.clientes
-ADD FOREIGN KEY (codUsuario) REFERENCES cheshire_jack.usuarios(codUsuario)
+ADD FOREIGN KEY (cod_usuario) REFERENCES cheshire_jack.usuarios(cod_usuario)
 
 ALTER TABLE cheshire_jack.empresas
-ADD FOREIGN KEY (codUsuario) REFERENCES cheshire_jack.usuarios(codUsuario)
+ADD FOREIGN KEY (cod_usuario) REFERENCES cheshire_jack.usuarios(cod_usuario)
 
 ALTER TABLE cheshire_jack.publicaciones
-ADD FOREIGN KEY (codEspectaculo) REFERENCES cheshire_jack.espectaculos(codEspectaculo)
+ADD FOREIGN KEY (cod_espectaculo) REFERENCES cheshire_jack.espectaculos(cod_espectaculo)
 
 ALTER TABLE cheshire_jack.espectaculos
-ADD FOREIGN KEY (codRubro) REFERENCES cheshire_jack.rubros(codRubro)
+ADD FOREIGN KEY (cod_rubro) REFERENCES cheshire_jack.rubros(cod_rubro)
 
 ALTER TABLE cheshire_jack.ubicaciones
-ADD FOREIGN KEY (codPublicacion) REFERENCES cheshire_jack.publicaciones(codpublicacion)
+ADD FOREIGN KEY (cod_publicacion) REFERENCES cheshire_jack.publicaciones(cod_publicacion)
 
 ALTER TABLE cheshire_jack.ubicaciones
-ADD FOREIGN KEY (codTipo) REFERENCES cheshire_jack.tiposUbicaciones(codTipo)
+ADD FOREIGN KEY (cod_tipo) REFERENCES cheshire_jack.tipos_de_ubicacion(cod_tipo)
 
 ALTER TABLE cheshire_jack.puntos
-ADD FOREIGN KEY (codCliente) REFERENCES cheshire_jack.clientes(codCliente)
+ADD FOREIGN KEY (cod_cliente) REFERENCES cheshire_jack.clientes(cod_cliente)
 
 ALTER TABLE cheshire_jack.compras
-ADD FOREIGN KEY (codCliente) REFERENCES cheshire_jack.clientes(codCliente)
+ADD FOREIGN KEY (cod_cliente) REFERENCES cheshire_jack.clientes(cod_cliente)
 
 ALTER TABLE cheshire_jack.compras
-ADD FOREIGN KEY (codPublicacion) REFERENCES cheshire_jack.publicaciones(codPublicacion)
+ADD FOREIGN KEY (cod_publicacion) REFERENCES cheshire_jack.publicaciones(cod_publicacion)
 
 ALTER TABLE cheshire_jack.facturas
-ADD FOREIGN KEY (codCompra) REFERENCES cheshire_jack.compras(codCompra)
+ADD FOREIGN KEY (cod_compra) REFERENCES cheshire_jack.compras(cod_compra)
 
 ALTER TABLE cheshire_jack.items
-ADD FOREIGN KEY (codCompra) REFERENCES cheshire_jack.compras(codCompra)
+ADD FOREIGN KEY (cod_compra) REFERENCES cheshire_jack.compras(cod_compra)
+
+ALTER TABLE cheshire_jack.tarjetas_de_creditos
+ADD FOREIGN KEY (cod_cliente) REFERENCES cheshire_jack.clientes(cod_cliente)
 
 INSERT INTO cheshire_jack.empresas 
-(razonSocial, CUIT, fechaCreacion, mail, domicilioCalle, nroCalle, piso, dept, codigoPostal)
+(razon_social, CUIT, fecha_creacion, mail, domicilio_calle, nro_calle, piso, dept, codigo_postal)
 SELECT DISTINCT Espec_Empresa_Razon_Social, Espec_Empresa_Cuit, Espec_Empresa_Fecha_Creacion, Espec_Empresa_Mail, Espec_Empresa_Dom_Calle, Espec_Empresa_Nro_Calle, Espec_Empresa_Piso, Espec_Empresa_Depto, Espec_Empresa_Cod_Postal
 FROM gd_esquema.Maestra
 
 INSERT INTO cheshire_jack.clientes
-(nombre, apellido, fechaNacimiento, tipoDocumento, nroDocumento, mail, domicilioCalle, nroCalle, piso, dept, codigoPostal)
+(nombre, apellido, fecha_nacimiento, tipo_documento, nro_documento, mail, domicilio_calle, nro_calle, piso, dept, codigo_postal)
 SELECT DISTINCT Cli_Nombre, Cli_Apeliido, Cli_Fecha_Nac, 'DNI', Cli_Dni, Cli_Mail, Cli_Dom_Calle, Cli_Nro_Calle, Cli_Piso, Cli_Depto, Cli_Cod_Postal
 FROM gd_esquema.Maestra
 WHERE Cli_Nombre IS NOT NULL
@@ -189,15 +232,10 @@ SELECT DISTINCT Espectaculo_Rubro_Descripcion
 FROM gd_esquema.Maestra
 
 INSERT INTO cheshire_jack.espectaculos
-(codEspectaculo, descripcion, codEmpresa, codRubro)
+(cod_espectaculo, descripcion, cod_empresa, cod_rubro)
 SELECT DISTINCT Espectaculo_Cod, Espectaculo_Descripcion, 
-				(SELECT codEmpresa FROM cheshire_jack.empresas E WHERE E.CUIT = M.Espec_Empresa_Cuit), 
-				(SELECT codRubro FROM cheshire_jack.rubros R WHERE R.descripcion = M.Espectaculo_Rubro_Descripcion)
+				(SELECT cod_empresa FROM cheshire_jack.empresas E WHERE E.CUIT = M.Espec_Empresa_Cuit), 
+				(SELECT cod_rubro FROM cheshire_jack.rubros R WHERE R.descripcion = M.Espectaculo_Rubro_Descripcion)
 FROM gd_esquema.Maestra M
-
-INSERT INTO cheshire_jack.publicaciones
-(grado, estado, fecha, fechaVencimiento, codEspectaculo)
-SELECT DISTINCT 'B', Espectaculo_Estado, Espectaculo_Fecha, Espectaculo_Fecha_Venc, Espectaculo_Cod
-FROM gd_esquema.Maestra
 
 ROLLBACK
