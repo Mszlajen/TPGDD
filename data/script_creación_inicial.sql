@@ -25,8 +25,9 @@ CREATE TABLE cheshire_jack.funcionalidades (
 
 CREATE TABLE cheshire_jack.grados (
 	cod_grado TINYINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	nombre char(5) NOT NULL,
-	comision numeric(2,2) NOT NULL
+	nombre CHAR(5) NOT NULL,
+	comision NUMERIC(2,2) NOT NULL,
+	peso TINYINT NOT NULL
 	)
 
 CREATE TABLE cheshire_jack.estados (
@@ -41,7 +42,7 @@ CREATE TABLE cheshire_jack.publicaciones (
 	cod_estado TINYINT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.estados(cod_estado),
 	fecha_evento DATETIME NOT NULL,
 	fecha_vencimiento DATETIME,
-	fecha_publicacion DATETIME NOT NULL,
+	fecha_publicacion DATETIME,
 	CHECK(fecha_publicacion < fecha_evento)
 	)
 
@@ -51,8 +52,9 @@ CREATE TABLE cheshire_jack.espectaculos (
 	cod_empresa INT NOT NULL,
 	descripcion VARCHAR(255) NOT NULL,
 	cod_rubro INT NOT NULL,
-	direccion varchar(50) NOT NULL,
-	altura numeric(18,0) NOT NULL
+	direccion VARCHAR(50) NOT NULL,
+	altura NUMERIC(18,0) NOT NULL,
+	cod_espectaculo_viejo NUMERIC(18,0)
 	)
 
 CREATE TABLE cheshire_jack.rubros (
@@ -66,14 +68,15 @@ CREATE TABLE cheshire_jack.ubicaciones (
 	fila CHAR(3) NOT NULL,
 	asiento NUMERIC(18,0) NOT NULL,
 	sin_numerar BIT NOT NULL DEFAULT(0),
-	precio NUMERIC(18,0) NOT NULL,
+	precio NUMERIC(18,0) NOT NULL CHECK(precio > 0),
 	cod_tipo INT NOT NULL,
 	disponible BIT NOT NULL DEFAULT(1)
 	)
 
 CREATE TABLE cheshire_jack.tipos_de_ubicacion (
 	cod_tipo INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	descripcion VARCHAR(255) NOT NULL
+	descripcion VARCHAR(255) NOT NULL,
+	cod_tipo_viejo NUMERIC(18,0)
 	)
 
 CREATE TABLE cheshire_jack.clientes (
@@ -84,7 +87,7 @@ CREATE TABLE cheshire_jack.clientes (
 	apellido VARCHAR(255) NOT NULL,
 	nombre VARCHAR(255) NOT NULL,
 	fecha_nacimiento DATE NOT NULL,
-	mail VARCHAR(255) CHECK(mail LIKE '%@%') NOT NULL,
+	mail VARCHAR(255) CHECK(mail LIKE '_%@_%._%') NOT NULL,
 	telefono CHAR(14),
 	localidad VARCHAR(255),
 	domicilio_calle VARCHAR(255) NOT NULL,
@@ -101,7 +104,7 @@ CREATE TABLE cheshire_jack.empresas (
 	razon_social VARCHAR(255) NOT NULL,
 	CUIT CHAR(14) NOT NULL,
 	fecha_creacion DATE,
-	mail VARCHAR(255) CHECK(mail LIKE '%@%'),
+	mail VARCHAR(255) CHECK(mail LIKE '_%@_%._%'),
 	telefono char(14),
 	ciudad VARCHAR(255),
 	domicilio_calle VARCHAR(255) NOT NULL,
@@ -115,6 +118,7 @@ CREATE TABLE cheshire_jack.empresas (
 CREATE TABLE cheshire_jack.compras (
 	cod_compra NUMERIC(18,0) PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	cod_cliente INT NOT NULL,
+	nro_factura NUMERIC(18,0),
 	fecha DATETIME NOT NULL,
 	cod_publicacion NUMERIC(18,0) NOT NULL,
 	metodo_pago VARCHAR(255) NOT NULL,
@@ -122,8 +126,7 @@ CREATE TABLE cheshire_jack.compras (
 	)
 
 CREATE TABLE cheshire_jack.facturas (
-	nro_factura NUMERIC(18,0) PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	cod_compra NUMERIC(18,0) NOT NULL,
+	nro_factura NUMERIC(18,0) PRIMARY KEY NOT NULL,
 	fecha DATETIME NOT NULL,
 	total NUMERIC(18,2) NOT NULL,
 	forma_pago VARCHAR(255) NOT NULL
@@ -132,8 +135,10 @@ CREATE TABLE cheshire_jack.facturas (
 CREATE TABLE cheshire_jack.items (
 	cod_item TINYINT NOT NULL,
 	cod_compra NUMERIC(18,0) NOT NULL,
-	monto NUMERIC(18,2) NOT NULL check(monto > 0),
-	comision NUMERIC(18,2) NOT NULL check(comision > 0),
+	cantidad NUMERIC(18,0) DEFAULT(1) CHECK(cantidad > 0),
+	monto NUMERIC(18,2) NOT NULL CHECK(monto > 0),
+	comision NUMERIC(18,2) NOT NULL CHECK(comision > 0),
+	descripcion VARCHAR(255),
 	PRIMARY KEY(cod_item, cod_compra)
 	)
 
@@ -206,23 +211,55 @@ ADD FOREIGN KEY (cod_cliente) REFERENCES cheshire_jack.clientes(cod_cliente)
 ALTER TABLE cheshire_jack.compras
 ADD FOREIGN KEY (cod_publicacion) REFERENCES cheshire_jack.publicaciones(cod_publicacion)
 
-ALTER TABLE cheshire_jack.facturas
-ADD FOREIGN KEY (cod_compra) REFERENCES cheshire_jack.compras(cod_compra)
+ALTER TABLE cheshire_jack.compras
+ADD FOREIGN KEY (nro_factura) REFERENCES cheshire_jack.facturas(nro_factura)
 
 ALTER TABLE cheshire_jack.items
 ADD FOREIGN KEY (cod_compra) REFERENCES cheshire_jack.compras(cod_compra)
 
-ALTER TABLE cheshire_jack.tarjetas_de_creditos
+ALTER TABLE cheshire_jack.tarjetas_de_credito
 ADD FOREIGN KEY (cod_cliente) REFERENCES cheshire_jack.clientes(cod_cliente)
 
+INSERT INTO cheshire_jack.grados
+(nombre, comision, peso)
+VALUES ('Baja', 0.05, 1)
+
+INSERT INTO cheshire_jack.grados
+(nombre, comision, peso)
+VALUES ('Media', 0.1, 2)
+
+INSERT INTO cheshire_jack.grados
+(nombre, comision, peso)
+VALUES ('Alta', 0.2, 3)
+
+INSERT INTO cheshire_jack.grados
+(nombre, comision, peso) 
+VALUES ('S.D.', 0.0, 0)
+
+INSERT INTO cheshire_jack.estados
+(nombre) VALUES ('Borrador')
+
+INSERT INTO cheshire_jack.estados
+(nombre) VALUES ('Publicada')
+
+INSERT INTO cheshire_jack.estados
+(nombre) VALUES ('Finalizada')
+
+INSERT INTO cheshire_jack.estados
+(nombre) VALUES ('Pausada')
+
 INSERT INTO cheshire_jack.empresas 
-(razon_social, CUIT, fecha_creacion, mail, domicilio_calle, nro_calle, piso, dept, codigo_postal)
-SELECT DISTINCT Espec_Empresa_Razon_Social, Espec_Empresa_Cuit, Espec_Empresa_Fecha_Creacion, Espec_Empresa_Mail, Espec_Empresa_Dom_Calle, Espec_Empresa_Nro_Calle, Espec_Empresa_Piso, Espec_Empresa_Depto, Espec_Empresa_Cod_Postal
+(razon_social, CUIT, fecha_creacion, mail, 
+domicilio_calle, nro_calle, piso, dept, codigo_postal)
+SELECT DISTINCT Espec_Empresa_Razon_Social, Espec_Empresa_Cuit, Espec_Empresa_Fecha_Creacion, Espec_Empresa_Mail, 
+				Espec_Empresa_Dom_Calle, Espec_Empresa_Nro_Calle, Espec_Empresa_Piso, Espec_Empresa_Depto, Espec_Empresa_Cod_Postal
 FROM gd_esquema.Maestra
 
 INSERT INTO cheshire_jack.clientes
-(nombre, apellido, fecha_nacimiento, tipo_documento, nro_documento, mail, domicilio_calle, nro_calle, piso, dept, codigo_postal)
-SELECT DISTINCT Cli_Nombre, Cli_Apeliido, Cli_Fecha_Nac, 'DNI', Cli_Dni, Cli_Mail, Cli_Dom_Calle, Cli_Nro_Calle, Cli_Piso, Cli_Depto, Cli_Cod_Postal
+(nombre, apellido, fecha_nacimiento, tipo_documento, nro_documento, 
+mail, domicilio_calle, nro_calle, piso, dept, codigo_postal)
+SELECT DISTINCT Cli_Nombre, Cli_Apeliido, Cli_Fecha_Nac, 'DNI', Cli_Dni, 
+				Cli_Mail, Cli_Dom_Calle, Cli_Nro_Calle, Cli_Piso, Cli_Depto, Cli_Cod_Postal
 FROM gd_esquema.Maestra
 WHERE Cli_Nombre IS NOT NULL
 
@@ -232,10 +269,113 @@ SELECT DISTINCT Espectaculo_Rubro_Descripcion
 FROM gd_esquema.Maestra
 
 INSERT INTO cheshire_jack.espectaculos
-(cod_espectaculo, descripcion, cod_empresa, cod_rubro)
-SELECT DISTINCT Espectaculo_Cod, Espectaculo_Descripcion, 
+(descripcion, cod_empresa, cod_rubro, cod_espectaculo_viejo, direccion, altura)
+SELECT DISTINCT Espectaculo_Descripcion, 
 				(SELECT cod_empresa FROM cheshire_jack.empresas E WHERE E.CUIT = M.Espec_Empresa_Cuit), 
-				(SELECT cod_rubro FROM cheshire_jack.rubros R WHERE R.descripcion = M.Espectaculo_Rubro_Descripcion)
+				(SELECT cod_rubro FROM cheshire_jack.rubros R WHERE R.descripcion = M.Espectaculo_Rubro_Descripcion),
+				Espectaculo_Cod,
+				'S.D',
+				0
 FROM gd_esquema.Maestra M
+WHERE Espectaculo_Cod IS NOT NULL
+
+INSERT INTO cheshire_jack.publicaciones
+(cod_grado, cod_espectaculo, cod_estado, fecha_evento, fecha_vencimiento)
+SELECT DISTINCT (SELECT cod_grado FROM cheshire_jack.grados WHERE nombre = 'S.D.'), 
+				(SELECT cod_espectaculo FROM cheshire_jack.espectaculos E WHERE M.Espectaculo_Cod = E.cod_espectaculo_viejo),
+				(SELECT cod_estado FROM cheshire_jack.estados WHERE nombre = 'Publicada'), 
+				Espectaculo_Fecha,
+				Espectaculo_Fecha_Venc
+FROM gd_esquema.Maestra M
+WHERE Espectaculo_Cod IS NOT NULL
+
+INSERT INTO cheshire_jack.tipos_de_ubicacion
+(descripcion, cod_tipo_viejo)
+SELECT DISTINCT Ubicacion_Tipo_Descripcion,
+				Ubicacion_Tipo_Codigo
+FROM gd_esquema.Maestra
+WHERE Ubicacion_Tipo_Codigo IS NOT NULL
+
+INSERT INTO cheshire_jack.ubicaciones
+(asiento, fila, sin_numerar, precio, cod_tipo, cod_publicacion)
+SELECT DISTINCT Ubicacion_Asiento, 
+				Ubicacion_Fila, 
+				Ubicacion_Sin_numerar, 
+				Ubicacion_Precio,
+				(SELECT cod_tipo FROM cheshire_jack.tipos_de_ubicacion TU WHERE TU.cod_tipo_viejo = M.Ubicacion_Tipo_Codigo),
+				(SELECT cod_publicacion FROM cheshire_jack.publicaciones P JOIN cheshire_jack.espectaculos E ON P.cod_espectaculo = E.cod_espectaculo WHERE M.espectaculo_cod = E.cod_espectaculo_viejo)
+FROM gd_esquema.Maestra M
+WHERE Espectaculo_Cod IS NOT NULL
+
+GO
+CREATE PROCEDURE cheshire_jack.mover_compras_de_maestra
+AS
+BEGIN
+	DECLARE cursorFactura CURSOR FOR
+	SELECT DISTINCT (SELECT cod_cliente FROM GD2C2018.cheshire_jack.clientes C WHERE M.Cli_Dni = C.nro_documento),
+				(SELECT cod_publicacion FROM GD2C2018.cheshire_jack.publicaciones P JOIN GD2C2018.cheshire_jack.espectaculos E ON P.cod_espectaculo = E.cod_espectaculo WHERE M.espectaculo_cod = E.cod_espectaculo_viejo),
+				Compra_Fecha,
+				Factura_Nro,
+				Factura_Fecha,
+				Factura_Total,
+				Forma_Pago_Desc
+	FROM GD2C2018.gd_esquema.Maestra M
+
+	DECLARE @cod_cliente INT, @cod_publicacion NUMERIC(18,0), @fechaCompra DATETIME, 
+		@nroFactura NUMERIC(18,0), @fechaFactura DATETIME, @totalFactura NUMERIC(18,2), 
+		@formaPago VARCHAR(255), @ultimoCodFactura NUMERIC(18,0), @ultimoCodCompra NUMERIC(18,0)
+
+	DECLARE cursorItem CURSOR FOR
+	SELECT DISTINCT Item_Factura_Monto,
+					Item_Factura_Cantidad,
+					Item_Factura_Descripcion
+	FROM GD2C2018.gd_esquema.Maestra
+	WHERE @ultimoCodFactura = Factura_Nro
+
+	DECLARE @itemMonto NUMERIC(18,0), @itemCantidad NUMERIC(18,0), @itemDescripcion VARCHAR(255), @curItem TINYINT
+
+	OPEN cursorCompra
+
+	FETCH NEXT FROM cursorCompra INTO @cod_cliente, @cod_publicacion, @fechaCompra, 
+								@nroFactura, @fechaFactura, @totalFactura, @formaPago 
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		INSERT INTO GD2C2018.cheshire_jack.facturas
+		(fecha, forma_pago, nro_factura, total)
+		VALUES 
+		(@fechaFactura, @formaPago, @nroFactura, @formaPago)
+
+		INSERT INTO GD2C2018.cheshire_jack.compras
+		(cod_cliente, cod_publicacion, fecha, metodo_pago, nro_factura)
+		VALUES
+		(@cod_cliente, @cod_publicacion, @fechaCompra, NULL, @ultimoCodFactura)
+
+		SET @ultimoCodCompra = SCOPE_IDENTITY()
+		SET @curItem = 1
+
+		OPEN cursorItems
+
+		FETCH NEXT FROM cursorItem INTO @itemMonto, @itemCantidad, @itemDescripcion
+		WHILE @@FETCH_STATUS = 0
+		BEGIN	
+			INSERT INTO GD2C2018.cheshire_jack.items
+			(cod_item, cod_compra, comision, monto, cantidad, descripcion)
+			VALUES (@curItem, @ultimoCodCompra, 0, @itemMonto, @itemCantidad, @itemDescripcion)
+			
+			SET @curItem = @curItem + 1
+		END
+
+		CLOSE cursorItems
+		DEALLOCATE cursorItems
+	
+		FETCH NEXT FROM cursorCompra INTO @cod_cliente, @cod_publicacion, @fechaCompra, 
+									@nroFactura, @fechaFactura, @totalFactura, @formaPago 
+	END
+
+	CLOSE cursorCompra
+	DEALLOCATE cursorCompra
+END
+
+EXEC cheshire_jack.mover_compras_de_maestra
 
 ROLLBACK
