@@ -143,11 +143,10 @@ CREATE TABLE cheshire_jack.items (
 	)
 
 CREATE TABLE cheshire_jack.puntos (
-	cod_puntos INT NOT NULL,
+	anio_vencimiento INT NOT NULL,
 	cod_cliente INT NOT NULL,
 	cantidad NUMERIC(18,0) NOT NULL,
-	fecha_vencimiento DATE NOT NULL,
-	PRIMARY KEY(cod_puntos, cod_cliente) 
+	PRIMARY KEY(anio_vencimiento, cod_cliente) 
 	)
 
 CREATE TABLE cheshire_jack.premios (
@@ -377,5 +376,65 @@ BEGIN
 END
 
 EXEC cheshire_jack.mover_compras_de_maestra
+
+DROP PROCEDURE cheshire_jack.mover_compras_de_maestra
+
+GO
+CREATE PROCEDURE cheshire_jack.modificar_puntos 
+(@cod_cliente INT, @cantidad NUMERIC(18,0), @fecha_actual DATE)
+AS
+BEGIN
+	DECLARE @anio_vencimiento_max INT
+	SELECT @anio_vencimiento_max = MAX(@cod_cliente) FROM GD2C2018.cheshire_jack.puntos WHERE @cod_cliente = cod_cliente
+	
+	IF EXISTS (SELECT * FROM GD2C2018.cheshire_jack.puntos WHERE @cod_cliente = cod_cliente AND YEAR(@fecha_actual) < anio_vencimiento)
+	BEGIN 
+		UPDATE GD2C2018.cheshire_jack.puntos
+		SET cantidad = CASE WHEN cantidad + @cantidad > 0 THEN cantidad + @cantidad ELSE 0 END
+		WHERE @cod_cliente = cod_cliente AND YEAR(@fecha_actual) = anio_vencimiento
+	END
+	ELSE
+	BEGIN
+		INSERT INTO GD2C2018.cheshire_jack.puntos
+		(cod_cliente, anio_vencimiento, cantidad)
+		VALUES
+		(@cod_cliente, YEAR(@fecha_actual) + 1,
+		CASE WHEN @cantidad > 0 THEN @cantidad ELSE 0 END)
+	END
+END
+
+GO
+CREATE PROCEDURE cheshire_jack.hacer_canje
+(@cod_cliente INT, @cod_premio INT, @fecha_actual DATE)
+AS
+BEGIN
+	IF (SELECT stock FROM GD2C2018.cheshire_jack.premios WHERE @cod_premio = cod_premio) > 0
+	BEGIN
+		RAISERROR('No se puede canjear algo sin stock',12, 1)
+	END
+	
+	DECLARE @cantidad_puntos_actuales NUMERIC(18,0), @costo_premio NUMERIC(18,0)
+	SELECT @cantidad_puntos_actuales = cantidad FROM GD2C2018.cheshire_jack.puntos WHERE @cod_cliente = cod_cliente AND YEAR(@fecha_actual) < anio_vencimiento
+	SELECT @costo_premio = valor FROM GD2C2018.cheshire_jack.premios WHERE cod_premio = @cod_premio
+
+	IF @cantidad_puntos_actuales IS NULL OR @cantidad_puntos_actuales < @costo_premio
+	BEGIN
+		RAISERROR('El premio cuesta más que los puntos disponibles', 12, 1)
+	END
+
+	BEGIN TRANSACTION
+		INSERT INTO GD2C2018.cheshire_jack.canjes
+		(cod_premio, cod_usuario)
+		VALUES
+		(@cod_premio, @cod_cliente)
+
+		UPDATE GD2C2018.cheshire_jack.premios
+		SET stock = stock - 1
+		WHERE @cod_premio = cod_premio
+
+		SET @costo_premio *= -1
+		EXEC GD2C2018.cheshire_jack.modificar_puntos @cod_cliente, @costo_premio, @fecha_actual
+	COMMIT TRANSACTION
+END
 
 ROLLBACK
