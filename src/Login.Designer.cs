@@ -28,26 +28,27 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.username = new System.Windows.Forms.TextBox();
-            this.password = new System.Windows.Forms.TextBox();
+            this.UsernameText = new System.Windows.Forms.TextBox();
+            this.PasswordText = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.LoginButton = new System.Windows.Forms.Button();
+            this.SignUpButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // username
+            // UsernameText
             // 
-            this.username.Location = new System.Drawing.Point(223, 37);
-            this.username.Name = "username";
-            this.username.Size = new System.Drawing.Size(205, 20);
-            this.username.TabIndex = 0;
+            this.UsernameText.Location = new System.Drawing.Point(223, 37);
+            this.UsernameText.Name = "UsernameText";
+            this.UsernameText.Size = new System.Drawing.Size(205, 20);
+            this.UsernameText.TabIndex = 0;
             // 
-            // password
+            // PasswordText
             // 
-            this.password.Location = new System.Drawing.Point(223, 93);
-            this.password.Name = "password";
-            this.password.Size = new System.Drawing.Size(205, 20);
-            this.password.TabIndex = 1;
+            this.PasswordText.Location = new System.Drawing.Point(223, 93);
+            this.PasswordText.Name = "PasswordText";
+            this.PasswordText.Size = new System.Drawing.Size(205, 20);
+            this.PasswordText.TabIndex = 1;
             // 
             // label1
             // 
@@ -68,26 +69,38 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "Password";
             // 
-            // button1
+            // LoginButton
             // 
-            this.button1.Location = new System.Drawing.Point(288, 131);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Login";
-            this.button1.UseVisualStyleBackColor = true;
+            this.LoginButton.Location = new System.Drawing.Point(353, 131);
+            this.LoginButton.Name = "LoginButton";
+            this.LoginButton.Size = new System.Drawing.Size(75, 23);
+            this.LoginButton.TabIndex = 4;
+            this.LoginButton.Text = "Login";
+            this.LoginButton.UseVisualStyleBackColor = true;
+            this.LoginButton.Click += new System.EventHandler(this.LoginButton_Click);
             // 
-            // Form1
+            // SignUpButton
+            // 
+            this.SignUpButton.Location = new System.Drawing.Point(223, 131);
+            this.SignUpButton.Name = "SignUpButton";
+            this.SignUpButton.Size = new System.Drawing.Size(75, 23);
+            this.SignUpButton.TabIndex = 4;
+            this.SignUpButton.Text = "Registrarse";
+            this.SignUpButton.UseVisualStyleBackColor = true;
+            this.SignUpButton.Click += new System.EventHandler(this.SignUpButton_Click);
+            // 
+            // Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(461, 166);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.SignUpButton);
+            this.Controls.Add(this.LoginButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.password);
-            this.Controls.Add(this.username);
-            this.Name = "Form1";
+            this.Controls.Add(this.PasswordText);
+            this.Controls.Add(this.UsernameText);
+            this.Name = "Login";
             this.Text = "PalcoNet - Login";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
@@ -97,11 +110,12 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox username;
-        private System.Windows.Forms.TextBox password;
+        private System.Windows.Forms.TextBox UsernameText;
+        private System.Windows.Forms.TextBox PasswordText;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button LoginButton;
+        private System.Windows.Forms.Button SignUpButton;
     }
 }
 

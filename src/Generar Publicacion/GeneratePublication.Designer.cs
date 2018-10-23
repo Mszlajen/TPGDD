@@ -117,6 +117,7 @@
             // 
             // CategoryBox
             // 
+            this.CategoryBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CategoryBox.FormattingEnabled = true;
             this.CategoryBox.Location = new System.Drawing.Point(16, 228);
             this.CategoryBox.Name = "CategoryBox";
@@ -134,6 +135,7 @@
             // 
             // GradeBox
             // 
+            this.GradeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.GradeBox.FormattingEnabled = true;
             this.GradeBox.Location = new System.Drawing.Point(16, 273);
             this.GradeBox.Name = "GradeBox";

@@ -36,6 +36,7 @@
             // 
             // FunctionsBox
             // 
+            this.FunctionsBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.FunctionsBox.FormattingEnabled = true;
             this.FunctionsBox.Location = new System.Drawing.Point(12, 28);
             this.FunctionsBox.Name = "FunctionsBox";

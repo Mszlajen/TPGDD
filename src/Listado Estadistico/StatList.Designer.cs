@@ -42,11 +42,13 @@
             // 
             // YearBox
             // 
+            this.YearBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.YearBox.FormattingEnabled = true;
             this.YearBox.Location = new System.Drawing.Point(12, 37);
             this.YearBox.Name = "YearBox";
             this.YearBox.Size = new System.Drawing.Size(85, 21);
             this.YearBox.TabIndex = 0;
+            this.YearBox.SelectedIndexChanged += new System.EventHandler(this.YearBox_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -68,6 +70,7 @@
             // 
             // TrimesterBox
             // 
+            this.TrimesterBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.TrimesterBox.Enabled = false;
             this.TrimesterBox.FormattingEnabled = true;
             this.TrimesterBox.Items.AddRange(new object[] {
@@ -79,6 +82,7 @@
             this.TrimesterBox.Name = "TrimesterBox";
             this.TrimesterBox.Size = new System.Drawing.Size(47, 21);
             this.TrimesterBox.TabIndex = 3;
+            this.TrimesterBox.DropDownClosed += new System.EventHandler(this.TrimesterBox_DropDownClosed);
             // 
             // label3
             // 
@@ -91,6 +95,7 @@
             // 
             // ListBox
             // 
+            this.ListBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ListBox.Enabled = false;
             this.ListBox.FormattingEnabled = true;
             this.ListBox.Items.AddRange(new object[] {
@@ -120,6 +125,7 @@
             this.ClearButton.TabIndex = 6;
             this.ClearButton.Text = "Limpiar";
             this.ClearButton.UseVisualStyleBackColor = true;
+            this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
             // dataGridView1
             // 

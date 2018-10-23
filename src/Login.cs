@@ -26,5 +26,25 @@ namespace PalcoNet
         {
 
         }
+
+        private void SignUpButton_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            new Registro_de_Usuario.SignUp().ShowDialog();
+            this.Show();
+        }
+
+        private void LoginButton_Click(object sender, EventArgs e)
+        {
+            Boolean fieldsFilled;
+            if (fieldsFilled = String.IsNullOrEmpty(UsernameText.Text))
+                MessageBox.Show("El campo usuario no puede estar vacio");
+            if (fieldsFilled = String.IsNullOrEmpty(PasswordText.Text))
+                MessageBox.Show("El campo contraseña no puede estar vacio");
+            if (!fieldsFilled)
+            {
+
+            }
+        }
     }
 }

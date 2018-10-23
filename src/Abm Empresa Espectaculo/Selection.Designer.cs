@@ -1,4 +1,4 @@
-﻿namespace PalcoNet.Abm_Cliente
+﻿namespace PalcoNet.Abm_Empresa_Espectaculos
 {
     partial class Selection
     {

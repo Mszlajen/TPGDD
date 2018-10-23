@@ -40,12 +40,12 @@
             this.DescriptionBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.SaveButton = new System.Windows.Forms.Button();
             this.Numbered = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Row = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Seat = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SeatType = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.SaveButton = new System.Windows.Forms.Button();
             this.shapeContainer1 = new Microsoft.VisualBasic.PowerPacks.ShapeContainer();
             this.lineShape1 = new Microsoft.VisualBasic.PowerPacks.LineShape();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -80,6 +80,7 @@
             // 
             // GradeBox
             // 
+            this.GradeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.GradeBox.FormattingEnabled = true;
             this.GradeBox.Location = new System.Drawing.Point(12, 272);
             this.GradeBox.Name = "GradeBox";
@@ -97,6 +98,7 @@
             // 
             // CategoryBox
             // 
+            this.CategoryBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CategoryBox.FormattingEnabled = true;
             this.CategoryBox.Location = new System.Drawing.Point(12, 227);
             this.CategoryBox.Name = "CategoryBox";
@@ -159,15 +161,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(373, 150);
             this.dataGridView1.TabIndex = 34;
             // 
-            // SaveButton
-            // 
-            this.SaveButton.Location = new System.Drawing.Point(344, 255);
-            this.SaveButton.Name = "SaveButton";
-            this.SaveButton.Size = new System.Drawing.Size(82, 40);
-            this.SaveButton.TabIndex = 35;
-            this.SaveButton.Text = "Guardar como borrador";
-            this.SaveButton.UseVisualStyleBackColor = true;
-            // 
             // Numbered
             // 
             this.Numbered.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
@@ -196,6 +189,15 @@
             this.SeatType.Name = "SeatType";
             this.SeatType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.SeatType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // SaveButton
+            // 
+            this.SaveButton.Location = new System.Drawing.Point(344, 255);
+            this.SaveButton.Name = "SaveButton";
+            this.SaveButton.Size = new System.Drawing.Size(82, 40);
+            this.SaveButton.TabIndex = 35;
+            this.SaveButton.Text = "Guardar como borrador";
+            this.SaveButton.UseVisualStyleBackColor = true;
             // 
             // shapeContainer1
             // 

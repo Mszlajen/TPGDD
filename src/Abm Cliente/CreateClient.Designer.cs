@@ -107,6 +107,7 @@
             // 
             // DocumentTypeBox
             // 
+            this.DocumentTypeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.DocumentTypeBox.FormattingEnabled = true;
             this.DocumentTypeBox.Location = new System.Drawing.Point(18, 109);
             this.DocumentTypeBox.Name = "DocumentTypeBox";

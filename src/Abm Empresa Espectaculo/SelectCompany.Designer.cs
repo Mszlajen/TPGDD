@@ -1,6 +1,6 @@
-﻿namespace PalcoNet.Abm_Cliente
+﻿namespace PalcoNet.Abm_Empresa_Espectaculos
 {
-    partial class SelectClient
+    partial class SelectCompany
     {
         /// <summary>
         /// Required designer variable.
@@ -35,12 +35,12 @@
             this.label4 = new System.Windows.Forms.Label();
             this.MailBox = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.CleanButton = new System.Windows.Forms.Button();
-            this.SearchButton = new System.Windows.Forms.Button();
             this.Nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CUIT = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Mail = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Editar = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.CleanButton = new System.Windows.Forms.Button();
+            this.SearchButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -107,24 +107,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(536, 131);
             this.dataGridView1.TabIndex = 8;
             // 
-            // CleanButton
-            // 
-            this.CleanButton.Location = new System.Drawing.Point(428, 17);
-            this.CleanButton.Name = "CleanButton";
-            this.CleanButton.Size = new System.Drawing.Size(87, 45);
-            this.CleanButton.TabIndex = 9;
-            this.CleanButton.Text = "Limpiar";
-            this.CleanButton.UseVisualStyleBackColor = true;
-            // 
-            // SearchButton
-            // 
-            this.SearchButton.Location = new System.Drawing.Point(428, 68);
-            this.SearchButton.Name = "SearchButton";
-            this.SearchButton.Size = new System.Drawing.Size(87, 45);
-            this.SearchButton.TabIndex = 10;
-            this.SearchButton.Text = "Buscar";
-            this.SearchButton.UseVisualStyleBackColor = true;
-            // 
             // Nombre
             // 
             this.Nombre.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
@@ -156,7 +138,25 @@
             this.Editar.Name = "Editar";
             this.Editar.Width = 40;
             // 
-            // SelectClient
+            // CleanButton
+            // 
+            this.CleanButton.Location = new System.Drawing.Point(428, 17);
+            this.CleanButton.Name = "CleanButton";
+            this.CleanButton.Size = new System.Drawing.Size(87, 45);
+            this.CleanButton.TabIndex = 9;
+            this.CleanButton.Text = "Limpiar";
+            this.CleanButton.UseVisualStyleBackColor = true;
+            // 
+            // SearchButton
+            // 
+            this.SearchButton.Location = new System.Drawing.Point(428, 68);
+            this.SearchButton.Name = "SearchButton";
+            this.SearchButton.Size = new System.Drawing.Size(87, 45);
+            this.SearchButton.TabIndex = 10;
+            this.SearchButton.Text = "Buscar";
+            this.SearchButton.UseVisualStyleBackColor = true;
+            // 
+            // SelectCompany
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -170,7 +170,7 @@
             this.Controls.Add(this.DniBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.NameBox);
-            this.Name = "SelectClient";
+            this.Name = "SelectCompany";
             this.Text = "Seleccionar Empresa";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);

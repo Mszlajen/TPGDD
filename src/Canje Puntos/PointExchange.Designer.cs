@@ -28,33 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.Exchangerid = new System.Windows.Forms.DataGridView();
             this.label1 = new System.Windows.Forms.Label();
             this.PointsText = new System.Windows.Forms.Label();
-            this.Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PrizeName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Stock = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ExchangeButton = new System.Windows.Forms.DataGridViewButtonColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Exchangerid)).BeginInit();
             this.SuspendLayout();
             // 
-            // dataGridView1
+            // Exchangerid
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Name,
+            this.Exchangerid.AllowUserToAddRows = false;
+            this.Exchangerid.AllowUserToDeleteRows = false;
+            this.Exchangerid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.Exchangerid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.PrizeName,
             this.Description,
             this.Stock,
             this.Value,
             this.ExchangeButton});
-            this.dataGridView1.Location = new System.Drawing.Point(12, 29);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(673, 194);
-            this.dataGridView1.TabIndex = 0;
+            this.Exchangerid.Location = new System.Drawing.Point(12, 29);
+            this.Exchangerid.Name = "Exchangerid";
+            this.Exchangerid.ReadOnly = true;
+            this.Exchangerid.Size = new System.Drawing.Size(673, 194);
+            this.Exchangerid.TabIndex = 0;
             // 
             // label1
             // 
@@ -74,13 +74,13 @@
             this.PointsText.Size = new System.Drawing.Size(0, 13);
             this.PointsText.TabIndex = 2;
             // 
-            // Name
+            // PrizeName
             // 
-            this.Name.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.Name.HeaderText = "Nombre";
-            this.Name.Name = "Name";
-            this.Name.ReadOnly = true;
-            this.Name.Width = 69;
+            this.PrizeName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.PrizeName.HeaderText = "Nombre";
+            this.PrizeName.Name = "PrizeName";
+            this.PrizeName.ReadOnly = true;
+            this.PrizeName.Width = 69;
             // 
             // Description
             // 
@@ -121,11 +121,11 @@
             this.ClientSize = new System.Drawing.Size(698, 261);
             this.Controls.Add(this.PointsText);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.Exchangerid);
             this.Name = "PointExchange";
-            this.Text = "Form1";
+            this.Text = "Canje de puntos";
             this.Load += new System.EventHandler(this.PointExchange_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Exchangerid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -133,10 +133,10 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView Exchangerid;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label PointsText;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Name;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PrizeName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Description;
         private System.Windows.Forms.DataGridViewTextBoxColumn Stock;
         private System.Windows.Forms.DataGridViewTextBoxColumn Value;

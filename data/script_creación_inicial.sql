@@ -1,6 +1,8 @@
 USE GD2C2018
+GO
 
-BEGIN TRANSACTION
+CREATE SCHEMA cheshire_jack
+GO
 
 CREATE TABLE cheshire_jack.usuarios (
 	cod_usuario INT PRIMARY KEY IDENTITY(1,1) NOT NULL, 
@@ -15,7 +17,8 @@ CREATE TABLE cheshire_jack.usuarios (
 CREATE TABLE cheshire_jack.roles (
 	cod_rol INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	descripcion VARCHAR(255) NOT NULL,
-	habilitado BIT NOT NULL DEFAULT(1)
+	habilitado BIT NOT NULL DEFAULT(1),
+	registrable BIT NOT NULL
 	)
 
 CREATE TABLE cheshire_jack.funcionalidades (
@@ -306,11 +309,26 @@ SELECT DISTINCT Ubicacion_Asiento,
 FROM gd_esquema.Maestra M
 WHERE Espectaculo_Cod IS NOT NULL
 
+INSERT INTO cheshire_jack.roles
+(descripcion, registrable)
+VALUES
+('Cliente', 1)
+
+INSERT INTO cheshire_jack.roles
+(descripcion, registrable)
+VALUES
+('Empresa de Espectaculos', 1)
+
+INSERT INTO cheshire_jack.roles
+(descripcion, registrable)
+VALUES
+('Administrador', 0)
+
 GO
 CREATE PROCEDURE cheshire_jack.mover_compras_de_maestra
 AS
 BEGIN
-	DECLARE cursorFactura CURSOR FOR
+	DECLARE cursorCompra CURSOR FOR
 	SELECT DISTINCT (SELECT cod_cliente FROM GD2C2018.cheshire_jack.clientes C WHERE M.Cli_Dni = C.nro_documento),
 				(SELECT cod_publicacion FROM GD2C2018.cheshire_jack.publicaciones P JOIN GD2C2018.cheshire_jack.espectaculos E ON P.cod_espectaculo = E.cod_espectaculo WHERE M.espectaculo_cod = E.cod_espectaculo_viejo),
 				Compra_Fecha,
@@ -319,6 +337,7 @@ BEGIN
 				Factura_Total,
 				Forma_Pago_Desc
 	FROM GD2C2018.gd_esquema.Maestra M
+	WHERE M.Factura_Nro IS NOT NULL
 
 	DECLARE @cod_cliente INT, @cod_publicacion NUMERIC(18,0), @fechaCompra DATETIME, 
 		@nroFactura NUMERIC(18,0), @fechaFactura DATETIME, @totalFactura NUMERIC(18,2), 
@@ -342,7 +361,7 @@ BEGIN
 		INSERT INTO GD2C2018.cheshire_jack.facturas
 		(fecha, forma_pago, nro_factura, total)
 		VALUES 
-		(@fechaFactura, @formaPago, @nroFactura, @formaPago)
+		(@fechaFactura, @formaPago, @nroFactura, @totalFactura)
 
 		INSERT INTO GD2C2018.cheshire_jack.compras
 		(cod_cliente, cod_publicacion, fecha, metodo_pago, nro_factura)
@@ -352,7 +371,7 @@ BEGIN
 		SET @ultimoCodCompra = SCOPE_IDENTITY()
 		SET @curItem = 1
 
-		OPEN cursorItems
+		OPEN cursorItem
 
 		FETCH NEXT FROM cursorItem INTO @itemMonto, @itemCantidad, @itemDescripcion
 		WHILE @@FETCH_STATUS = 0
@@ -364,17 +383,18 @@ BEGIN
 			SET @curItem = @curItem + 1
 		END
 
-		CLOSE cursorItems
-		DEALLOCATE cursorItems
+		CLOSE cursorItem
 	
 		FETCH NEXT FROM cursorCompra INTO @cod_cliente, @cod_publicacion, @fechaCompra, 
 									@nroFactura, @fechaFactura, @totalFactura, @formaPago 
 	END
 
+	DEALLOCATE cursorItem
 	CLOSE cursorCompra
 	DEALLOCATE cursorCompra
 END
 
+GO
 EXEC cheshire_jack.mover_compras_de_maestra
 
 DROP PROCEDURE cheshire_jack.mover_compras_de_maestra
@@ -437,4 +457,6 @@ BEGIN
 	COMMIT TRANSACTION
 END
 
-ROLLBACK
+GO
+
+SELECT cod_rol, descripcion FROM cheshire_jack.roles WHERE habilitado = 1 AND registrable = 1

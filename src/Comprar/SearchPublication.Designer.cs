@@ -111,6 +111,7 @@
             // 
             // TagBox
             // 
+            this.TagBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.TagBox.FormattingEnabled = true;
             this.TagBox.Location = new System.Drawing.Point(15, 30);
             this.TagBox.Name = "TagBox";
