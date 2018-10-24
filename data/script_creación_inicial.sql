@@ -123,9 +123,10 @@ CREATE TABLE cheshire_jack.compras (
 	cod_cliente INT NOT NULL,
 	nro_factura NUMERIC(18,0),
 	fecha DATETIME NOT NULL,
-	cod_publicacion NUMERIC(18,0) NOT NULL,
+	cod_ubicacion NUMERIC(18,0) NOT NULL,
 	metodo_pago VARCHAR(255) NOT NULL,
-	cod_metodo NUMERIC(18,0) DEFAULT(NULL)
+	cod_metodo NUMERIC(18,0) DEFAULT(NULL),
+	comision NUMERIC(18,2) NOT NULL
 	)
 
 CREATE TABLE cheshire_jack.facturas (
@@ -136,13 +137,11 @@ CREATE TABLE cheshire_jack.facturas (
 	)
 
 CREATE TABLE cheshire_jack.items (
-	cod_item TINYINT NOT NULL,
+	nro_factura NUMERIC(18,0) NOT NULL,
 	cod_compra NUMERIC(18,0) NOT NULL,
-	cantidad NUMERIC(18,0) DEFAULT(1) CHECK(cantidad > 0),
-	monto NUMERIC(18,2) NOT NULL CHECK(monto > 0),
-	comision NUMERIC(18,2) NOT NULL CHECK(comision > 0),
 	descripcion VARCHAR(255),
-	PRIMARY KEY(cod_item, cod_compra)
+	cantidad NUMERIC(18,0),
+	PRIMARY KEY(nro_factura, cod_compra)
 	)
 
 CREATE TABLE cheshire_jack.puntos (
@@ -211,13 +210,16 @@ ALTER TABLE cheshire_jack.compras
 ADD FOREIGN KEY (cod_cliente) REFERENCES cheshire_jack.clientes(cod_cliente)
 
 ALTER TABLE cheshire_jack.compras
-ADD FOREIGN KEY (cod_publicacion) REFERENCES cheshire_jack.publicaciones(cod_publicacion)
+ADD FOREIGN KEY (cod_ubicacion) REFERENCES cheshire_jack.ubicaciones(cod_ubicacion)
 
 ALTER TABLE cheshire_jack.compras
 ADD FOREIGN KEY (nro_factura) REFERENCES cheshire_jack.facturas(nro_factura)
 
 ALTER TABLE cheshire_jack.items
 ADD FOREIGN KEY (cod_compra) REFERENCES cheshire_jack.compras(cod_compra)
+
+ALTER TABLE cheshire_jack.items
+ADD FOREIGN KEY (nro_factura) REFERENCES cheshire_jack.facturas(nro_factura)
 
 ALTER TABLE cheshire_jack.tarjetas_de_credito
 ADD FOREIGN KEY (cod_cliente) REFERENCES cheshire_jack.clientes(cod_cliente)
@@ -324,80 +326,32 @@ INSERT INTO cheshire_jack.roles
 VALUES
 ('Administrador', 0)
 
-GO
-CREATE PROCEDURE cheshire_jack.mover_compras_de_maestra
-AS
-BEGIN
-	DECLARE cursorCompra CURSOR FOR
-	SELECT DISTINCT (SELECT cod_cliente FROM GD2C2018.cheshire_jack.clientes C WHERE M.Cli_Dni = C.nro_documento),
-				(SELECT cod_publicacion FROM GD2C2018.cheshire_jack.publicaciones P JOIN GD2C2018.cheshire_jack.espectaculos E ON P.cod_espectaculo = E.cod_espectaculo WHERE M.espectaculo_cod = E.cod_espectaculo_viejo),
-				Compra_Fecha,
+INSERT INTO cheshire_jack.facturas
+(nro_factura, fecha, total, forma_pago)
+SELECT DISTINCT Factura_Nro, Factura_Fecha, Factura_Total, Forma_Pago_Desc
+FROM gd_esquema.Maestra M
+WHERE M.Factura_Nro IS NOT NULL
+
+INSERT INTO cheshire_jack.compras
+(cod_cliente, cod_ubicacion, nro_factura, fecha, metodo_pago, comision)
+SELECT DISTINCT (SELECT cod_cliente FROM cheshire_jack.clientes C WHERE M.Cli_Dni = C.nro_documento),
+				(SELECT cod_ubicacion 
+				FROM cheshire_jack.ubicaciones U JOIN 
+					cheshire_jack.publicaciones P ON U.cod_publicacion = P.cod_publicacion JOIN 
+					cheshire_jack.espectaculos E ON P.cod_espectaculo = E.cod_espectaculo 
+				WHERE M.espectaculo_cod = E.cod_espectaculo_viejo AND U.asiento = M.Ubicacion_Asiento AND U.fila = M.Ubicacion_Fila),
 				Factura_Nro,
-				Factura_Fecha,
-				Factura_Total,
-				Forma_Pago_Desc
-	FROM GD2C2018.gd_esquema.Maestra M
-	WHERE M.Factura_Nro IS NOT NULL
+				Compra_Fecha,
+				'No Registrado',
+				Item_Factura_Monto
+FROM gd_esquema.Maestra M
+WHERE M.Factura_Nro IS NOT NULL
 
-	DECLARE @cod_cliente INT, @cod_publicacion NUMERIC(18,0), @fechaCompra DATETIME, 
-		@nroFactura NUMERIC(18,0), @fechaFactura DATETIME, @totalFactura NUMERIC(18,2), 
-		@formaPago VARCHAR(255), @ultimoCodFactura NUMERIC(18,0), @ultimoCodCompra NUMERIC(18,0)
-
-	DECLARE cursorItem CURSOR FOR
-	SELECT DISTINCT Item_Factura_Monto,
-					Item_Factura_Cantidad,
-					Item_Factura_Descripcion
-	FROM GD2C2018.gd_esquema.Maestra
-	WHERE @ultimoCodFactura = Factura_Nro
-
-	DECLARE @itemMonto NUMERIC(18,0), @itemCantidad NUMERIC(18,0), @itemDescripcion VARCHAR(255), @curItem TINYINT
-
-	OPEN cursorCompra
-
-	FETCH NEXT FROM cursorCompra INTO @cod_cliente, @cod_publicacion, @fechaCompra, 
-								@nroFactura, @fechaFactura, @totalFactura, @formaPago 
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		INSERT INTO GD2C2018.cheshire_jack.facturas
-		(fecha, forma_pago, nro_factura, total)
-		VALUES 
-		(@fechaFactura, @formaPago, @nroFactura, @totalFactura)
-
-		INSERT INTO GD2C2018.cheshire_jack.compras
-		(cod_cliente, cod_publicacion, fecha, metodo_pago, nro_factura)
-		VALUES
-		(@cod_cliente, @cod_publicacion, @fechaCompra, NULL, @ultimoCodFactura)
-
-		SET @ultimoCodCompra = SCOPE_IDENTITY()
-		SET @curItem = 1
-
-		OPEN cursorItem
-
-		FETCH NEXT FROM cursorItem INTO @itemMonto, @itemCantidad, @itemDescripcion
-		WHILE @@FETCH_STATUS = 0
-		BEGIN	
-			INSERT INTO GD2C2018.cheshire_jack.items
-			(cod_item, cod_compra, comision, monto, cantidad, descripcion)
-			VALUES (@curItem, @ultimoCodCompra, 0, @itemMonto, @itemCantidad, @itemDescripcion)
-			
-			SET @curItem = @curItem + 1
-		END
-
-		CLOSE cursorItem
-	
-		FETCH NEXT FROM cursorCompra INTO @cod_cliente, @cod_publicacion, @fechaCompra, 
-									@nroFactura, @fechaFactura, @totalFactura, @formaPago 
-	END
-
-	DEALLOCATE cursorItem
-	CLOSE cursorCompra
-	DEALLOCATE cursorCompra
-END
-
-GO
-EXEC cheshire_jack.mover_compras_de_maestra
-
-DROP PROCEDURE cheshire_jack.mover_compras_de_maestra
+INSERT INTO cheshire_jack.items
+(cod_compra, nro_factura, descripcion, cantidad)
+SELECT cod_compra, M.Factura_Nro, Item_Factura_Descripcion, Item_Factura_Cantidad
+FROM cheshire_jack.compras C JOIN gd_esquema.Maestra M ON C.nro_factura = M.Factura_Nro
+WHERE Factura_Nro IS NOT NULL
 
 GO
 CREATE PROCEDURE cheshire_jack.modificar_puntos 
@@ -456,7 +410,3 @@ BEGIN
 		EXEC GD2C2018.cheshire_jack.modificar_puntos @cod_cliente, @costo_premio, @fecha_actual
 	COMMIT TRANSACTION
 END
-
-GO
-
-SELECT cod_rol, descripcion FROM cheshire_jack.roles WHERE habilitado = 1 AND registrable = 1
