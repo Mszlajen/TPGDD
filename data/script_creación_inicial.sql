@@ -26,7 +26,7 @@ CREATE TABLE cheshire_jack.funcionalidades (
 	descripcion varchar(255) NOT NULL
 	)
 
-CREATE TABLE cheshire_jack.grados (
+CREATE TABLE cheshire_jack.grados_de_publicacion (
 	cod_grado TINYINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	nombre CHAR(5) NOT NULL,
 	comision NUMERIC(2,2) NOT NULL,
@@ -35,12 +35,12 @@ CREATE TABLE cheshire_jack.grados (
 
 CREATE TABLE cheshire_jack.estados (
 	cod_estado TINYINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	nombre CHAR(10) NOT NULL
+	nombre NVARCHAR(255) NOT NULL
 	)
 
 CREATE TABLE cheshire_jack.publicaciones (
 	cod_publicacion NUMERIC(18,0) PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	cod_grado TINYINT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.grados(cod_grado),
+	cod_grado TINYINT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.grados_de_publicacion(cod_grado),
 	cod_espectaculo NUMERIC(18,0) NOT NULL,
 	cod_estado TINYINT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.estados(cod_estado),
 	fecha_evento DATETIME NOT NULL,
@@ -49,72 +49,73 @@ CREATE TABLE cheshire_jack.publicaciones (
 	CHECK(fecha_publicacion < fecha_evento)
 	)
 
-
-CREATE TABLE cheshire_jack.espectaculos (
-	cod_espectaculo NUMERIC(18,0) PRIMARY KEY NOT NULL IDENTITY(1,1),
-	cod_empresa INT NOT NULL,
-	descripcion VARCHAR(255) NOT NULL,
-	cod_rubro INT NOT NULL,
-	direccion VARCHAR(50) NOT NULL,
-	altura NUMERIC(18,0) NOT NULL,
-	cod_espectaculo_viejo NUMERIC(18,0)
-	)
-
 CREATE TABLE cheshire_jack.rubros (
 	cod_rubro INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	descripcion varchar(255) NOT NULL
 	)
 
-CREATE TABLE cheshire_jack.ubicaciones (
-	cod_ubicacion NUMERIC(18,0) PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	cod_publicacion NUMERIC (18,0) NOT NULL,
-	fila CHAR(3) NOT NULL,
-	asiento NUMERIC(18,0) NOT NULL,
-	sin_numerar BIT NOT NULL DEFAULT(0),
-	precio NUMERIC(18,0) NOT NULL CHECK(precio > 0),
-	cod_tipo INT NOT NULL,
-	disponible BIT NOT NULL DEFAULT(1)
+CREATE TABLE cheshire_jack.espectaculos (
+	cod_espectaculo NUMERIC(18,0) PRIMARY KEY NOT NULL IDENTITY(1,1),
+	cod_empresa INT NOT NULL,
+	descripcion NVARCHAR(255) NOT NULL,
+	cod_rubro INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.rubros(cod_rubro),
+	direccion VARCHAR(50) NOT NULL,
+	altura NUMERIC(18,0) NOT NULL,
+	cod_espectaculo_viejo NUMERIC(18,0)
 	)
 
 CREATE TABLE cheshire_jack.tipos_de_ubicacion (
 	cod_tipo INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	descripcion VARCHAR(255) NOT NULL,
+	descripcion NVARCHAR(255) NOT NULL,
 	cod_tipo_viejo NUMERIC(18,0)
 	)
 
+CREATE TABLE cheshire_jack.ubicaciones (
+	nro_ubicacion NUMERIC(18,0) NOT NULL,
+	cod_publicacion NUMERIC (18,0) NOT NULL,
+	fila VARCHAR(3) NOT NULL,
+	asiento NUMERIC(18,0) NOT NULL,
+	sin_numerar BIT NOT NULL DEFAULT(0),
+	precio NUMERIC(18,0) NOT NULL CHECK(precio > 0),
+	cod_tipo INT NOT NULL,
+	disponible BIT NOT NULL DEFAULT(1),
+	PRIMARY KEY(cod_publicacion, nro_ubicacion)
+	)
+
+
 CREATE TABLE cheshire_jack.clientes (
 	cod_cliente INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	tipo_documento VARCHAR(255) NOT NULL,
+	tipo_documento VARCHAR(50) NOT NULL,
 	nro_documento NUMERIC(18,0) NOT NULL,
 	CUIL CHAR(14),
-	apellido VARCHAR(255) NOT NULL,
-	nombre VARCHAR(255) NOT NULL,
-	fecha_nacimiento DATE NOT NULL,
-	mail VARCHAR(255) CHECK(mail LIKE '_%@_%._%') NOT NULL,
+	apellido NVARCHAR(255) NOT NULL,
+	nombre NVARCHAR(255) NOT NULL,
+	fecha_nacimiento DATETIME NOT NULL,
+	mail NVARCHAR(255) CHECK(mail LIKE '_%@_%._%') NOT NULL,
 	telefono CHAR(14),
-	localidad VARCHAR(255),
-	domicilio_calle VARCHAR(255) NOT NULL,
+	localidad NVARCHAR(255),
+	domicilio_calle NVARCHAR(255) NOT NULL,
 	nro_calle NUMERIC(18,0) NOT NULL CHECK(nro_calle > 0),
 	piso TINYINT,
-	dept VARCHAR(50),
-	codigo_postal VARCHAR(25),
+	dept NVARCHAR(50),
+	codigo_postal NVARCHAR(255),
 	fecha_creacion DATETIME,
 	cod_usuario INT
 	)
 
 CREATE TABLE cheshire_jack.empresas (
 	cod_empresa INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	razon_social VARCHAR(255) NOT NULL,
-	CUIT CHAR(14) NOT NULL,
-	fecha_creacion DATE,
-	mail VARCHAR(255) CHECK(mail LIKE '_%@_%._%'),
-	telefono char(14),
-	ciudad VARCHAR(255),
-	domicilio_calle VARCHAR(255) NOT NULL,
-	nro_calle INT NOT NULL CHECK(nro_calle > 0),
-	piso TINYINT,
-	dept VARCHAR(50),
-	codigo_postal VARCHAR(25),
+	razon_social NVARCHAR(255) NOT NULL,
+	CUIT NVARCHAR(14) NOT NULL,
+	fecha_creacion DATETIME,
+	mail NVARCHAR(255) CHECK(mail LIKE '_%@_%._%'),
+	telefono CHAR(14),
+	ciudad NVARCHAR(255),
+	domicilio_calle NVARCHAR(50) NOT NULL,
+	nro_calle NUMERIC(18,0) NOT NULL CHECK(nro_calle > 0),
+	piso NUMERIC(18,0),
+	dept NVARCHAR(50),
+	codigo_postal NVARCHAR(50),
 	cod_usuario INT
 	)
 		
@@ -123,10 +124,11 @@ CREATE TABLE cheshire_jack.compras (
 	cod_cliente INT NOT NULL,
 	nro_factura NUMERIC(18,0),
 	fecha DATETIME NOT NULL,
-	cod_ubicacion NUMERIC(18,0) NOT NULL,
 	metodo_pago VARCHAR(255) NOT NULL,
-	cod_metodo NUMERIC(18,0) DEFAULT(NULL),
-	comision NUMERIC(18,2) NOT NULL
+	cod_metodo NUMERIC(18,0),
+	cod_publicacion NUMERIC(18,0) NOT NULL,
+	nro_ubicacion NUMERIC(18,0) NOT NULL,
+	cantidad NUMERIC(18,0) DEFAULT(1)
 	)
 
 CREATE TABLE cheshire_jack.facturas (
@@ -138,17 +140,18 @@ CREATE TABLE cheshire_jack.facturas (
 
 CREATE TABLE cheshire_jack.items (
 	nro_factura NUMERIC(18,0) NOT NULL,
-	cod_compra NUMERIC(18,0) NOT NULL,
-	descripcion VARCHAR(255),
+	nro_item INT NOT NULL,
+	monto NUMERIC(18,2),
+	descripcion NVARCHAR(60),
 	cantidad NUMERIC(18,0),
-	PRIMARY KEY(nro_factura, cod_compra)
+	PRIMARY KEY(nro_factura, nro_item),
 	)
 
 CREATE TABLE cheshire_jack.puntos (
 	anio_vencimiento INT NOT NULL,
 	cod_cliente INT NOT NULL,
 	cantidad NUMERIC(18,0) NOT NULL,
-	PRIMARY KEY(anio_vencimiento, cod_cliente) 
+	PRIMARY KEY(anio_vencimiento, cod_cliente)
 	)
 
 CREATE TABLE cheshire_jack.premios (
@@ -160,9 +163,9 @@ CREATE TABLE cheshire_jack.premios (
 	)
 
 CREATE TABLE cheshire_jack.canjes (
-	cod_usuario INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.usuarios(cod_Usuario),
+	cod_cliente INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.usuarios(cod_Usuario),
 	cod_premio INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.premios(cod_premio),
-	PRIMARY KEY(cod_usuario, cod_premio)
+	PRIMARY KEY(cod_cliente, cod_premio)
 	)
 
 CREATE TABLE cheshire_jack.tarjetas_de_credito (
@@ -195,7 +198,7 @@ ALTER TABLE cheshire_jack.publicaciones
 ADD FOREIGN KEY (cod_espectaculo) REFERENCES cheshire_jack.espectaculos(cod_espectaculo)
 
 ALTER TABLE cheshire_jack.espectaculos
-ADD FOREIGN KEY (cod_rubro) REFERENCES cheshire_jack.rubros(cod_rubro)
+ADD FOREIGN KEY (cod_empresa) REFERENCES cheshire_jack.empresas(cod_empresa)
 
 ALTER TABLE cheshire_jack.ubicaciones
 ADD FOREIGN KEY (cod_publicacion) REFERENCES cheshire_jack.publicaciones(cod_publicacion)
@@ -210,13 +213,10 @@ ALTER TABLE cheshire_jack.compras
 ADD FOREIGN KEY (cod_cliente) REFERENCES cheshire_jack.clientes(cod_cliente)
 
 ALTER TABLE cheshire_jack.compras
-ADD FOREIGN KEY (cod_ubicacion) REFERENCES cheshire_jack.ubicaciones(cod_ubicacion)
-
-ALTER TABLE cheshire_jack.compras
 ADD FOREIGN KEY (nro_factura) REFERENCES cheshire_jack.facturas(nro_factura)
 
-ALTER TABLE cheshire_jack.items
-ADD FOREIGN KEY (cod_compra) REFERENCES cheshire_jack.compras(cod_compra)
+ALTER TABLE cheshire_jack.compras
+ADD FOREIGN KEY (cod_publicacion, nro_ubicacion) REFERENCES cheshire_jack.ubicaciones(cod_publicacion, nro_ubicacion)
 
 ALTER TABLE cheshire_jack.items
 ADD FOREIGN KEY (nro_factura) REFERENCES cheshire_jack.facturas(nro_factura)
@@ -224,34 +224,64 @@ ADD FOREIGN KEY (nro_factura) REFERENCES cheshire_jack.facturas(nro_factura)
 ALTER TABLE cheshire_jack.tarjetas_de_credito
 ADD FOREIGN KEY (cod_cliente) REFERENCES cheshire_jack.clientes(cod_cliente)
 
-INSERT INTO cheshire_jack.grados
+INSERT INTO cheshire_jack.grados_de_publicacion
 (nombre, comision, peso)
-VALUES ('Baja', 0.05, 1)
-
-INSERT INTO cheshire_jack.grados
-(nombre, comision, peso)
-VALUES ('Media', 0.1, 2)
-
-INSERT INTO cheshire_jack.grados
-(nombre, comision, peso)
-VALUES ('Alta', 0.2, 3)
-
-INSERT INTO cheshire_jack.grados
-(nombre, comision, peso) 
-VALUES ('S.D.', 0.0, 0)
+VALUES ('Baja', 0.05, 1),
+('Media', 0.1, 2),
+('Alta', 0.2, 3),
+('S.D.', 0.0, 0)
 
 INSERT INTO cheshire_jack.estados
-(nombre) VALUES ('Borrador')
+(nombre) 
+VALUES ('Borrador'),
+('Publicada'),
+('Finalizada'),
+('Pausada')
 
-INSERT INTO cheshire_jack.estados
-(nombre) VALUES ('Publicada')
+INSERT INTO cheshire_jack.roles
+(descripcion, registrable)
+VALUES ('Empresa de Espectaculo', 1),
+('Cliente', 1),
+('Administrador', 0)
 
-INSERT INTO cheshire_jack.estados
-(nombre) VALUES ('Finalizada')
+INSERT INTO cheshire_jack.funcionalidades
+(descripcion)
+VALUES ('ABM Cliente'),
+('ABM Empresa de Espectaculo'),
+('ABM Grado'),
+('ABM Rol'),
+('ABM Rubro'),
+('Canje de Puntos'),
+('Comprar'),
+('Editar Publicacion'),
+('Generar Publicacion'),
+('Generar Rendicion de Compra'),
+('Historial Cliente'),
+('Listado Estadistico')
 
-INSERT INTO cheshire_jack.estados
-(nombre) VALUES ('Pausada')
+INSERT INTO cheshire_jack.RolesxFuncionalidades
+(cod_funcionalidad, cod_rol)
+VALUES (6, 2),
+(7, 2),
+(8, 1),
+(9, 1),
+(11, 2)
 
+INSERT INTO cheshire_jack.RolesxFuncionalidades
+(cod_funcionalidad, cod_rol)
+SELECT cod_funcionalidad, 3 
+FROM cheshire_jack.funcionalidades
+
+INSERT INTO cheshire_jack.usuarios
+(nombre_usuario, contrasenia)
+VALUES ('admin', HASHBYTES('SHA2_256', 'w23e'))
+
+INSERT INTO cheshire_jack.usuariosXRoles
+(cod_usuario, cod_rol)
+SELECT 1, cod_rol 
+FROM cheshire_jack.roles
+
+GO
 INSERT INTO cheshire_jack.empresas 
 (razon_social, CUIT, fecha_creacion, mail, 
 domicilio_calle, nro_calle, piso, dept, codigo_postal)
@@ -267,6 +297,61 @@ SELECT DISTINCT Cli_Nombre, Cli_Apeliido, Cli_Fecha_Nac, 'DNI', Cli_Dni,
 FROM gd_esquema.Maestra
 WHERE Cli_Nombre IS NOT NULL
 
+DECLARE @cantidadClientes INT, @usuarioActual INT, @cantidadEmpresas INT
+
+SET @cantidadClientes = (SELECT COUNT(*) FROM cheshire_jack.clientes)
+SET	@usuarioActual = 0
+
+WHILE @usuarioActual < @cantidadClientes
+BEGIN
+	INSERT INTO cheshire_jack.usuarios
+	(nombre_usuario, contrasenia, contrasenia_automatica, ingresos_restantes)
+	VALUES
+	('clienteImportado' + CAST(1 + @usuarioActual AS CHAR), 
+	HASHBYTES('SHA2_256', CAST(@usuarioActual + 1 AS CHAR)),
+	1, 1)
+
+	SET @usuarioActual += 1
+END
+
+UPDATE cheshire_jack.clientes
+SET cod_usuario = cod_cliente + 1
+WHERE cod_usuario IS NULL
+
+INSERT INTO cheshire_jack.usuariosXRoles
+(cod_rol, cod_usuario)
+SELECT 2, cod_usuario FROM cheshire_jack.clientes
+
+SET @cantidadEmpresas = (SELECT COUNT(*) FROM cheshire_jack.empresas)
+SET	@usuarioActual = 0
+
+WHILE @usuarioActual < @cantidadEmpresas
+BEGIN
+	INSERT INTO cheshire_jack.usuarios
+	(nombre_usuario, contrasenia, contrasenia_automatica, ingresos_restantes)
+	VALUES
+	('empresaImportada' + CAST(1 + @usuarioActual AS CHAR), 
+	HASHBYTES('SHA2_256', CAST(@usuarioActual + 1 AS CHAR)),
+	1, 1)
+
+	SET @usuarioActual += 1
+END
+
+UPDATE cheshire_jack.empresas
+SET cod_usuario = cod_empresa + @cantidadClientes + 1
+WHERE cod_usuario IS NULL
+
+INSERT INTO cheshire_jack.usuariosXRoles
+(cod_rol, cod_usuario)
+SELECT 1, cod_usuario FROM cheshire_jack.empresas
+
+ALTER TABLE cheshire_jack.clientes
+ADD CONSTRAINT CheckToCodUsuarioClientes CHECK(cod_usuario IS NOT NULL)
+
+ALTER TABLE cheshire_jack.empresas
+ADD CONSTRAINT CheckToCodUsuarioEmpresas CHECK(cod_usuario IS NOT NULL)
+
+GO
 INSERT INTO cheshire_jack.rubros
 (descripcion)
 SELECT DISTINCT Espectaculo_Rubro_Descripcion 
@@ -285,7 +370,7 @@ WHERE Espectaculo_Cod IS NOT NULL
 
 INSERT INTO cheshire_jack.publicaciones
 (cod_grado, cod_espectaculo, cod_estado, fecha_evento, fecha_vencimiento)
-SELECT DISTINCT (SELECT cod_grado FROM cheshire_jack.grados WHERE nombre = 'S.D.'), 
+SELECT DISTINCT (SELECT cod_grado FROM cheshire_jack.grados_de_publicacion WHERE nombre = 'S.D.'), 
 				(SELECT cod_espectaculo FROM cheshire_jack.espectaculos E WHERE M.Espectaculo_Cod = E.cod_espectaculo_viejo),
 				(SELECT cod_estado FROM cheshire_jack.estados WHERE nombre = 'Publicada'), 
 				Espectaculo_Fecha,
@@ -300,58 +385,107 @@ SELECT DISTINCT Ubicacion_Tipo_Descripcion,
 FROM gd_esquema.Maestra
 WHERE Ubicacion_Tipo_Codigo IS NOT NULL
 
-INSERT INTO cheshire_jack.ubicaciones
-(asiento, fila, sin_numerar, precio, cod_tipo, cod_publicacion)
-SELECT DISTINCT Ubicacion_Asiento, 
-				Ubicacion_Fila, 
-				Ubicacion_Sin_numerar, 
-				Ubicacion_Precio,
-				(SELECT cod_tipo FROM cheshire_jack.tipos_de_ubicacion TU WHERE TU.cod_tipo_viejo = M.Ubicacion_Tipo_Codigo),
-				(SELECT cod_publicacion FROM cheshire_jack.publicaciones P JOIN cheshire_jack.espectaculos E ON P.cod_espectaculo = E.cod_espectaculo WHERE M.espectaculo_cod = E.cod_espectaculo_viejo)
+SELECT DISTINCT (SELECT cod_publicacion FROM cheshire_jack.espectaculos E JOIN cheshire_jack.publicaciones P ON E.cod_espectaculo = P.cod_espectaculo WHERE M.Espectaculo_Cod = E.cod_espectaculo_viejo) cod_publicacion,
+		(SELECT cod_tipo FROM cheshire_jack.tipos_de_ubicacion TU WHERE TU.cod_tipo_viejo = M.Ubicacion_Tipo_Codigo) cod_tipo,
+		Ubicacion_Fila,
+		Ubicacion_Asiento,
+		Ubicacion_Sin_numerar,
+		Ubicacion_Precio,
+		1 Ubicacion_disponible,
+		Compra_Fecha, 
+		Compra_Cantidad,
+		Cli_Dni,
+		Factura_Nro,
+		Forma_Pago_Desc
+INTO #ubicacionesIntermediaSinNroUbicacion
 FROM gd_esquema.Maestra M
-WHERE Espectaculo_Cod IS NOT NULL
+WHERE Espectaculo_Cod IS NOT NULL AND Compra_Fecha IS NULL
 
-INSERT INTO cheshire_jack.roles
-(descripcion, registrable)
-VALUES
-('Cliente', 1)
+MERGE #ubicacionesIntermediaSinNroUbicacion AS target
+USING (SELECT DISTINCT (SELECT cod_publicacion FROM cheshire_jack.espectaculos E JOIN cheshire_jack.publicaciones P ON E.cod_espectaculo = P.cod_espectaculo WHERE M.Espectaculo_Cod = E.cod_espectaculo_viejo) cod_publicacion,
+		(SELECT cod_tipo FROM cheshire_jack.tipos_de_ubicacion TU WHERE TU.cod_tipo_viejo = M.Ubicacion_Tipo_Codigo) cod_tipo,
+		Ubicacion_Fila,
+		Ubicacion_Asiento,
+		Ubicacion_Sin_numerar,
+		Ubicacion_Precio,
+		0 Ubicacion_disponible,
+		Compra_Fecha, 
+		Compra_Cantidad,
+		Cli_Dni,
+		Factura_Nro,
+		Forma_Pago_Desc
+FROM gd_esquema.Maestra M
+WHERE Espectaculo_Cod IS NOT NULL AND Factura_Nro IS NOT NULL) AS source
+ON target.cod_publicacion = source.cod_publicacion AND target.Ubicacion_fila = source.Ubicacion_fila AND target.Ubicacion_asiento = source.Ubicacion_asiento
+WHEN MATCHED
+THEN UPDATE SET target.compra_fecha = source.compra_fecha, 
+				target.compra_cantidad = source.compra_cantidad, 
+				target.cli_dni = source.cli_dni,
+				target.factura_nro = source.factura_nro,
+				target.forma_pago_desc = source.forma_pago_desc,
+				target.ubicacion_disponible = 0;
 
-INSERT INTO cheshire_jack.roles
-(descripcion, registrable)
-VALUES
-('Empresa de Espectaculos', 1)
+SELECT DISTINCT cod_publicacion,
+		ROW_NUMBER() OVER(PARTITION BY cod_publicacion ORDER BY cod_publicacion) nro_ubicacion,
+		cod_tipo,
+		Ubicacion_Fila,
+		Ubicacion_Asiento,
+		Ubicacion_Sin_numerar,
+		Ubicacion_Precio,
+		Ubicacion_disponible,
+		Cli_Dni,
+		Compra_Fecha,
+		Compra_Cantidad,
+		Factura_Nro,
+		Forma_Pago_Desc
+INTO #ubicacionesIntermedia
+FROM #ubicacionesIntermediaSinNroUbicacion
 
-INSERT INTO cheshire_jack.roles
-(descripcion, registrable)
-VALUES
-('Administrador', 0)
+INSERT INTO cheshire_jack.ubicaciones
+(cod_publicacion, nro_ubicacion, cod_tipo, fila, asiento, sin_numerar, precio, disponible)
+SELECT DISTINCT cod_publicacion,
+				nro_ubicacion,
+				cod_tipo,
+				Ubicacion_Fila,
+				Ubicacion_Asiento,
+				Ubicacion_Sin_numerar,
+				Ubicacion_Precio,
+				ubicacion_disponible
+FROM #ubicacionesIntermedia
 
 INSERT INTO cheshire_jack.facturas
-(nro_factura, fecha, total, forma_pago)
-SELECT DISTINCT Factura_Nro, Factura_Fecha, Factura_Total, Forma_Pago_Desc
-FROM gd_esquema.Maestra M
-WHERE M.Factura_Nro IS NOT NULL
-
-INSERT INTO cheshire_jack.compras
-(cod_cliente, cod_ubicacion, nro_factura, fecha, metodo_pago, comision)
-SELECT DISTINCT (SELECT cod_cliente FROM cheshire_jack.clientes C WHERE M.Cli_Dni = C.nro_documento),
-				(SELECT cod_ubicacion 
-				FROM cheshire_jack.ubicaciones U JOIN 
-					cheshire_jack.publicaciones P ON U.cod_publicacion = P.cod_publicacion JOIN 
-					cheshire_jack.espectaculos E ON P.cod_espectaculo = E.cod_espectaculo 
-				WHERE M.espectaculo_cod = E.cod_espectaculo_viejo AND U.asiento = M.Ubicacion_Asiento AND U.fila = M.Ubicacion_Fila),
-				Factura_Nro,
-				Compra_Fecha,
-				'No Registrado',
-				Item_Factura_Monto
-FROM gd_esquema.Maestra M
-WHERE M.Factura_Nro IS NOT NULL
+(nro_factura, forma_pago, fecha, total)
+SELECT DISTINCT Factura_Nro, 
+				Forma_Pago_Desc, 
+				Factura_Fecha, 
+				Factura_Total
+FROM gd_esquema.Maestra
+WHERE Factura_Nro IS NOT NULL
 
 INSERT INTO cheshire_jack.items
-(cod_compra, nro_factura, descripcion, cantidad)
-SELECT cod_compra, M.Factura_Nro, Item_Factura_Descripcion, Item_Factura_Cantidad
-FROM cheshire_jack.compras C JOIN gd_esquema.Maestra M ON C.nro_factura = M.Factura_Nro
+(nro_factura, nro_item, descripcion, monto, cantidad)
+SELECT DISTINCT Factura_Nro, 
+				ROW_NUMBER() OVER(PARTITION BY Factura_nro ORDER BY Factura_nro),
+				Item_Factura_Descripcion,
+				Item_Factura_Monto,
+				Item_Factura_Cantidad
+FROM gd_esquema.Maestra
 WHERE Factura_Nro IS NOT NULL
+
+INSERT INTO cheshire_jack.compras
+(cod_cliente, fecha, metodo_pago, nro_factura, cod_publicacion, nro_ubicacion)
+SELECT DISTINCT (SELECT cod_cliente FROM cheshire_jack.clientes C WHERE UI.Cli_Dni = C.nro_documento),
+				Compra_Fecha,
+				forma_pago_desc,
+				Factura_Nro,
+				cod_publicacion,
+				nro_ubicacion
+FROM #ubicacionesIntermedia UI
+WHERE Compra_Fecha IS NOT NULL
+
+DROP TABLE #ubicacionesIntermedia
+DROP TABLE #ubicacionesIntermediaSinNroUbicacion
+--Fin importación
 
 GO
 CREATE PROCEDURE cheshire_jack.modificar_puntos 
@@ -384,7 +518,7 @@ AS
 BEGIN
 	IF (SELECT stock FROM GD2C2018.cheshire_jack.premios WHERE @cod_premio = cod_premio) > 0
 	BEGIN
-		RAISERROR('No se puede canjear algo sin stock',12, 1)
+		RAISERROR('No se puede canjear algo sin stock',16, 1)
 	END
 	
 	DECLARE @cantidad_puntos_actuales NUMERIC(18,0), @costo_premio NUMERIC(18,0)
@@ -393,12 +527,12 @@ BEGIN
 
 	IF @cantidad_puntos_actuales IS NULL OR @cantidad_puntos_actuales < @costo_premio
 	BEGIN
-		RAISERROR('El premio cuesta más que los puntos disponibles', 12, 1)
+		RAISERROR('El premio cuesta más que los puntos disponibles', 16, 1)
 	END
 
 	BEGIN TRANSACTION
 		INSERT INTO GD2C2018.cheshire_jack.canjes
-		(cod_premio, cod_usuario)
+		(cod_premio, cod_cliente)
 		VALUES
 		(@cod_premio, @cod_cliente)
 
