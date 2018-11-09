@@ -13,6 +13,9 @@ namespace PalcoNet.Registro_de_Usuario
 {
     public partial class SignUp : Form
     {
+        private static SqlCommand getRoles = new SqlCommand("SELECT cod_rol, descripcion FROM cheshire_jack.roles WHERE habilitado = 1 AND registrable = 1", Program.DBconn);
+        private Usuario nuevo;
+
         public SignUp()
         {
             InitializeComponent();
@@ -25,10 +28,10 @@ namespace PalcoNet.Registro_de_Usuario
 
         private void fillRoleBox()
         {
-            SqlCommand getRoles = new SqlCommand("SELECT cod_rol, descripcion FROM cheshire_jack.roles WHERE habilitado = 1 AND registrable = 1", Program.DBconn);
             SqlDataReader roles = getRoles.ExecuteReader();
             while (roles.Read())
                 RoleBox.Items.Add(roles[1]);
+            roles.Close();
         }
 
         private void ClearButton_Click(object sender, EventArgs e)
@@ -46,6 +49,26 @@ namespace PalcoNet.Registro_de_Usuario
         {
             DataCompletedBox.Enabled = true;
             CompleteDataButton.Enabled = true;
+        }
+
+        private void CompleteDataButton_Click(object sender, EventArgs e)
+        {
+            if (RoleBox.Text == "Empresa")
+            {
+                PalcoNet.Abm_Empresa_Espectaculo.CreateCompany registroDeDatos = new PalcoNet.Abm_Empresa_Espectaculo.CreateCompany();
+                registroDeDatos.registroDeUsuario = true;
+                this.Enabled = false;
+                registroDeDatos.ShowDialog();
+                this.Enabled = true;
+            }
+            else if (RoleBox.Text == "Cliente")
+            {
+                PalcoNet.Abm_Cliente.CreateClient registroDeDatos = new PalcoNet.Abm_Cliente.CreateClient();
+                registroDeDatos.registroDeUsuario = true;
+                this.Enabled = false;
+                registroDeDatos.ShowDialog();
+                this.Enabled = true;
+            }
         }
     }
 }

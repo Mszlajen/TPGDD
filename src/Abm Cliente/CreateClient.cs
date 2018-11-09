@@ -12,29 +12,47 @@ namespace PalcoNet.Abm_Cliente
 {
     public partial class CreateClient : Form
     {
+        public bool registroDeUsuario = false;
+        public bool edicion = false;
+        public Cliente cliente;
+
         public CreateClient()
         {
             InitializeComponent();
         }
 
-        private void label12_Click(object sender, EventArgs e)
+        private void ClearButton_Click(object sender, EventArgs e)
         {
-
+            SurnameBox.Text = "";
+            FirstNameBox.Text = "";
+            DocumentTypeBox.Text = "";
+            DocumentNroBox.Text = "";
+            BirthDatePicker.Value = Settings1.Default.CurrentDate;
+            CreationDatePicker.Value = Settings1.Default.CurrentDate;
+            CUILBox.Text = "";
+            MailBox.Text = "";
+            PhoneBox.Text = "";
+            AddressBox.Text = "";
+            AddressNroBox.Text = "";
+            FloorBox.Text = "";
+            DeptBox.Text = "";
+            LocalityBox.Text = "";
+            PostalCodeBox.Text = "";
         }
 
-        private void label13_Click(object sender, EventArgs e)
+        private void SaveButton_Click(object sender, EventArgs e)
         {
+            if (!edicion)
+            {
+                cliente = new Cliente(FirstNameBox.Text, SurnameBox.Text, DocumentTypeBox.Text,
+                                      DocumentNroBox.Text, CUILBox.Text, MailBox.Text, PhoneBox.Text,
+                                      AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text,
+                                      LocalityBox.Text, PostalCodeBox.Text, BirthDatePicker.Value,
+                                      CreationDatePicker.Value);
 
+            }
         }
 
-        private void label5_Click(object sender, EventArgs e)
-        {
 
-        }
-
-        private void label14_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

@@ -31,7 +31,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.SurnameBox = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.FirstNameBox = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.DocumentTypeBox = new System.Windows.Forms.ComboBox();
             this.DocumentNroBox = new System.Windows.Forms.TextBox();
@@ -89,12 +89,12 @@
             this.label7.TabIndex = 2;
             this.label7.Text = "Nombre";
             // 
-            // textBox3
+            // FirstNameBox
             // 
-            this.textBox3.Location = new System.Drawing.Point(16, 70);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(164, 20);
-            this.textBox3.TabIndex = 3;
+            this.FirstNameBox.Location = new System.Drawing.Point(16, 70);
+            this.FirstNameBox.Name = "FirstNameBox";
+            this.FirstNameBox.Size = new System.Drawing.Size(164, 20);
+            this.FirstNameBox.TabIndex = 3;
             // 
             // label8
             // 
@@ -251,7 +251,6 @@
             this.label5.Size = new System.Drawing.Size(36, 13);
             this.label5.TabIndex = 21;
             this.label5.Text = "Depto";
-            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // FloorBox
             // 
@@ -277,7 +276,6 @@
             this.label12.Size = new System.Drawing.Size(53, 13);
             this.label12.TabIndex = 22;
             this.label12.Text = "Localidad";
-            this.label12.Click += new System.EventHandler(this.label12_Click);
             // 
             // LocalityBox
             // 
@@ -294,7 +292,6 @@
             this.label13.Size = new System.Drawing.Size(72, 13);
             this.label13.TabIndex = 24;
             this.label13.Text = "Codigo Postal";
-            this.label13.Click += new System.EventHandler(this.label13_Click);
             // 
             // PostalCodeBox
             // 
@@ -311,6 +308,7 @@
             this.ClearButton.TabIndex = 26;
             this.ClearButton.Text = "Limpiar";
             this.ClearButton.UseVisualStyleBackColor = true;
+            this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
             // EnableBox
             // 
@@ -331,7 +329,6 @@
             this.label14.Size = new System.Drawing.Size(97, 13);
             this.label14.TabIndex = 9;
             this.label14.Text = "Fecha de Creacion";
-            this.label14.Click += new System.EventHandler(this.label14_Click);
             // 
             // CreationDatePicker
             // 
@@ -348,6 +345,7 @@
             this.SaveButton.TabIndex = 26;
             this.SaveButton.Text = "Guardar";
             this.SaveButton.UseVisualStyleBackColor = true;
+            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
             // CreateClient
             // 
@@ -382,7 +380,7 @@
             this.Controls.Add(this.DocumentNroBox);
             this.Controls.Add(this.DocumentTypeBox);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.textBox3);
+            this.Controls.Add(this.FirstNameBox);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.SurnameBox);
             this.Controls.Add(this.label1);
@@ -399,7 +397,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox SurnameBox;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox FirstNameBox;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox DocumentTypeBox;
         private System.Windows.Forms.TextBox DocumentNroBox;

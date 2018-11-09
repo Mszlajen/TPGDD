@@ -118,6 +118,7 @@
     <Compile Include="Canje Puntos\PointExchange.Designer.cs">
       <DependentUpon>PointExchange.cs</DependentUpon>
     </Compile>
+    <Compile Include="Cliente.cs" />
     <Compile Include="Comprar\Buy.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -204,6 +205,13 @@
     <Compile Include="RolSelection.Designer.cs">
       <DependentUpon>RolSelection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Settings1.cs" />
+    <Compile Include="Settings1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings1.settings</DependentUpon>
+    </Compile>
+    <Compile Include="usuario.cs" />
     <EmbeddedResource Include="Abm Cliente\CreateClient.resx">
       <DependentUpon>CreateClient.cs</DependentUpon>
     </EmbeddedResource>
@@ -292,6 +300,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Settings1.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

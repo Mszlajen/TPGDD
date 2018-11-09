@@ -12,6 +12,8 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
 {
     public partial class CreateCompany : Form
     {
+        public bool registroDeUsuario = false;
+
         public CreateCompany()
         {
             InitializeComponent();

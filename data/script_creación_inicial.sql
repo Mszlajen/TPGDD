@@ -6,12 +6,12 @@ GO
 
 CREATE TABLE cheshire_jack.usuarios (
 	cod_usuario INT PRIMARY KEY IDENTITY(1,1) NOT NULL, 
-	nombre_usuario VARCHAR(50) NOT NULL,
+	nombre_usuario VARCHAR(50) NOT NULL UNIQUE,
 	contrasenia CHAR(256) NOT NULL,
 	habilitado BIT NOT NULL DEFAULT(1),
 	ingresos_restantes TINYINT NOT NULL DEFAULT(3),
-	tipo varchar(255) DEFAULT(NULL),
-	contrasenia_automatica BIT NOT NULL DEFAULT(1)
+	contrasenia_automatica BIT NOT NULL DEFAULT(1),
+	contrasenia_valida BIT NOT NULL DEFAULT (1)
 	)
 
 CREATE TABLE cheshire_jack.roles (
@@ -273,8 +273,8 @@ SELECT cod_funcionalidad, 3
 FROM cheshire_jack.funcionalidades
 
 INSERT INTO cheshire_jack.usuarios
-(nombre_usuario, contrasenia)
-VALUES ('admin', HASHBYTES('SHA2_256', 'w23e'))
+(nombre_usuario, contrasenia, contrasenia_automatica)
+VALUES ('admin', '23018411280191203129672521842191112164220158208131447722162427420917723222015220155231', 0)
 
 INSERT INTO cheshire_jack.usuariosXRoles
 (cod_usuario, cod_rol)
@@ -305,11 +305,10 @@ SET	@usuarioActual = 0
 WHILE @usuarioActual < @cantidadClientes
 BEGIN
 	INSERT INTO cheshire_jack.usuarios
-	(nombre_usuario, contrasenia, contrasenia_automatica, ingresos_restantes)
+	(nombre_usuario, contrasenia)
 	VALUES
-	('clienteImportado' + CAST(1 + @usuarioActual AS CHAR), 
-	HASHBYTES('SHA2_256', CAST(@usuarioActual + 1 AS CHAR)),
-	1, 1)
+	('clienteImportado' + CAST(1 + @usuarioActual AS VARCHAR), 
+	'596862374011182110423175134179201677017974934059176207194179572531874953111238')
 
 	SET @usuarioActual += 1
 END
@@ -328,11 +327,10 @@ SET	@usuarioActual = 0
 WHILE @usuarioActual < @cantidadEmpresas
 BEGIN
 	INSERT INTO cheshire_jack.usuarios
-	(nombre_usuario, contrasenia, contrasenia_automatica, ingresos_restantes)
+	(nombre_usuario, contrasenia)
 	VALUES
 	('empresaImportada' + CAST(1 + @usuarioActual AS CHAR), 
-	HASHBYTES('SHA2_256', CAST(@usuarioActual + 1 AS CHAR)),
-	1, 1)
+	'596862374011182110423175134179201677017974934059176207194179572531874953111238')
 
 	SET @usuarioActual += 1
 END
@@ -543,4 +541,66 @@ BEGIN
 		SET @costo_premio *= -1
 		EXEC GD2C2018.cheshire_jack.modificar_puntos @cod_cliente, @costo_premio, @fecha_actual
 	COMMIT TRANSACTION
+END
+
+GO
+CREATE PROCEDURE cheshire_jack.crearCliente
+(@nombre NVARCHAR(255), @apellido NVARCHAR(255), @tipoDocumento NVARCHAR(255), @nroDocumento NUMERIC(18,0), 
+@CUIL NVARCHAR(255), @telefono NVARCHAR(255), @domicilio NVARCHAR(255), @nroCalle NUMERIC(18,0), @piso NUMERIC(18,0),
+@dept NVARCHAR(255), @localidad NVARCHAR(255), @codPostal NVARCHAR(255), @fechaCreacion DATETIME, @fechaNacimiento DATETIME, 
+@codUsuario INT, @codCliente INT OUT)
+AS BEGIN
+	INSERT INTO cheshire_jack.clientes
+	(nombre, apellido, telefono, CUIL, tipo_documento, nro_documento, domicilio_calle, 
+	nro_calle, piso, dept, localidad, codigo_postal, fecha_creacion, fecha_nacimiento, cod_usuario)
+	VALUES (@nombre, @apellido, @telefono, @CUIL, @tipoDocumento, @nroDocumento, @domicilio, @nroCalle,
+			@piso, @dept, @localidad, @codPostal, @fechaCreacion, @fechaNacimiento, @codUsuario)
+
+	SET @codCliente = SCOPE_IDENTITY()
+END
+
+GO
+/*
+Valores de retorno:
+0 - Usuario no existente
+1 - Contraseña invalida
+2 - Usuario deshabilitado
+3 - Usuario bloqueado por intentos fallidos
+4 - Contraseña automatica gastada
+5 - Datos correctos
+6 - Contraseña de un uso
+*/
+CREATE PROCEDURE cheshire_jack.iniciarSesion
+(@usuario VARCHAR(50), @contrasenia CHAR(256), @codUsuario INT OUT)
+AS BEGIN
+	IF(NOT EXISTS (SELECT 1 FROM cheshire_jack.usuarios WHERE @usuario = nombre_usuario))
+		RETURN 0
+	ELSE
+	BEGIN
+		DECLARE @automatica BIT, @intentos TINYINT, @habilitado BIT, @valida BIT
+		
+		SELECT @codUsuario = cod_usuario, @automatica = contrasenia_automatica, @intentos = ingresos_restantes, @habilitado = habilitado, @valida = contrasenia_valida
+		FROM cheshire_jack.usuarios WHERE @usuario = nombre_usuario
+
+		IF(@intentos = 0)
+			RETURN 3
+		ELSE IF(@habilitado = 0)
+			RETURN 2
+		ELSE IF(NOT EXISTS(SELECT 1 FROM cheshire_jack.usuarios WHERE cod_usuario = @codUsuario AND @contrasenia = contrasenia))
+		BEGIN
+			UPDATE cheshire_jack.usuarios
+			SET ingresos_restantes -= 1
+			WHERE cod_usuario = @codUsuario
+			RETURN 1
+		END
+		ELSE IF(@valida = 0)
+			RETURN 4
+		ELSE
+		BEGIN
+			IF(@automatica = 1 AND @valida = 1)
+				UPDATE cheshire_jack.usuarios SET contrasenia_valida = 0 WHERE cod_usuario = @codUsuario
+			UPDATE cheshire_jack.usuarios SET ingresos_restantes = 3 WHERE cod_usuario = @codUsuario
+			RETURN 5 + @automatica
+		END
+	END
 END

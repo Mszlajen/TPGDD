@@ -113,6 +113,7 @@
             this.CompleteDataButton.TabIndex = 7;
             this.CompleteDataButton.Text = "Completar datos";
             this.CompleteDataButton.UseVisualStyleBackColor = true;
+            this.CompleteDataButton.Click += new System.EventHandler(this.CompleteDataButton_Click);
             // 
             // SignUpButton
             // 
