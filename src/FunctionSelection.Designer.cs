@@ -60,6 +60,7 @@
             this.AcceptButton.TabIndex = 2;
             this.AcceptButton.Text = "Ir";
             this.AcceptButton.UseVisualStyleBackColor = true;
+            this.AcceptButton.Click += new System.EventHandler(this.AcceptButton_Click);
             // 
             // LogoutButton
             // 
@@ -69,6 +70,7 @@
             this.LogoutButton.TabIndex = 3;
             this.LogoutButton.Text = "Cerrar Sesion";
             this.LogoutButton.UseVisualStyleBackColor = true;
+            this.LogoutButton.Click += new System.EventHandler(this.LogoutButton_Click);
             // 
             // FunctionSelection
             // 
@@ -81,6 +83,8 @@
             this.Controls.Add(this.FunctionsBox);
             this.Name = "FunctionSelection";
             this.Text = "Seleccionar funcionalidad";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FunctionSelection_FormClosing);
+            this.Load += new System.EventHandler(this.FunctionSelection_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -19,16 +19,6 @@ namespace PalcoNet
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void SignUpButton_Click(object sender, EventArgs e)
         {
             this.Hide();
@@ -49,7 +39,7 @@ namespace PalcoNet
                 {
                     sp_login.CommandType = CommandType.StoredProcedure;
                     sp_login.Parameters.Add(new SqlParameter("@usuario", UsernameText.Text));
-                    sp_login.Parameters.Add(new SqlParameter("@contrasenia", sha256(PasswordText.Text)));
+                    sp_login.Parameters.Add(new SqlParameter("@contrasenia", Program.sha256(PasswordText.Text)));
                     SqlParameter parCodUsuario = new SqlParameter("@codUsuario", DbType.Int32);
                     parCodUsuario.Direction = ParameterDirection.Output;
                     sp_login.Parameters.Add(parCodUsuario);
@@ -76,30 +66,44 @@ namespace PalcoNet
                         case 4:
                             MessageBox.Show("La contraseña automatica ya no tiene validez");
                             break;
-                        case 5:
-                            MessageBox.Show("Se inicio sesion correctamente. Usuario:" + parCodUsuario.Value.ToString());
-                            break;
                         case 6:
-                            MessageBox.Show("Hay que cambiar la contraseña");
+                            this.Enabled = false;
+                            new changePassword((int)parCodUsuario.Value).ShowDialog();
+                            goto case 5;
+                        case 5:
+                            this.Enabled = false;
+                            this.Hide();
+                            string queryString = "cheshire_jack.usuarioTieneMultiplesRoles";
+                            SqlCommand cmd = new SqlCommand(queryString, Program.DBconn);
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.Add(new SqlParameter("@codUsuario", (int) parCodUsuario.Value));
+                            SqlParameter ret = new SqlParameter("@ret", DbType.Int32);
+                            ret.Direction = ParameterDirection.ReturnValue;
+                            cmd.Parameters.Add(ret);
+
+                            cmd.ExecuteNonQuery();
+
+                            Form nextWindow;
+                            if ((int)ret.Value == 0)
+                                nextWindow = new RolSelection((int)parCodUsuario.Value);
+                            else
+                                nextWindow = new FunctionSelection((int)parCodUsuario.Value, (int)ret.Value);
+
+                            nextWindow.ShowDialog();
+                            cmd.Dispose();
+                            this.Enabled = true;
+                            PasswordText.Text = "";
+                            this.Show();
+                            nextWindow.Dispose();
                             break;
                     }
-
                 }
-
             }
         }
 
-        static string sha256(string randomString)
+        private void ShowPasswordBox_CheckStateChanged(object sender, EventArgs e)
         {
-            var crypt = new System.Security.Cryptography.SHA256Managed();
-            var hash = new System.Text.StringBuilder();
-            byte[] crypto = crypt.ComputeHash(Encoding.ASCII.GetBytes(randomString));
-            foreach (byte theByte in crypto)
-            {
-                if(theByte != 0)
-                    hash.Append(theByte.ToString());
-            }
-            return hash.ToString();
+            PasswordText.PasswordChar = ShowPasswordBox.Checked ? '\0' : '*';
         }
     }
 }

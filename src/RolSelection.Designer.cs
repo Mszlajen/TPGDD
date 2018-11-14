@@ -60,6 +60,7 @@
             this.AcceptButton.TabIndex = 2;
             this.AcceptButton.Text = "Ingresar";
             this.AcceptButton.UseVisualStyleBackColor = true;
+            this.AcceptButton.Click += new System.EventHandler(this.AcceptButton_Click);
             // 
             // LogoutButton
             // 
@@ -69,6 +70,7 @@
             this.LogoutButton.TabIndex = 4;
             this.LogoutButton.Text = "Cerrar Sesion";
             this.LogoutButton.UseVisualStyleBackColor = true;
+            this.LogoutButton.Click += new System.EventHandler(this.LogoutButton_Click);
             // 
             // RolSelection
             // 
@@ -81,6 +83,8 @@
             this.Controls.Add(this.label1);
             this.Name = "RolSelection";
             this.Text = "Seleccionar Rol";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.RolSelection_FormClosing);
+            this.Load += new System.EventHandler(this.RolSelection_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

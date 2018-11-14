@@ -274,7 +274,7 @@ FROM cheshire_jack.funcionalidades
 
 INSERT INTO cheshire_jack.usuarios
 (nombre_usuario, contrasenia, contrasenia_automatica)
-VALUES ('admin', '23018411280191203129672521842191112164220158208131447722162427420917723222015220155231', 0)
+VALUES ('admin', '23018411280191203129672521842191112164220158208131447722162427420917723222015220155231', 0) --Contraseña = w23e
 
 INSERT INTO cheshire_jack.usuariosXRoles
 (cod_usuario, cod_rol)
@@ -308,7 +308,7 @@ BEGIN
 	(nombre_usuario, contrasenia)
 	VALUES
 	('clienteImportado' + CAST(1 + @usuarioActual AS VARCHAR), 
-	'596862374011182110423175134179201677017974934059176207194179572531874953111238')
+	'11624521121523816939179904617228122184620123111562376622015684238184188222159156176') --Contraseña = importado
 
 	SET @usuarioActual += 1
 END
@@ -603,4 +603,27 @@ AS BEGIN
 			RETURN 5 + @automatica
 		END
 	END
+END
+
+GO
+CREATE PROCEDURE cheshire_jack.cambiarContrasenia
+(@codUsuario INT, @nuevaContrasenia CHAR(256))
+AS BEGIN
+	UPDATE cheshire_jack.usuarios
+	SET contrasenia = @nuevaContrasenia, contrasenia_automatica = 0, contrasenia_valida = 1
+	WHERE cod_usuario = @codUsuario
+END
+
+GO
+CREATE FUNCTION cheshire_jack.usuarioTieneMultiplesRoles
+(@codUsuario INT)
+RETURNS INT
+AS BEGIN
+	DECLARE @resultado INT
+	IF((SELECT TOP 2 COUNT(cod_rol) FROM cheshire_jack.usuariosXRoles WHERE cod_usuario = @codUsuario) > 1)
+		SET @resultado = 0
+	ELSE
+		SELECT @resultado = cod_rol FROM cheshire_jack.usuariosXRoles WHERE cod_usuario = @codUsuario
+
+	RETURN @resultado
 END

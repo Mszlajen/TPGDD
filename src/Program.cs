@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
-using System.Security.Cryptography;
 
 namespace PalcoNet
 {
@@ -24,6 +23,23 @@ namespace PalcoNet
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new Login());
             }
+        }
+        public static string sha256(string randomString)
+        {
+            var crypt = new System.Security.Cryptography.SHA256Managed();
+            var hash = new System.Text.StringBuilder();
+            byte[] crypto = crypt.ComputeHash(System.Text.Encoding.ASCII.GetBytes(randomString));
+            foreach (byte theByte in crypto)
+            {
+                if (theByte != 0)
+                    hash.Append(theByte.ToString());
+            }
+            return hash.ToString();
+        }
+        public static void closeProgram()
+        {
+            DBconn.Close();
+            Environment.Exit(0);
         }
     }
 
