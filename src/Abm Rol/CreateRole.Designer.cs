@@ -35,6 +35,7 @@
             this.AcceptButton = new System.Windows.Forms.Button();
             this.CancelButton = new System.Windows.Forms.Button();
             this.availabilityCheck = new System.Windows.Forms.CheckBox();
+            this.SignUpCheck = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -61,7 +62,6 @@
             this.label2.Size = new System.Drawing.Size(84, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "Funcionalidades";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // FunctionsList
             // 
@@ -79,6 +79,7 @@
             this.AcceptButton.TabIndex = 4;
             this.AcceptButton.Text = "Crear";
             this.AcceptButton.UseVisualStyleBackColor = true;
+            this.AcceptButton.Click += new System.EventHandler(this.AcceptButton_Click);
             // 
             // CancelButton
             // 
@@ -88,23 +89,37 @@
             this.CancelButton.TabIndex = 5;
             this.CancelButton.Text = "Cancelar";
             this.CancelButton.UseVisualStyleBackColor = true;
+            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // availabilityCheck
             // 
             this.availabilityCheck.AutoSize = true;
-            this.availabilityCheck.Location = new System.Drawing.Point(16, 209);
+            this.availabilityCheck.Checked = true;
+            this.availabilityCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.availabilityCheck.Location = new System.Drawing.Point(180, 209);
             this.availabilityCheck.Name = "availabilityCheck";
-            this.availabilityCheck.Size = new System.Drawing.Size(100, 17);
+            this.availabilityCheck.Size = new System.Drawing.Size(92, 17);
             this.availabilityCheck.TabIndex = 10;
-            this.availabilityCheck.Text = "Deshabilitar Rol";
+            this.availabilityCheck.Text = "Rol Habilitado";
             this.availabilityCheck.UseVisualStyleBackColor = true;
             this.availabilityCheck.Visible = false;
+            // 
+            // SignUpCheck
+            // 
+            this.SignUpCheck.AutoSize = true;
+            this.SignUpCheck.Location = new System.Drawing.Point(16, 209);
+            this.SignUpCheck.Name = "SignUpCheck";
+            this.SignUpCheck.Size = new System.Drawing.Size(79, 17);
+            this.SignUpCheck.TabIndex = 11;
+            this.SignUpCheck.Text = "Registrable";
+            this.SignUpCheck.UseVisualStyleBackColor = true;
             // 
             // CreateRole
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 295);
+            this.Controls.Add(this.SignUpCheck);
             this.Controls.Add(this.availabilityCheck);
             this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.AcceptButton);
@@ -114,6 +129,8 @@
             this.Controls.Add(this.label1);
             this.Name = "CreateRole";
             this.Text = "Crear Rol";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CreateRole_FormClosing);
+            this.Load += new System.EventHandler(this.CreateRole_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -128,5 +145,6 @@
         private System.Windows.Forms.Button AcceptButton;
         private System.Windows.Forms.Button CancelButton;
         private System.Windows.Forms.CheckBox availabilityCheck;
+        private System.Windows.Forms.CheckBox SignUpCheck;
     }
 }

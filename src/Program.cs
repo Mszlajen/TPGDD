@@ -22,6 +22,7 @@ namespace PalcoNet
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new Login());
+                DBconn.Close();
             }
         }
         public static string sha256(string randomString)
@@ -36,10 +37,20 @@ namespace PalcoNet
             }
             return hash.ToString();
         }
+        
         public static void closeProgram()
         {
             DBconn.Close();
             Environment.Exit(0);
+        }
+
+        public static DialogResult openNextWindow(Form self, Form next)
+        {
+            self.Hide();
+            DialogResult ret = next.ShowDialog();
+            next.Dispose();
+            self.Show();
+            return ret;
         }
     }
 

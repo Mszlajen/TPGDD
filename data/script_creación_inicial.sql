@@ -278,8 +278,7 @@ VALUES ('admin', '23018411280191203129672521842191112164220158208131447722162427
 
 INSERT INTO cheshire_jack.usuariosXRoles
 (cod_usuario, cod_rol)
-SELECT 1, cod_rol 
-FROM cheshire_jack.roles
+VALUES (1, 3)
 
 GO
 INSERT INTO cheshire_jack.empresas 
@@ -615,6 +614,12 @@ AS BEGIN
 END
 
 GO
+/*
+	Returns:
+	0 - Tiene más de un rol
+	> 0 - Solo tiene un rol y corresponde al #
+	NULL - Si no tiene rol asignado
+*/
 CREATE FUNCTION cheshire_jack.usuarioTieneMultiplesRoles
 (@codUsuario INT)
 RETURNS INT
@@ -626,4 +631,47 @@ AS BEGIN
 		SELECT @resultado = cod_rol FROM cheshire_jack.usuariosXRoles WHERE cod_usuario = @codUsuario
 
 	RETURN @resultado
+END
+
+GO --Retorna el codigo del nuevo rol
+CREATE PROCEDURE cheshire_jack.CrearRol (@descripcion VARCHAR(255), @habilitado BIT, @registrable BIT)
+AS BEGIN
+	INSERT INTO cheshire_jack.roles
+	(descripcion, habilitado, registrable)
+	VALUES (@descripcion, @habilitado, @registrable)
+
+	RETURN SCOPE_IDENTITY()
+END
+
+GO --Funcion auxiliar para UpdateRolesXFuncionalidades
+CREATE FUNCTION cheshire_jack.SplitList (@list VARCHAR(MAX), @separator CHAR = ' ')
+RETURNS @table TABLE (Value VARCHAR(MAX))
+AS BEGIN
+  DECLARE @position INT, @previous INT
+  SET @list = @list + @separator
+  SET @previous = 1
+  SET @position = CHARINDEX(@separator, @list)
+  WHILE @position > 0 
+  BEGIN
+    IF @position - @previous > 0
+      INSERT INTO @table VALUES (SUBSTRING(@list, @previous, @position - @previous))
+    IF @position >= LEN(@list) BREAK
+      SET @previous = @position + 1
+      SET @position = CHARINDEX(@separator, @list, @previous)
+  END
+  RETURN
+END
+
+GO
+CREATE PROCEDURE cheshire_jack.UpdateRolesXFuncionalidades
+(@cod_rol INT, @funcionalidades VARCHAR(MAX))
+AS BEGIN
+	
+	MERGE cheshire_jack.RolesXFuncionalidades AS tg
+	USING cheshire_jack.SplitList(@funcionalidades, ' ') AS src
+	ON cod_rol = @cod_rol AND cod_funcionalidad = CAST(src.Value AS INT)
+	WHEN NOT MATCHED BY TARGET THEN
+		INSERT (cod_rol, cod_funcionalidad) VALUES (@cod_rol, src.Value)
+	WHEN NOT MATCHED BY SOURCE AND cod_rol = @cod_rol  THEN
+		DELETE;
 END

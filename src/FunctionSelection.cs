@@ -24,7 +24,10 @@ namespace PalcoNet
 
         private void AcceptButton_Click(object sender, EventArgs e)
         {
-
+            if (FunctionsBox.SelectedIndex != -1)
+            {
+                Program.openNextWindow(this, this.createWindow((string)FunctionsBox.SelectedItem));
+            }
         }
 
         private void FunctionSelection_FormClosing(object sender, FormClosingEventArgs e)
@@ -52,6 +55,20 @@ namespace PalcoNet
                 {
                     FunctionsBox.Items.Add(row["descripcion"]);
                 }
+            }
+        }
+
+        private Form createWindow(string functionName)
+        {
+            switch (functionName)
+            {
+                case "ABM Rubro":
+                    return new Abm_Rubro.Form1();
+                case "ABM Rol":
+                    return new Abm_Rol.ABMRol(); 
+                default:
+                    return new Form();
+
             }
         }
     }

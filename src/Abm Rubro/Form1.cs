@@ -16,5 +16,12 @@ namespace PalcoNet.Abm_Rubro
         {
             InitializeComponent();
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            this.Hide();
+            MessageBox.Show("Esta funcionalidad no se encuentra implementada.");
+            this.DialogResult = DialogResult.OK;
+        }
     }
 }

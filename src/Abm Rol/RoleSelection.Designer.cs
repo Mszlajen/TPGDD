@@ -29,11 +29,9 @@
         private void InitializeComponent()
         {
             this.label1 = new System.Windows.Forms.Label();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Habilitado = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Editar = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.SelectionGrid = new System.Windows.Forms.DataGridView();
+            this.Editar = new System.Windows.Forms.DataGridViewButtonColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.SelectionGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -45,48 +43,41 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Roles disponibles";
             // 
-            // dataGridView1
+            // SelectionGrid
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Nombre,
-            this.Habilitado,
+            this.SelectionGrid.AllowUserToAddRows = false;
+            this.SelectionGrid.AllowUserToDeleteRows = false;
+            this.SelectionGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.SelectionGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Editar});
-            this.dataGridView1.Location = new System.Drawing.Point(16, 30);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(410, 150);
-            this.dataGridView1.TabIndex = 1;
-            // 
-            // Nombre
-            // 
-            this.Nombre.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Nombre.HeaderText = "Nombre";
-            this.Nombre.Name = "Nombre";
-            this.Nombre.ReadOnly = true;
-            this.Nombre.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Nombre.Width = 50;
-            // 
-            // Habilitado
-            // 
-            this.Habilitado.HeaderText = "Habilitado";
-            this.Habilitado.Name = "Habilitado";
-            this.Habilitado.ReadOnly = true;
+            this.SelectionGrid.Location = new System.Drawing.Point(16, 30);
+            this.SelectionGrid.Name = "SelectionGrid";
+            this.SelectionGrid.ReadOnly = true;
+            this.SelectionGrid.Size = new System.Drawing.Size(410, 150);
+            this.SelectionGrid.TabIndex = 1;
+            this.SelectionGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SelectionGrid_CellContentClick);
             // 
             // Editar
             // 
+            this.Editar.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.Editar.HeaderText = "Editar";
             this.Editar.Name = "Editar";
+            this.Editar.ReadOnly = true;
+            this.Editar.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Editar.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.Editar.Width = 59;
             // 
             // RoleSelection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(438, 198);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.SelectionGrid);
             this.Controls.Add(this.label1);
             this.Name = "RoleSelection";
             this.Text = "RoleSelection";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.Load += new System.EventHandler(this.RoleSelection_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.SelectionGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -95,9 +86,7 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Nombre;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Habilitado;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Editar;
+        private System.Windows.Forms.DataGridView SelectionGrid;
+        private System.Windows.Forms.DataGridViewButtonColumn Editar;
     }
 }

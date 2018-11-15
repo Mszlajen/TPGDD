@@ -42,6 +42,7 @@
             this.CreateButton.TabIndex = 0;
             this.CreateButton.Text = "Crear Rol";
             this.CreateButton.UseVisualStyleBackColor = true;
+            this.CreateButton.Click += new System.EventHandler(this.CreateButton_Click);
             // 
             // EditButton
             // 
@@ -51,6 +52,7 @@
             this.EditButton.TabIndex = 1;
             this.EditButton.Text = "Modificar Rol";
             this.EditButton.UseVisualStyleBackColor = true;
+            this.EditButton.Click += new System.EventHandler(this.EditButton_Click);
             // 
             // CancelButton
             // 
@@ -60,6 +62,7 @@
             this.CancelButton.TabIndex = 3;
             this.CancelButton.Text = "Cancelar";
             this.CancelButton.UseVisualStyleBackColor = true;
+            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // label1
             // 

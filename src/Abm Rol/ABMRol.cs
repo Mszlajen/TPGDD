@@ -16,5 +16,20 @@ namespace PalcoNet.Abm_Rol
         {
             InitializeComponent();
         }
+
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+        }
+
+        private void CreateButton_Click(object sender, EventArgs e)
+        {
+            Program.openNextWindow(this, new Abm_Rol.CreateRole());
+        }
+
+        private void EditButton_Click(object sender, EventArgs e)
+        {
+            Program.openNextWindow(this, new Abm_Rol.RoleSelection());
+        }
     }
 }

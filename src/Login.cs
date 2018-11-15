@@ -29,9 +29,9 @@ namespace PalcoNet
         private void LoginButton_Click(object sender, EventArgs e)
         {
             Boolean fieldsEmpty = false;
-            if (fieldsEmpty = String.IsNullOrEmpty(UsernameText.Text))
+            if (fieldsEmpty = String.IsNullOrWhiteSpace(UsernameText.Text))
                 MessageBox.Show("El campo usuario no puede estar vacio");
-            if (fieldsEmpty = String.IsNullOrEmpty(PasswordText.Text))
+            if (fieldsEmpty = String.IsNullOrWhiteSpace(PasswordText.Text))
                 MessageBox.Show("El campo contraseña no puede estar vacio");
             if (!fieldsEmpty)
             {
@@ -71,8 +71,6 @@ namespace PalcoNet
                             new changePassword((int)parCodUsuario.Value).ShowDialog();
                             goto case 5;
                         case 5:
-                            this.Enabled = false;
-                            this.Hide();
                             string queryString = "cheshire_jack.usuarioTieneMultiplesRoles";
                             SqlCommand cmd = new SqlCommand(queryString, Program.DBconn);
                             cmd.CommandType = CommandType.StoredProcedure;
@@ -83,18 +81,15 @@ namespace PalcoNet
 
                             cmd.ExecuteNonQuery();
 
-                            Form nextWindow;
-                            if ((int)ret.Value == 0)
-                                nextWindow = new RolSelection((int)parCodUsuario.Value);
+                            if (ret.Value == DBNull.Value)
+                                MessageBox.Show("Su usuario no tiene ningun rol asignado.");
+                            else if ((int)ret.Value == 0)
+                                Program.openNextWindow(this, new RolSelection((int)parCodUsuario.Value));
                             else
-                                nextWindow = new FunctionSelection((int)parCodUsuario.Value, (int)ret.Value);
+                                Program.openNextWindow(this, new FunctionSelection((int)parCodUsuario.Value, (int)ret.Value));
 
-                            nextWindow.ShowDialog();
                             cmd.Dispose();
-                            this.Enabled = true;
                             PasswordText.Text = "";
-                            this.Show();
-                            nextWindow.Dispose();
                             break;
                     }
                 }
