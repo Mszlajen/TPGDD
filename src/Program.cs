@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace PalcoNet
 {
@@ -27,9 +29,9 @@ namespace PalcoNet
         }
         public static string sha256(string randomString)
         {
-            var crypt = new System.Security.Cryptography.SHA256Managed();
-            var hash = new System.Text.StringBuilder();
-            byte[] crypto = crypt.ComputeHash(System.Text.Encoding.ASCII.GetBytes(randomString));
+            var crypt = new SHA256Managed();
+            var hash = new StringBuilder();
+            byte[] crypto = crypt.ComputeHash(Encoding.ASCII.GetBytes(randomString));
             foreach (byte theByte in crypto)
             {
                 if (theByte != 0)
@@ -51,6 +53,27 @@ namespace PalcoNet
             next.Dispose();
             self.Show();
             return ret;
+        }
+        
+        public static DialogResult openPopUpWindow(Form self, Form window)
+        {
+            self.Enabled = false;
+            DialogResult ret = window.ShowDialog();
+            window.Dispose();
+            self.Enabled = true;
+            return ret;
+        }
+
+        public static string getRandomPassword(int length)
+        {
+            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            StringBuilder builder = new StringBuilder("");
+            Random random = new Random();
+
+            foreach (int i in Enumerable.Range(1, length))
+                builder.Append(chars[random.Next(0, chars.Length)]);
+
+            return builder.ToString();
         }
     }
 

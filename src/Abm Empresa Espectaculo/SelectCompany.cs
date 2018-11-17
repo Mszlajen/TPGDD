@@ -7,24 +7,68 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data.SqlClient;
 
-namespace PalcoNet.Abm_Empresa_Espectaculos
+namespace PalcoNet.Abm_Empresa_Espectaculo
 {
     public partial class SelectCompany : Form
     {
+        DataTable empresas = new DataTable();
+
         public SelectCompany()
         {
             InitializeComponent();
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void updateGrid()
         {
+            string queryString = "SELECT * FROM cheshire_jack.vw_empresas WHERE 1=1 ";
+            // Los textos libres no funcionan por alguna razon
+            if (!String.IsNullOrWhiteSpace(NameBox.Text))
+                queryString += "AND 'Razon Social' LIKE '%" + NameBox.Text + "%' ";
+            if (!String.IsNullOrWhiteSpace(CUITBox.Text))
+                queryString += "AND CUIT = '" + CUITBox.Text + "' ";
+            if (!String.IsNullOrWhiteSpace(MailBox.Text))
+                queryString += "AND 'E-mail' LIKE '%" + MailBox.Text + "%' ";
 
+            empresas.Clear();
+            using (SqlCommand cmd = new SqlCommand(queryString, Program.DBconn))
+                empresas.Load(cmd.ExecuteReader());
+
+            CompanyGrid.Columns["cod_empresa"].Visible = false;
+            CompanyGrid.Columns["cod_usuario"].Visible = false;
+        }
+        private void CompanyGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 0)
+            {
+                DataGridViewRow row = CompanyGrid.Rows[e.RowIndex];
+                EmpresaEspectaculo empresa = new EmpresaEspectaculo((int)row.Cells["cod_empresa"].Value, row.Cells["Razon Social"].Value.ToString(),
+                    row.Cells["Telefono"].Value.ToString(), row.Cells["E-mail"].Value.ToString(), row.Cells["Domicilio"].Value.ToString(),
+                    row.Cells["Altura"].Value.ToString(), row.Cells["Piso"].Value.ToString(), row.Cells["Departamento"].Value.ToString(),
+                    row.Cells["Ciudad"].Value.ToString(), row.Cells["Codigo Postal"].Value.ToString(), row.Cells["CUIT"].Value.ToString(),
+                    (int)row.Cells["cod_usuario"].Value, (bool)row.Cells["Habilitado"].Value);
+                Program.openPopUpWindow(this, new CreateCompany(empresa));
+                updateGrid();
+            }
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void SearchButton_Click(object sender, EventArgs e)
         {
+            updateGrid();
+        }
 
+        private void SelectCompany_Load(object sender, EventArgs e)
+        {
+            CompanyGrid.DataSource = empresas;
+        }
+
+        private void CleanButton_Click(object sender, EventArgs e)
+        {
+            NameBox.Text = "";
+            MailBox.Text = "";
+            CUITBox.Text = "";
+            empresas.Clear();
         }
     }
 }

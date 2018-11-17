@@ -82,18 +82,19 @@
     <Compile Include="Abm Empresa Espectaculo\Selection.Designer.cs">
       <DependentUpon>Selection.cs</DependentUpon>
     </Compile>
-    <Compile Include="Abm Grado\Form1.cs">
+    <Compile Include="Abm Grado\ABMGrado.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Abm Grado\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Abm Grado\ABMGrado.Designer.cs">
+      <DependentUpon>ABMGrado.cs</DependentUpon>
     </Compile>
-    <Compile Include="Abm Rol\ABMRol.cs">
+    <Compile Include="Abm Grado\CreateGrade.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Abm Rol\ABMRol.Designer.cs">
-      <DependentUpon>ABMRol.cs</DependentUpon>
+    <Compile Include="Abm Grado\CreateGrade.Designer.cs">
+      <DependentUpon>CreateGrade.cs</DependentUpon>
     </Compile>
+    <Compile Include="Abm Grado\Grado.cs" />
     <Compile Include="Abm Rol\CreateRole.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -101,11 +102,11 @@
       <DependentUpon>CreateRole.cs</DependentUpon>
     </Compile>
     <Compile Include="Abm Rol\Role.cs" />
-    <Compile Include="Abm Rol\RoleSelection.cs">
+    <Compile Include="Abm Rol\ABMRol.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Abm Rol\RoleSelection.Designer.cs">
-      <DependentUpon>RoleSelection.cs</DependentUpon>
+    <Compile Include="Abm Rol\ABMRol.Designer.cs">
+      <DependentUpon>ABMRol.cs</DependentUpon>
     </Compile>
     <Compile Include="Abm Rubro\Form1.cs">
       <SubType>Form</SubType>
@@ -150,6 +151,7 @@
     <Compile Include="Editar Publicacion\SearchPublication.Designer.cs">
       <DependentUpon>SearchPublication.cs</DependentUpon>
     </Compile>
+    <Compile Include="EmpresaEspectaculo.cs" />
     <Compile Include="FunctionSelection.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -237,14 +239,17 @@
     <EmbeddedResource Include="Abm Empresa Espectaculo\Selection.resx">
       <DependentUpon>Selection.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Abm Rol\ABMRol.resx">
-      <DependentUpon>ABMRol.cs</DependentUpon>
+    <EmbeddedResource Include="Abm Grado\ABMGrado.resx">
+      <DependentUpon>ABMGrado.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Abm Grado\CreateGrade.resx">
+      <DependentUpon>CreateGrade.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Rol\CreateRole.resx">
       <DependentUpon>CreateRole.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Abm Rol\RoleSelection.resx">
-      <DependentUpon>RoleSelection.cs</DependentUpon>
+    <EmbeddedResource Include="Abm Rol\ABMRol.resx">
+      <DependentUpon>ABMRol.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Abm Rubro\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

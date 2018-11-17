@@ -65,7 +65,15 @@ namespace PalcoNet
                 case "ABM Rubro":
                     return new Abm_Rubro.Form1();
                 case "ABM Rol":
-                    return new Abm_Rol.ABMRol(); 
+                    return new Abm_Rol.ABMRol();
+                case "ABM Grado":
+                    return new Abm_Grado.ABMGrado();
+                case "Listado Estadistico":
+                    return new Listado_Estadistico.StatList();
+                case "ABM Cliente":
+                    return new Abm_Cliente.Selection();
+                case "ABM Empresa de Espectaculo":
+                    return new Abm_Empresa_Espectaculo.Selection();
                 default:
                     return new Form();
 

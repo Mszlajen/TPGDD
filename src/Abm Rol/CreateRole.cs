@@ -13,7 +13,7 @@ namespace PalcoNet.Abm_Rol
 {
     public partial class CreateRole : Form
     {
-        private int codRol = 0;
+        private bool havingRole = false;
         DataTable funcionalidades = new DataTable();
         private Role role;
         public CreateRole()
@@ -21,10 +21,11 @@ namespace PalcoNet.Abm_Rol
             InitializeComponent();
         }
 
-        public CreateRole(int _codRol)
+        public CreateRole(Role toEdit)
         {
             InitializeComponent();
-            codRol = _codRol;
+            havingRole = true;
+            role = toEdit;
         }
 
         private void CreateRole_Load(object sender, EventArgs e)
@@ -36,23 +37,11 @@ namespace PalcoNet.Abm_Rol
             foreach(DataRow row in funcionalidades.Rows)
                 FunctionsList.Items.Add(row["descripcion"]);
 
-            if (codRol != 0)
+            if (havingRole)
             {
                 AcceptButton.Text = "Guardar";
 
                 availabilityCheck.Show();
-
-                queryString = "SELECT cod_rol, descripcion, habilitado, registrable FROM cheshire_jack.roles WHERE cod_rol = @cod_rol";
-                using (SqlCommand cmd = new SqlCommand(queryString, Program.DBconn))
-                {
-                    cmd.Parameters.Add(new SqlParameter("@cod_rol", codRol));
-                    DataTable tempRole = new DataTable();
-                    tempRole.Load(cmd.ExecuteReader());
-                    DataRow data = tempRole.Rows[0];
-                    role = new Role((int)data["cod_rol"], (string)data["descripcion"],
-                                    (bool)data["habilitado"], (bool)data["registrable"]);
-                    tempRole.Dispose();
-                }
 
                 RoleNameBox.Text = role.nombre;
                 availabilityCheck.Checked = role.habilitado;
@@ -61,7 +50,7 @@ namespace PalcoNet.Abm_Rol
                 queryString = "SELECT cod_funcionalidad FROM cheshire_jack.RolesxFuncionalidades WHERE cod_rol = @cod_rol";
                 using (SqlCommand cmd = new SqlCommand(queryString, Program.DBconn))
                 {
-                    cmd.Parameters.Add(new SqlParameter("@cod_rol", codRol));
+                    cmd.Parameters.Add(new SqlParameter("@cod_rol", role.codigo));
                     DataTable funcXrol = new DataTable();
                     funcXrol.Load(cmd.ExecuteReader());
                     funcXrol.PrimaryKey = new DataColumn[] { funcXrol.Columns[0] };
@@ -96,20 +85,20 @@ namespace PalcoNet.Abm_Rol
             }
             if (todoBien && FunctionsList.CheckedIndices.Count == 0)
             {
-                if(MessageBox.Show("Dejo el role sin funcionalidades. ¿Está seguro que quiere continuar?.", "confirmacion", MessageBoxButtons.YesNo) == DialogResult.No)
+                if(MessageBox.Show("Dejo el role sin funcionalidades. ¿Está seguro que quiere continuar?", "confirmacion", MessageBoxButtons.YesNo) == DialogResult.No)
                     todoBien = false;
             }
             if (todoBien && availabilityCheck.Enabled && !availabilityCheck.Checked)
             {
-                if (MessageBox.Show("Se le quitara el rol a todos los usuarios. ¿Está seguro que quiere continuar?.", "confirmacion", MessageBoxButtons.YesNo) == DialogResult.No)
+                if (MessageBox.Show("Se le quitara el rol a todos los usuarios. ¿Está seguro que quiere continuar?", "confirmacion", MessageBoxButtons.YesNo) == DialogResult.No)
                     todoBien = false;
             }
             if (todoBien)
             {
-                if (codRol == 0)
-                    role = Role.createInDataBase(Program.DBconn, RoleNameBox.Text, availabilityCheck.Checked, SignUpCheck.Checked);
-                else
+                if (havingRole)
                     role.updateValues(RoleNameBox.Text, availabilityCheck.Checked, SignUpCheck.Checked).updateToDataBase(Program.DBconn);
+                else
+                    role = Role.createInDataBase(Program.DBconn, RoleNameBox.Text, availabilityCheck.Checked, SignUpCheck.Checked);
 
                 List<int> cod_funcionalidades = new List<int>();
                 
@@ -126,9 +115,7 @@ namespace PalcoNet.Abm_Rol
                 if (!availabilityCheck.Checked)
                     role.removeFromUsers(Program.DBconn);
 
-                MessageBox.Show("Rol guardado.");
-                if (codRol == 0)
-                    this.DialogResult = DialogResult.OK;
+                this.DialogResult = DialogResult.OK;
             }
         }
     }

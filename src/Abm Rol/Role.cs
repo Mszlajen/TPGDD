@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 
 namespace PalcoNet.Abm_Rol
 {
-    class Role
+    public class Role
     {
         public int codigo;
         public string nombre;

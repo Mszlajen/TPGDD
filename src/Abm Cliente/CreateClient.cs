@@ -14,19 +14,27 @@ namespace PalcoNet.Abm_Cliente
     {
         public bool registroDeUsuario = false;
         public bool edicion = false;
-        public Cliente cliente;
+        public Cliente cliente; 
 
         public CreateClient()
         {
             InitializeComponent();
+        }
+        
+        public CreateClient(Cliente _cliente)
+        {
+            InitializeComponent();
+            edicion = true;
+            cliente = _cliente;
         }
 
         private void ClearButton_Click(object sender, EventArgs e)
         {
             SurnameBox.Text = "";
             FirstNameBox.Text = "";
-            DocumentTypeBox.Text = "";
+            DocumentTypeBox.SelectedIndex = -1;
             DocumentNroBox.Text = "";
+            DocumentNroBox.Enabled = false;
             BirthDatePicker.Value = Settings1.Default.CurrentDate;
             CreationDatePicker.Value = Settings1.Default.CurrentDate;
             CUILBox.Text = "";
@@ -42,15 +50,11 @@ namespace PalcoNet.Abm_Cliente
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            if (!edicion)
-            {
-                cliente = new Cliente(FirstNameBox.Text, SurnameBox.Text, DocumentTypeBox.Text,
-                                      DocumentNroBox.Text, CUILBox.Text, MailBox.Text, PhoneBox.Text,
-                                      AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text,
-                                      LocalityBox.Text, PostalCodeBox.Text, BirthDatePicker.Value,
-                                      CreationDatePicker.Value);
+        }
 
-            }
+        private void DocumentTypeBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DocumentNroBox.Enabled = true;
         }
 
 

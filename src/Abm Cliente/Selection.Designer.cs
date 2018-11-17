@@ -50,6 +50,7 @@
             this.CreateButton.TabIndex = 1;
             this.CreateButton.Text = "Crear cliente";
             this.CreateButton.UseVisualStyleBackColor = true;
+            this.CreateButton.Click += new System.EventHandler(this.CreateButton_Click);
             // 
             // ModifyButton
             // 
@@ -59,6 +60,7 @@
             this.ModifyButton.TabIndex = 2;
             this.ModifyButton.Text = "Modificar cliente";
             this.ModifyButton.UseVisualStyleBackColor = true;
+            this.ModifyButton.Click += new System.EventHandler(this.ModifyButton_Click);
             // 
             // Selection
             // 

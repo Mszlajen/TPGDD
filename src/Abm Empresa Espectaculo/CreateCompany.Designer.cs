@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.SaveButton = new System.Windows.Forms.Button();
-            this.EnableBox = new System.Windows.Forms.CheckBox();
+            this.EnabledBox = new System.Windows.Forms.CheckBox();
             this.ClearButton = new System.Windows.Forms.Button();
             this.PostalCodeBox = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
-            this.LocalityBox = new System.Windows.Forms.TextBox();
+            this.CityBox = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.FloorBox = new System.Windows.Forms.TextBox();
@@ -55,23 +55,24 @@
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(154, 273);
+            this.SaveButton.Location = new System.Drawing.Point(208, 273);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(96, 48);
             this.SaveButton.TabIndex = 49;
-            this.SaveButton.Text = "Guardar";
+            this.SaveButton.Text = "Crear";
             this.SaveButton.UseVisualStyleBackColor = true;
+            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
-            // EnableBox
+            // EnabledBox
             // 
-            this.EnableBox.AutoSize = true;
-            this.EnableBox.Location = new System.Drawing.Point(219, 25);
-            this.EnableBox.Name = "EnableBox";
-            this.EnableBox.Size = new System.Drawing.Size(64, 17);
-            this.EnableBox.TabIndex = 50;
-            this.EnableBox.Text = "Habilitar";
-            this.EnableBox.UseVisualStyleBackColor = true;
-            this.EnableBox.Visible = false;
+            this.EnabledBox.AutoSize = true;
+            this.EnabledBox.Location = new System.Drawing.Point(219, 25);
+            this.EnabledBox.Name = "EnabledBox";
+            this.EnabledBox.Size = new System.Drawing.Size(73, 17);
+            this.EnabledBox.TabIndex = 50;
+            this.EnabledBox.Text = "Habilitado";
+            this.EnabledBox.UseVisualStyleBackColor = true;
+            this.EnabledBox.Visible = false;
             // 
             // ClearButton
             // 
@@ -81,6 +82,7 @@
             this.ClearButton.TabIndex = 48;
             this.ClearButton.Text = "Limpiar";
             this.ClearButton.UseVisualStyleBackColor = true;
+            this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
             // PostalCodeBox
             // 
@@ -98,21 +100,21 @@
             this.label13.TabIndex = 46;
             this.label13.Text = "Codigo Postal";
             // 
-            // LocalityBox
+            // CityBox
             // 
-            this.LocalityBox.Location = new System.Drawing.Point(12, 184);
-            this.LocalityBox.Name = "LocalityBox";
-            this.LocalityBox.Size = new System.Drawing.Size(190, 20);
-            this.LocalityBox.TabIndex = 45;
+            this.CityBox.Location = new System.Drawing.Point(12, 184);
+            this.CityBox.Name = "CityBox";
+            this.CityBox.Size = new System.Drawing.Size(190, 20);
+            this.CityBox.TabIndex = 45;
             // 
             // label12
             // 
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(8, 168);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(53, 13);
+            this.label12.Size = new System.Drawing.Size(40, 13);
             this.label12.TabIndex = 44;
-            this.label12.Text = "Localidad";
+            this.label12.Text = "Ciudad";
             // 
             // label6
             // 
@@ -248,11 +250,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(353, 354);
             this.Controls.Add(this.SaveButton);
-            this.Controls.Add(this.EnableBox);
+            this.Controls.Add(this.EnabledBox);
             this.Controls.Add(this.ClearButton);
             this.Controls.Add(this.PostalCodeBox);
             this.Controls.Add(this.label13);
-            this.Controls.Add(this.LocalityBox);
+            this.Controls.Add(this.CityBox);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.FloorBox);
@@ -272,6 +274,7 @@
             this.Controls.Add(this.label1);
             this.Name = "CreateCompany";
             this.Text = "CreateCompany";
+            this.Load += new System.EventHandler(this.CreateCompany_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -280,11 +283,11 @@
         #endregion
 
         private System.Windows.Forms.Button SaveButton;
-        private System.Windows.Forms.CheckBox EnableBox;
+        private System.Windows.Forms.CheckBox EnabledBox;
         private System.Windows.Forms.Button ClearButton;
         private System.Windows.Forms.TextBox PostalCodeBox;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.TextBox LocalityBox;
+        private System.Windows.Forms.TextBox CityBox;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox FloorBox;

@@ -36,8 +36,8 @@
             this.ListBox = new System.Windows.Forms.ComboBox();
             this.ListButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.ResultGrid = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.ResultGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // YearBox
@@ -106,6 +106,7 @@
             this.ListBox.Name = "ListBox";
             this.ListBox.Size = new System.Drawing.Size(260, 21);
             this.ListBox.TabIndex = 5;
+            this.ListBox.SelectedIndexChanged += new System.EventHandler(this.ListBox_SelectedIndexChanged);
             // 
             // ListButton
             // 
@@ -116,6 +117,7 @@
             this.ListButton.TabIndex = 6;
             this.ListButton.Text = "Listar";
             this.ListButton.UseVisualStyleBackColor = true;
+            this.ListButton.Click += new System.EventHandler(this.ListButton_Click);
             // 
             // ClearButton
             // 
@@ -127,23 +129,23 @@
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
-            // dataGridView1
+            // ResultGrid
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 127);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(447, 125);
-            this.dataGridView1.TabIndex = 7;
+            this.ResultGrid.AllowUserToAddRows = false;
+            this.ResultGrid.AllowUserToDeleteRows = false;
+            this.ResultGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.ResultGrid.Location = new System.Drawing.Point(12, 127);
+            this.ResultGrid.Name = "ResultGrid";
+            this.ResultGrid.ReadOnly = true;
+            this.ResultGrid.Size = new System.Drawing.Size(447, 125);
+            this.ResultGrid.TabIndex = 7;
             // 
             // StatList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(471, 264);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.ResultGrid);
             this.Controls.Add(this.ClearButton);
             this.Controls.Add(this.ListButton);
             this.Controls.Add(this.ListBox);
@@ -154,7 +156,8 @@
             this.Controls.Add(this.YearBox);
             this.Name = "StatList";
             this.Text = "Seleccionar listado";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.Load += new System.EventHandler(this.StatList_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.ResultGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -170,7 +173,7 @@
         private System.Windows.Forms.ComboBox ListBox;
         private System.Windows.Forms.Button ListButton;
         private System.Windows.Forms.Button ClearButton;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView ResultGrid;
 
     }
 }

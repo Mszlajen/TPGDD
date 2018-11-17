@@ -59,9 +59,9 @@
             this.PostalCodeBox = new System.Windows.Forms.TextBox();
             this.ClearButton = new System.Windows.Forms.Button();
             this.EnableBox = new System.Windows.Forms.CheckBox();
+            this.SaveButton = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
             this.CreationDatePicker = new System.Windows.Forms.DateTimePicker();
-            this.SaveButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -113,9 +113,11 @@
             this.DocumentTypeBox.Name = "DocumentTypeBox";
             this.DocumentTypeBox.Size = new System.Drawing.Size(121, 21);
             this.DocumentTypeBox.TabIndex = 5;
+            this.DocumentTypeBox.SelectedIndexChanged += new System.EventHandler(this.DocumentTypeBox_SelectedIndexChanged);
             // 
             // DocumentNroBox
             // 
+            this.DocumentNroBox.Enabled = false;
             this.DocumentNroBox.Location = new System.Drawing.Point(18, 136);
             this.DocumentNroBox.Name = "DocumentNroBox";
             this.DocumentNroBox.Size = new System.Drawing.Size(121, 20);
@@ -321,6 +323,16 @@
             this.EnableBox.UseVisualStyleBackColor = true;
             this.EnableBox.Visible = false;
             // 
+            // SaveButton
+            // 
+            this.SaveButton.Location = new System.Drawing.Point(528, 233);
+            this.SaveButton.Name = "SaveButton";
+            this.SaveButton.Size = new System.Drawing.Size(96, 48);
+            this.SaveButton.TabIndex = 26;
+            this.SaveButton.Text = "Guardar";
+            this.SaveButton.UseVisualStyleBackColor = true;
+            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
+            // 
             // label14
             // 
             this.label14.AutoSize = true;
@@ -336,16 +348,6 @@
             this.CreationDatePicker.Name = "CreationDatePicker";
             this.CreationDatePicker.Size = new System.Drawing.Size(200, 20);
             this.CreationDatePicker.TabIndex = 10;
-            // 
-            // SaveButton
-            // 
-            this.SaveButton.Location = new System.Drawing.Point(528, 233);
-            this.SaveButton.Name = "SaveButton";
-            this.SaveButton.Size = new System.Drawing.Size(96, 48);
-            this.SaveButton.TabIndex = 26;
-            this.SaveButton.Text = "Guardar";
-            this.SaveButton.UseVisualStyleBackColor = true;
-            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
             // CreateClient
             // 
@@ -425,8 +427,8 @@
         private System.Windows.Forms.TextBox PostalCodeBox;
         private System.Windows.Forms.Button ClearButton;
         private System.Windows.Forms.CheckBox EnableBox;
+        private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.DateTimePicker CreationDatePicker;
-        private System.Windows.Forms.Button SaveButton;
     }
 }
