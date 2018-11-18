@@ -182,12 +182,6 @@
     <Compile Include="Generar Publicacion\GeneratePublication.Designer.cs">
       <DependentUpon>GeneratePublication.cs</DependentUpon>
     </Compile>
-    <Compile Include="Generar Rendicion Comisiones\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Generar Rendicion Comisiones\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
     <Compile Include="Historial Cliente\History.cs">
       <SubType>Form</SubType>
     </Compile>

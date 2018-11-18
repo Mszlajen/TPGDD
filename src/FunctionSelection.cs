@@ -78,6 +78,8 @@ namespace PalcoNet
                     return new Canje_Puntos.PointExchange(codUsuario);
                 case "Historial Cliente":
                     return new Historial_Cliente.History(codUsuario);
+                case "General Rendicion de Compra":
+                    return new Generar_Rendicion_Compras.SelectCompany();
                 default:
                     return new Form();
 

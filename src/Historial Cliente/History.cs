@@ -54,8 +54,8 @@ namespace PalcoNet.Historial_Cliente
                 adapter.Fill(pagina);
                 adapter.Dispose();
             }
-            PageNumText.Text = (cantidadPaginas + 1).ToString();
-            paginaActual = (cantidadPaginas + 1);
+            PageNumText.Text = cantidadPaginas.ToString();
+            paginaActual = cantidadPaginas;
         }
 
         private void History_Load(object sender, EventArgs e)
@@ -93,9 +93,9 @@ namespace PalcoNet.Historial_Cliente
 
         private void NextButton_Click(object sender, EventArgs e)
         {
-            if (cantidadPaginas > paginaActual)
+            if (cantidadPaginas - 1 > paginaActual)
                 cargarPagina(paginaActual + 1);
-            else if (cantidadPaginas == paginaActual)
+            else if (cantidadPaginas - 1 == paginaActual)
                 cargarUltimaPagina();
         }
 

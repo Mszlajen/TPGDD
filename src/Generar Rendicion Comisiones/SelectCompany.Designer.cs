@@ -35,12 +35,9 @@
             this.label4 = new System.Windows.Forms.Label();
             this.MailBox = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CUIT = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Mail = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MakeButton = new System.Windows.Forms.DataGridViewButtonColumn();
             this.CleanButton = new System.Windows.Forms.Button();
             this.SearchButton = new System.Windows.Forms.Button();
+            this.MakeButton = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -50,7 +47,6 @@
             this.NameBox.Name = "NameBox";
             this.NameBox.Size = new System.Drawing.Size(359, 20);
             this.NameBox.TabIndex = 0;
-            this.NameBox.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label1
             // 
@@ -60,7 +56,6 @@
             this.label1.Size = new System.Drawing.Size(68, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Razon social";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // label3
             // 
@@ -96,47 +91,16 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Nombre,
-            this.CUIT,
-            this.Mail,
             this.MakeButton});
             this.dataGridView1.Location = new System.Drawing.Point(15, 153);
             this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
             this.dataGridView1.Size = new System.Drawing.Size(536, 131);
             this.dataGridView1.TabIndex = 8;
-            // 
-            // Nombre
-            // 
-            this.Nombre.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Nombre.HeaderText = "Razon Social";
-            this.Nombre.Name = "Nombre";
-            this.Nombre.ReadOnly = true;
-            this.Nombre.Width = 95;
-            // 
-            // CUIT
-            // 
-            this.CUIT.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.CUIT.HeaderText = "CUIT";
-            this.CUIT.Name = "CUIT";
-            this.CUIT.ReadOnly = true;
-            this.CUIT.Width = 57;
-            // 
-            // Mail
-            // 
-            this.Mail.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Mail.HeaderText = "E-Mail";
-            this.Mail.Name = "Mail";
-            this.Mail.ReadOnly = true;
-            this.Mail.Width = 61;
-            // 
-            // MakeButton
-            // 
-            this.MakeButton.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.MakeButton.HeaderText = "Rendir";
-            this.MakeButton.Name = "MakeButton";
-            this.MakeButton.Width = 44;
             // 
             // CleanButton
             // 
@@ -155,6 +119,14 @@
             this.SearchButton.TabIndex = 10;
             this.SearchButton.Text = "Buscar";
             this.SearchButton.UseVisualStyleBackColor = true;
+            // 
+            // MakeButton
+            // 
+            this.MakeButton.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.MakeButton.HeaderText = "Rendir";
+            this.MakeButton.Name = "MakeButton";
+            this.MakeButton.ReadOnly = true;
+            this.MakeButton.Width = 44;
             // 
             // SelectCompany
             // 
@@ -189,9 +161,6 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button CleanButton;
         private System.Windows.Forms.Button SearchButton;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Nombre;
-        private System.Windows.Forms.DataGridViewTextBoxColumn CUIT;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Mail;
         private System.Windows.Forms.DataGridViewButtonColumn MakeButton;
     }
 }
