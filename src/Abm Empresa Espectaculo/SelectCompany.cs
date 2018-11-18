@@ -22,18 +22,30 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
 
         private void updateGrid()
         {
-            string queryString = "SELECT * FROM cheshire_jack.vw_empresas WHERE 1=1 ";
-            // Los textos libres no funcionan por alguna razon
-            if (!String.IsNullOrWhiteSpace(NameBox.Text))
-                queryString += "AND 'Razon Social' LIKE '%" + NameBox.Text + "%' ";
-            if (!String.IsNullOrWhiteSpace(CUITBox.Text))
-                queryString += "AND CUIT = '" + CUITBox.Text + "' ";
-            if (!String.IsNullOrWhiteSpace(MailBox.Text))
-                queryString += "AND 'E-mail' LIKE '%" + MailBox.Text + "%' ";
-
             empresas.Clear();
-            using (SqlCommand cmd = new SqlCommand(queryString, Program.DBconn))
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.Connection = Program.DBconn;
+                string queryString = "SELECT * FROM cheshire_jack.vw_empresas WHERE 1=1 ";
+                // Los textos libres no funcionan por alguna razon
+                if (!String.IsNullOrWhiteSpace(NameBox.Text))
+                {
+                    queryString += "AND [Razon Social] LIKE @razonSocial ";
+                    cmd.Parameters.Add(new SqlParameter("@razonSocial", "%" + NameBox.Text + "%"));
+                }
+                if (!String.IsNullOrWhiteSpace(CUITBox.Text))
+                {
+                    queryString += "AND CUIT = @CUIT ";
+                    cmd.Parameters.Add(new SqlParameter("@CUIT", CUITBox.Text));
+                }
+                if (!String.IsNullOrWhiteSpace(MailBox.Text))
+                {
+                    queryString += "AND [E-mail] LIKE @mail ";
+                    cmd.Parameters.Add(new SqlParameter("@mail", "%" + MailBox.Text + "%"));
+                }
+                cmd.CommandText = queryString;
                 empresas.Load(cmd.ExecuteReader());
+            }
 
             CompanyGrid.Columns["cod_empresa"].Visible = false;
             CompanyGrid.Columns["cod_usuario"].Visible = false;

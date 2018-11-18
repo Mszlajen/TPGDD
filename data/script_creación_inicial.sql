@@ -137,7 +137,7 @@ CREATE TABLE cheshire_jack.facturas (
 	nro_factura NUMERIC(18,0) PRIMARY KEY NOT NULL,
 	fecha DATETIME NOT NULL,
 	total NUMERIC(18,2) NOT NULL,
-	forma_pago VARCHAR(255) NOT NULL
+	forma_pago VARCHAR(255)
 	)
 
 CREATE TABLE cheshire_jack.items (
@@ -259,7 +259,7 @@ VALUES ('ABM Cliente'),
 ('Comprar'),
 ('Editar Publicacion'),
 ('Generar Publicacion'),
-('Generar Rendicion de Compra'),
+('Generar Rendicion de Comisiones'),
 ('Historial Cliente'),
 ('Listado Estadistico')
 
@@ -413,6 +413,29 @@ SELECT DISTINCT (SELECT cod_publicacion FROM cheshire_jack.espectaculos E JOIN c
 INTO #ubicacionesIntermediaSinNroUbicacion
 FROM gd_esquema.Maestra M
 WHERE Espectaculo_Cod IS NOT NULL AND Compra_Fecha IS NULL
+
+MERGE #ubicacionesIntermediaSinNroUbicacion AS target
+USING (SELECT DISTINCT (SELECT cod_publicacion FROM cheshire_jack.espectaculos E JOIN cheshire_jack.publicaciones P ON E.cod_espectaculo = P.cod_espectaculo WHERE M.Espectaculo_Cod = E.cod_espectaculo_viejo) cod_publicacion,
+		(SELECT cod_tipo FROM cheshire_jack.tipos_de_ubicacion TU WHERE TU.cod_tipo_viejo = M.Ubicacion_Tipo_Codigo) cod_tipo,
+		Ubicacion_Fila,
+		Ubicacion_Asiento,
+		Ubicacion_Sin_numerar,
+		Ubicacion_Precio,
+		0 Ubicacion_disponible,
+		Compra_Fecha, 
+		Compra_Cantidad,
+		Cli_Dni,
+		Factura_Nro,
+		Forma_Pago_Desc
+FROM gd_esquema.Maestra M
+WHERE Espectaculo_Cod IS NOT NULL AND compra_fecha IS NOT NULL AND factura_nro IS NULL) AS source
+ON target.cod_publicacion = source.cod_publicacion AND target.Ubicacion_fila = source.Ubicacion_fila AND target.Ubicacion_asiento = source.Ubicacion_asiento
+WHEN MATCHED
+THEN UPDATE SET target.compra_fecha = source.compra_fecha, 
+				target.compra_cantidad = source.compra_cantidad, 
+				target.cli_dni = source.cli_dni,
+				target.forma_pago_desc = source.forma_pago_desc,
+				target.ubicacion_disponible = 0;
 
 MERGE #ubicacionesIntermediaSinNroUbicacion AS target
 USING (SELECT DISTINCT (SELECT cod_publicacion FROM cheshire_jack.espectaculos E JOIN cheshire_jack.publicaciones P ON E.cod_espectaculo = P.cod_espectaculo WHERE M.Espectaculo_Cod = E.cod_espectaculo_viejo) cod_publicacion,
@@ -868,7 +891,7 @@ AS BEGIN
 END
 
 GO 
-ALTER PROCEDURE cheshire_jack.obtenerUltimaPaginaDeHistorial
+CREATE PROCEDURE cheshire_jack.obtenerUltimaPaginaDeHistorial
 (@codCliente INT, @tamPagina INT)
 AS BEGIN
 	DECLARE @resto INT
@@ -882,4 +905,50 @@ AS BEGIN
 		ON p.cod_espectaculo = e.cod_espectaculo
 	WHERE cod_cliente = @codCliente
 	ORDER BY [Fecha Compra] DESC
+END
+
+GO
+CREATE PROCEDURE cheshire_jack.comisionesPendientes
+(@codEmpresa INT)
+AS BEGIN
+	SELECT cod_compra, fecha Fecha, u.precio Precio, gp.comision * u.precio Comision
+	FROM cheshire_jack.compras c JOIN cheshire_jack.ubicaciones u ON c.cod_publicacion = u.cod_publicacion AND c.nro_ubicacion = u.nro_ubicacion
+		JOIN cheshire_jack.publicaciones p ON c.cod_publicacion = p.cod_publicacion 
+		JOIN cheshire_jack.grados_de_publicacion gp ON p.cod_grado = gp.cod_grado 
+		JOIN cheshire_jack.espectaculos e ON p.cod_espectaculo = e.cod_espectaculo
+	WHERE cod_empresa = @codEmpresa AND nro_factura IS NULL
+	ORDER BY cod_compra
+END
+
+GO
+CREATE PROCEDURE cheshire_jack.facturarComisiones
+(@compraDesde NUMERIC(18,0), @compraHasta NUMERIC(18,0), @fecha DATETIME)
+AS BEGIN 
+	DECLARE @nroFactura NUMERIC(18,0)
+	SELECT @nroFactura = MAX(nro_factura) + 1 FROM cheshire_jack.facturas
+	BEGIN TRANSACTION
+		INSERT INTO cheshire_jack.facturas
+		(nro_factura, fecha, total)
+		VALUES(@nroFactura, @fecha, 1)
+
+		UPDATE cheshire_jack.compras
+		SET nro_factura = @nroFactura
+		WHERE cod_compra BETWEEN @compraDesde AND @compraHasta
+
+		INSERT INTO cheshire_jack.items
+		(nro_factura, nro_item, descripcion,monto,cantidad)
+		SELECT @nroFactura, ROW_NUMBER() OVER(ORDER BY @nroFactura),
+			'Comision por venta', u.precio * gp.comision, cantidad
+		FROM cheshire_jack.compras c JOIN cheshire_jack.ubicaciones u 
+			ON c.cod_publicacion = u.cod_publicacion AND c.nro_ubicacion = u.nro_ubicacion JOIN
+			cheshire_jack.publicaciones p ON p.cod_publicacion = c.cod_publicacion JOIN
+			cheshire_jack.grados_de_publicacion gp ON p.cod_grado = gp.cod_grado
+		WHERE cod_compra BETWEEN @compraDesde AND @compraHasta
+
+		UPDATE cheshire_jack.facturas
+		SET total = (SELECT SUM(monto) FROM cheshire_jack.items WHERE nro_factura = @nroFactura)
+		WHERE @nroFactura = nro_factura
+	COMMIT TRANSACTION
+
+	RETURN @nroFactura
 END

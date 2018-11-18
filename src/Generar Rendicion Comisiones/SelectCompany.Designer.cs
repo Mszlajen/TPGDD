@@ -1,4 +1,4 @@
-﻿namespace PalcoNet.Generar_Rendicion_Compras
+﻿namespace PalcoNet.Generar_Rendicion_Comisiones
 {
     partial class SelectCompany
     {
@@ -31,14 +31,14 @@
             this.NameBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.DniBox = new System.Windows.Forms.TextBox();
+            this.CUITBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.MailBox = new System.Windows.Forms.TextBox();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.CompanyGrid = new System.Windows.Forms.DataGridView();
+            this.MakeButton = new System.Windows.Forms.DataGridViewButtonColumn();
             this.CleanButton = new System.Windows.Forms.Button();
             this.SearchButton = new System.Windows.Forms.Button();
-            this.MakeButton = new System.Windows.Forms.DataGridViewButtonColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CompanyGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // NameBox
@@ -66,12 +66,12 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "CUIT";
             // 
-            // DniBox
+            // CUITBox
             // 
-            this.DniBox.Location = new System.Drawing.Point(12, 81);
-            this.DniBox.Name = "DniBox";
-            this.DniBox.Size = new System.Drawing.Size(100, 20);
-            this.DniBox.TabIndex = 4;
+            this.CUITBox.Location = new System.Drawing.Point(12, 81);
+            this.CUITBox.Name = "CUITBox";
+            this.CUITBox.Size = new System.Drawing.Size(100, 20);
+            this.CUITBox.TabIndex = 4;
             // 
             // label4
             // 
@@ -89,36 +89,19 @@
             this.MailBox.Size = new System.Drawing.Size(234, 20);
             this.MailBox.TabIndex = 6;
             // 
-            // dataGridView1
+            // CompanyGrid
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.CompanyGrid.AllowUserToAddRows = false;
+            this.CompanyGrid.AllowUserToDeleteRows = false;
+            this.CompanyGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.CompanyGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.MakeButton});
-            this.dataGridView1.Location = new System.Drawing.Point(15, 153);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(536, 131);
-            this.dataGridView1.TabIndex = 8;
-            // 
-            // CleanButton
-            // 
-            this.CleanButton.Location = new System.Drawing.Point(428, 17);
-            this.CleanButton.Name = "CleanButton";
-            this.CleanButton.Size = new System.Drawing.Size(87, 45);
-            this.CleanButton.TabIndex = 9;
-            this.CleanButton.Text = "Limpiar";
-            this.CleanButton.UseVisualStyleBackColor = true;
-            // 
-            // SearchButton
-            // 
-            this.SearchButton.Location = new System.Drawing.Point(428, 68);
-            this.SearchButton.Name = "SearchButton";
-            this.SearchButton.Size = new System.Drawing.Size(87, 45);
-            this.SearchButton.TabIndex = 10;
-            this.SearchButton.Text = "Buscar";
-            this.SearchButton.UseVisualStyleBackColor = true;
+            this.CompanyGrid.Location = new System.Drawing.Point(15, 119);
+            this.CompanyGrid.Name = "CompanyGrid";
+            this.CompanyGrid.ReadOnly = true;
+            this.CompanyGrid.Size = new System.Drawing.Size(500, 165);
+            this.CompanyGrid.TabIndex = 8;
+            this.CompanyGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.CompanyGrid_CellContentClick);
             // 
             // MakeButton
             // 
@@ -128,23 +111,44 @@
             this.MakeButton.ReadOnly = true;
             this.MakeButton.Width = 44;
             // 
+            // CleanButton
+            // 
+            this.CleanButton.Location = new System.Drawing.Point(406, 17);
+            this.CleanButton.Name = "CleanButton";
+            this.CleanButton.Size = new System.Drawing.Size(87, 45);
+            this.CleanButton.TabIndex = 9;
+            this.CleanButton.Text = "Limpiar";
+            this.CleanButton.UseVisualStyleBackColor = true;
+            this.CleanButton.Click += new System.EventHandler(this.CleanButton_Click);
+            // 
+            // SearchButton
+            // 
+            this.SearchButton.Location = new System.Drawing.Point(406, 68);
+            this.SearchButton.Name = "SearchButton";
+            this.SearchButton.Size = new System.Drawing.Size(87, 45);
+            this.SearchButton.TabIndex = 10;
+            this.SearchButton.Text = "Buscar";
+            this.SearchButton.UseVisualStyleBackColor = true;
+            this.SearchButton.Click += new System.EventHandler(this.SearchButton_Click);
+            // 
             // SelectCompany
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(561, 312);
+            this.ClientSize = new System.Drawing.Size(524, 312);
             this.Controls.Add(this.SearchButton);
             this.Controls.Add(this.CleanButton);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.CompanyGrid);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.MailBox);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.DniBox);
+            this.Controls.Add(this.CUITBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.NameBox);
             this.Name = "SelectCompany";
             this.Text = "Seleccionar Empresa";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.Load += new System.EventHandler(this.SelectCompany_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.CompanyGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -155,10 +159,10 @@
         private System.Windows.Forms.TextBox NameBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox DniBox;
+        private System.Windows.Forms.TextBox CUITBox;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox MailBox;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView CompanyGrid;
         private System.Windows.Forms.Button CleanButton;
         private System.Windows.Forms.Button SearchButton;
         private System.Windows.Forms.DataGridViewButtonColumn MakeButton;
