@@ -153,7 +153,7 @@ CREATE TABLE cheshire_jack.puntos (
 	anio_vencimiento INT NOT NULL,
 	cod_cliente INT NOT NULL,
 	cantidad NUMERIC(18,0) NOT NULL,
-	PRIMARY KEY(anio_vencimiento, cod_cliente)
+	PRIMARY KEY(cod_cliente, anio_vencimiento)
 	)
 
 CREATE TABLE cheshire_jack.premios (
@@ -167,7 +167,9 @@ CREATE TABLE cheshire_jack.premios (
 CREATE TABLE cheshire_jack.canjes (
 	cod_cliente INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.usuarios(cod_Usuario),
 	cod_premio INT NOT NULL FOREIGN KEY REFERENCES cheshire_jack.premios(cod_premio),
-	PRIMARY KEY(cod_cliente, cod_premio)
+	fecha DATETIME NOT NULL,
+	nroRepeticion TINYINT NOT NULL
+	PRIMARY KEY(cod_cliente, cod_premio, nroRepeticion)
 	)
 
 CREATE TABLE cheshire_jack.tarjetas_de_credito (
@@ -319,8 +321,8 @@ BEGIN
 	INSERT INTO cheshire_jack.usuarios
 	(nombre_usuario, contrasenia)
 	VALUES
-	('clienteImportado' + CAST(1 + @usuarioActual AS VARCHAR), 
-	'11624521121523816939179904617228122184620123111562376622015684238184188222159156176') --Contraseña = importado
+	('clienteMigrado' + CAST(1 + @usuarioActual AS VARCHAR), 
+	'596862374011182110423175134179201677017974934059176207194179572531874953111238') --Contraseña = migrado
 
 	SET @usuarioActual += 1
 END
@@ -341,8 +343,9 @@ BEGIN
 	INSERT INTO cheshire_jack.usuarios
 	(nombre_usuario, contrasenia)
 	VALUES
-	('empresaImportada' + CAST(1 + @usuarioActual AS CHAR), 
-	'596862374011182110423175134179201677017974934059176207194179572531874953111238')
+	('empresaMigrada' + CAST(1 + @usuarioActual AS CHAR), 
+	'596862374011182110423175134179201677017974934059176207194179572531874953111238') --Contraseña = migrado
+
 
 	SET @usuarioActual += 1
 END
@@ -497,19 +500,23 @@ DROP TABLE #ubicacionesIntermedia
 DROP TABLE #ubicacionesIntermediaSinNroUbicacion
 --Fin migracion
 
+INSERT INTO cheshire_jack.premios
+(nombre, stock, valor)
+VALUES('Mono de peluche', 2, 200),
+('Oso de peluche', 5, 400),
+('Remera de jesus de Laferre', 1, 1000)
+--Fin datos adicionales
+
 GO
 CREATE PROCEDURE cheshire_jack.modificar_puntos 
 (@cod_cliente INT, @cantidad NUMERIC(18,0), @fecha_actual DATE)
 AS
 BEGIN
-	DECLARE @anio_vencimiento_max INT
-	SELECT @anio_vencimiento_max = MAX(@cod_cliente) FROM GD2C2018.cheshire_jack.puntos WHERE @cod_cliente = cod_cliente
-	
-	IF EXISTS (SELECT * FROM GD2C2018.cheshire_jack.puntos WHERE @cod_cliente = cod_cliente AND YEAR(@fecha_actual) < anio_vencimiento)
+	IF EXISTS (SELECT 1 FROM GD2C2018.cheshire_jack.puntos WHERE @cod_cliente = cod_cliente AND YEAR(@fecha_actual) + 1 = anio_vencimiento)
 	BEGIN 
 		UPDATE GD2C2018.cheshire_jack.puntos
 		SET cantidad = CASE WHEN cantidad + @cantidad > 0 THEN cantidad + @cantidad ELSE 0 END
-		WHERE @cod_cliente = cod_cliente AND YEAR(@fecha_actual) = anio_vencimiento
+		WHERE @cod_cliente = cod_cliente AND YEAR(@fecha_actual) + 1 = anio_vencimiento
 	END
 	ELSE
 	BEGIN
@@ -523,16 +530,16 @@ END
 
 GO
 CREATE PROCEDURE cheshire_jack.hacer_canje
-(@cod_cliente INT, @cod_premio INT, @fecha_actual DATE)
+(@cod_cliente INT, @cod_premio INT, @fecha_actual DATETIME)
 AS
 BEGIN
-	IF (SELECT stock FROM GD2C2018.cheshire_jack.premios WHERE @cod_premio = cod_premio) > 0
+	IF (SELECT stock FROM GD2C2018.cheshire_jack.premios WHERE @cod_premio = cod_premio) = 0
 	BEGIN
 		RAISERROR('No se puede canjear algo sin stock',16, 1)
 	END
 	
 	DECLARE @cantidad_puntos_actuales NUMERIC(18,0), @costo_premio NUMERIC(18,0)
-	SELECT @cantidad_puntos_actuales = cantidad FROM GD2C2018.cheshire_jack.puntos WHERE @cod_cliente = cod_cliente AND YEAR(@fecha_actual) < anio_vencimiento
+	SELECT @cantidad_puntos_actuales = cantidad FROM GD2C2018.cheshire_jack.puntos WHERE @cod_cliente = cod_cliente AND YEAR(@fecha_actual) + 1 = anio_vencimiento
 	SELECT @costo_premio = valor FROM GD2C2018.cheshire_jack.premios WHERE cod_premio = @cod_premio
 
 	IF @cantidad_puntos_actuales IS NULL OR @cantidad_puntos_actuales < @costo_premio
@@ -542,9 +549,12 @@ BEGIN
 
 	BEGIN TRANSACTION
 		INSERT INTO GD2C2018.cheshire_jack.canjes
-		(cod_premio, cod_cliente)
+		(cod_premio, cod_cliente, fecha, nroRepeticion)
 		VALUES
-		(@cod_premio, @cod_cliente)
+		(@cod_premio, @cod_cliente, @fecha_actual, 
+			(SELECT COALESCE(MAX(nroRepeticion), 0) + 1
+			FROM cheshire_jack.canjes 
+			WHERE cod_premio = @cod_premio AND cod_cliente = @cod_cliente))
 
 		UPDATE GD2C2018.cheshire_jack.premios
 		SET stock = stock - 1
@@ -758,9 +768,72 @@ CREATE PROCEDURE cheshire_jack.CrearEmpresa
 @altura NUMERIC(18,0), @piso NUMERIC(18,0), @dept NVARCHAR(50), @codigoPostal NVARCHAR(50), 
 @mail NVARCHAR(255), @telefono CHAR(14), @CUIT NVARCHAR(14))
 AS BEGIN
-	INSERT INTO cheshire_jack.empresas
-	(razon_social, ciudad, domicilio_calle, nro_calle, piso, dept, codigo_postal, mail, telefono, CUIT, cod_usuario)
-	VALUES(@nombre, @ciudad, @domicilio, @altura, @piso, @dept, @codigoPostal, @mail, @telefono, @CUIT, @codUsuario)
+	BEGIN TRANSACTION
+		INSERT INTO cheshire_jack.usuariosXRoles
+		(cod_usuario, cod_rol)
+		VALUES(@codUsuario, 1)
+
+		INSERT INTO cheshire_jack.empresas
+		(razon_social, ciudad, domicilio_calle, nro_calle, piso, dept, codigo_postal, mail, telefono, CUIT, cod_usuario)
+		VALUES(@nombre, @ciudad, @domicilio, @altura, @piso, @dept, @codigoPostal, @mail, @telefono, @CUIT, @codUsuario)
+	COMMIT TRANSACTION
 
 	RETURN SCOPE_IDENTITY()
 END
+
+GO 
+/*
+RETORNO:
+	0 - No existe empresa con esos datos
+	1 - Ya existe alguien con ese CUIT
+	2 - Ya existe alguien con esa Razon Social
+*/
+CREATE FUNCTION cheshire_jack.existeEmpresa
+(@razonSocial NVARCHAR(255), @CUIT CHAR(14))
+RETURNS TINYINT
+AS BEGIN 
+	DECLARE @result TINYINT = 0
+
+	SELECT @result = 1 FROM cheshire_jack.empresas WHERE CUIT = @CUIT
+	SELECT @result = 2 FROM cheshire_jack.empresas WHERE razon_social = @razonSocial
+
+	RETURN @result
+END
+
+GO
+/*
+RETORNO:
+	0 - No existe empresa con esos datos
+	1 - Ya existe alguien con ese CUIL
+	2 - Ya existe alguien con ese documento
+*/
+CREATE FUNCTION cheshire_jack.existeCliente
+(@tipoDocumento VARCHAR(50), @nroDocumento NUMERIC(18,0), @CUIL CHAR(14))
+RETURNS TINYINT
+AS BEGIN
+	DECLARE @result TINYINT = 0
+
+	SELECT @result = 1 FROM cheshire_jack.clientes WHERE CUIL = @CUIL 
+	SELECT @result = 2 FROM cheshire_jack.clientes WHERE tipo_documento = @tipoDocumento AND nro_documento = @nroDocumento
+
+	RETURN @result
+END
+
+GO
+CREATE FUNCTION cheshire_jack.existeUsuario
+(@nombre VARCHAR(50))
+RETURNS BIT
+AS BEGIN
+	DECLARE @result BIT = 0
+
+	SELECT @result = 1 FROM cheshire_jack.usuarios
+	WHERE nombre_usuario = @nombre
+
+	RETURN @result
+END
+
+GO 
+CREATE VIEW cheshire_jack.vw_premios AS
+SELECT p.cod_premio, p.nombre Nombre, p.descripcion Descripcion, p.stock Disponibles, p.valor Costo
+FROM cheshire_jack.premios p
+WHERE p.stock > 0

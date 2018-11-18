@@ -38,6 +38,7 @@ namespace PalcoNet
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.Add(new SqlParameter("@nombreUsuario", nombre));
                 cmd.Parameters.Add(new SqlParameter("@contrasenia", Program.sha256(contraseñia)));
+                cmd.Parameters.Add(new SqlParameter("@automatico", true));
                 SqlParameter ret = new SqlParameter("@ret", DbType.Int32);
                 ret.Direction = ParameterDirection.ReturnValue;
                 cmd.Parameters.Add(ret);

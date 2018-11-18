@@ -68,27 +68,27 @@ namespace PalcoNet
                             break;
                         case 6:
                             this.Enabled = false;
-                            new changePassword((int)parCodUsuario.Value).ShowDialog();
+                            Program.openPopUpWindow(this, new changePassword((int)parCodUsuario.Value));
                             goto case 5;
                         case 5:
                             string queryString = "cheshire_jack.usuarioTieneMultiplesRoles";
-                            SqlCommand cmd = new SqlCommand(queryString, Program.DBconn);
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Parameters.Add(new SqlParameter("@codUsuario", (int) parCodUsuario.Value));
-                            SqlParameter ret = new SqlParameter("@ret", DbType.Int32);
-                            ret.Direction = ParameterDirection.ReturnValue;
-                            cmd.Parameters.Add(ret);
+                            using (SqlCommand cmd = new SqlCommand(queryString, Program.DBconn))
+                            {
+                                cmd.CommandType = CommandType.StoredProcedure;
+                                cmd.Parameters.Add(new SqlParameter("@codUsuario", (int)parCodUsuario.Value));
+                                SqlParameter ret = new SqlParameter("@ret", DbType.Int32);
+                                ret.Direction = ParameterDirection.ReturnValue;
+                                cmd.Parameters.Add(ret);
 
-                            cmd.ExecuteNonQuery();
+                                cmd.ExecuteNonQuery();
 
-                            if (ret.Value == DBNull.Value)
-                                MessageBox.Show("Su usuario no tiene ningun rol asignado.");
-                            else if ((int)ret.Value == 0)
-                                Program.openNextWindow(this, new RolSelection((int)parCodUsuario.Value));
-                            else
-                                Program.openNextWindow(this, new FunctionSelection((int)parCodUsuario.Value, (int)ret.Value));
-
-                            cmd.Dispose();
+                                if (ret.Value == DBNull.Value)
+                                    MessageBox.Show("Su usuario no tiene ningun rol asignado.");
+                                else if ((int)ret.Value == 0)
+                                    Program.openNextWindow(this, new RolSelection((int)parCodUsuario.Value));
+                                else
+                                    Program.openNextWindow(this, new FunctionSelection((int)parCodUsuario.Value, (int)ret.Value));
+                            }
                             PasswordText.Text = "";
                             break;
                     }

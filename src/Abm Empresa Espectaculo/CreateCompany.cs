@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -57,7 +58,7 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
                 CityBox.Text = empresa.ciudad;
                 PostalCodeBox.Text = empresa.codigoPostal;
                 CUITBox.Text = empresa.CUIT;
-                EnabledBox.Enabled = true;
+                EnabledBox.Visible = true;
                 EnabledBox.Checked = empresa.habilitado;
             }
         }
@@ -65,44 +66,77 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
         private void SaveButton_Click(object sender, EventArgs e)
         {
             bool todoBien = true;
+            int aux;
             if(String.IsNullOrWhiteSpace(SocialReasonBox.Text))
             {
                 todoBien = false;
                 MessageBox.Show("La razon social no puede estar vacia");
             }
-            if (String.IsNullOrWhiteSpace(AddressBox.Text) || String.IsNullOrWhiteSpace(AddressNroBox.Text))
+            if (todoBien && (String.IsNullOrWhiteSpace(AddressBox.Text) || String.IsNullOrWhiteSpace(AddressNroBox.Text)))
             {
                 todoBien = false;
                 MessageBox.Show("La direccion no puede estar vacia");
             }
-            if (String.IsNullOrWhiteSpace(PostalCodeBox.Text))
+            else if (todoBien && !int.TryParse(AddressNroBox.Text, out aux))
+            {
+                todoBien = false;
+                MessageBox.Show("La altura debe ser un numero");
+            }
+            if (todoBien && String.IsNullOrWhiteSpace(PostalCodeBox.Text))
             {
                 todoBien = false;
                 MessageBox.Show("El codigo postal no puede estar vacio");
             }
-            if (String.IsNullOrWhiteSpace(CUITBox.Text))
+            if (todoBien && String.IsNullOrWhiteSpace(CUITBox.Text))
             {
                 todoBien = false;
                 MessageBox.Show("El CUIT es un campo obligatorio");
             }
-            else if (!EmpresaEspectaculo.CheckCUIT(CUITBox.Text))
+            else if (todoBien && !EmpresaEspectaculo.CheckCUIT(CUITBox.Text))
             {
                 todoBien = false;
                 MessageBox.Show("El CUIT ingresado no es valido");
+            }
+            if (todoBien && String.IsNullOrWhiteSpace(MailBox.Text))
+            {
+                todoBien = false;
+                MessageBox.Show("El mail es un campo obligatorio");
+            }
+            else if (todoBien && !Regex.IsMatch(MailBox.Text, @"^.+@.+\.\w+"))
+            {
+                todoBien = false;
+                MessageBox.Show("El mail no es valido");
             }
 
             if (todoBien)
             {
                 if (edicion)
-                    empresa.updateValues(SocialReasonBox.Text, PhoneBox.Text, MailBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text, CityBox.Text, PostalCodeBox.Text, CUITBox.Text, EnabledBox.Checked).UpdateToDataBase(Program.DBconn);
+                {
+                    if (empresa.nombre != SocialReasonBox.Text && EmpresaEspectaculo.checkIfExistInDataBase(Program.DBconn, SocialReasonBox.Text, CUITBox.Text) == 2)
+                        MessageBox.Show("Ya hay una empresa registrada con esa razon social");
+                    else if (empresa.CUIT != CUITBox.Text && EmpresaEspectaculo.checkIfExistInDataBase(Program.DBconn, SocialReasonBox.Text, CUITBox.Text) == 1)
+                        MessageBox.Show("Ya hay una empresa registrada con ese CUIT");
+                    else
+                        empresa.updateValues(SocialReasonBox.Text, PhoneBox.Text, MailBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text, CityBox.Text, PostalCodeBox.Text, CUITBox.Text, EnabledBox.Checked).UpdateToDataBase(Program.DBconn);
+                }
                 else if (registroDeUsuario)
                 { }
                 else
                 {
-                    //Falta comprobacion de unicidad
-                    Usuario nuevoUsuario = Usuario.CreateToDataBase(Program.DBconn, SocialReasonBox.Text.Substring(0, 50), Program.getRandomPassword(10));
-                    EmpresaEspectaculo.CreateToDataBase(Program.DBconn, SocialReasonBox.Text, PhoneBox.Text, MailBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text, CityBox.Text, PostalCodeBox.Text, CUITBox.Text, nuevoUsuario.codUsuario);
-                    MessageBox.Show("Usuario: " + nuevoUsuario.usuario + " | Contraseña: " + nuevoUsuario.contrasenia);
+                    switch(EmpresaEspectaculo.checkIfExistInDataBase(Program.DBconn, SocialReasonBox.Text, CUITBox.Text))
+                    {
+                        case 0:
+                            Usuario nuevoUsuario = Usuario.CreateToDataBase(Program.DBconn, SocialReasonBox.Text.Substring(0, Math.Min(SocialReasonBox.Text.Length, 50)), Program.getRandomPassword(5));
+                            EmpresaEspectaculo.CreateToDataBase(Program.DBconn, SocialReasonBox.Text, PhoneBox.Text, MailBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text, CityBox.Text, PostalCodeBox.Text, CUITBox.Text, nuevoUsuario.codUsuario);
+                            MessageBox.Show("Usuario: " + nuevoUsuario.usuario + " | Contraseña: " + nuevoUsuario.contrasenia);
+                            break;
+                        case 1:
+                            MessageBox.Show("Ya existe una empresa con ese CUIT");
+                            break;
+                        case 2:
+                            MessageBox.Show("Ya existe una empresa con esa razon social");
+                            break;
+                    }
                 }
             }
         }

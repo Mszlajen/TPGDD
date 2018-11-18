@@ -57,12 +57,11 @@ namespace PalcoNet
             string queryString = "UPDATE cheshire_jack.empresas " +
                 "SET ciudad = @ciudad, domicilio_calle = @domicilio, " +
                 "nro_calle = @altura, piso = @piso, dept = @dept, " +
-                "codigo_postal = @codigoPostal, mail = @mail, CUIT = @CUIT " +
-                "WHERE cod_empresa = @codEmpresa";
+                "codigo_postal = @codigoPostal, mail = @mail, CUIT = @CUIT, " +
+                "habilitado = @habilitado WHERE cod_empresa = @codEmpresa";
 
             using (SqlCommand cmd = new SqlCommand(queryString, DB))
             {
-                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add(new SqlParameter("@ciudad", ciudad));
                 cmd.Parameters.Add(new SqlParameter("@domicilio", domicilio));
                 cmd.Parameters.Add(new SqlParameter("@altura", altura));
@@ -71,7 +70,9 @@ namespace PalcoNet
                 cmd.Parameters.Add(new SqlParameter("@codigoPostal", codigoPostal));
                 cmd.Parameters.Add(new SqlParameter("@mail", mail));
                 cmd.Parameters.Add(new SqlParameter("@CUIT", CUIT));
+                cmd.Parameters.Add(new SqlParameter("@habilitado", habilitado));
                 cmd.Parameters.Add(new SqlParameter("@codEmpresa", codEmpresa));
+                cmd.ExecuteNonQuery();
             }
             return this;
         }
@@ -85,10 +86,18 @@ namespace PalcoNet
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add(new SqlParameter("@codUsuario", codUsuario));
+                cmd.Parameters.Add(new SqlParameter("@nombre", nombre));
+                if(String.IsNullOrWhiteSpace(telefono))
+                    cmd.Parameters.Add(new SqlParameter("@telefono", DBNull.Value));
+                else
+                    cmd.Parameters.Add(new SqlParameter("@telefono", telefono));
                 cmd.Parameters.Add(new SqlParameter("@ciudad", ciudad));
                 cmd.Parameters.Add(new SqlParameter("@domicilio", domicilio));
                 cmd.Parameters.Add(new SqlParameter("@altura", altura));
-                cmd.Parameters.Add(new SqlParameter("@piso", piso));
+                if(String.IsNullOrWhiteSpace(piso))
+                    cmd.Parameters.Add(new SqlParameter("@piso", DBNull.Value));
+                else
+                    cmd.Parameters.Add(new SqlParameter("@piso", piso));
                 cmd.Parameters.Add(new SqlParameter("@dept", departamento));
                 cmd.Parameters.Add(new SqlParameter("@codigoPostal", codigoPostal));
                 cmd.Parameters.Add(new SqlParameter("@mail", mail));
@@ -96,9 +105,29 @@ namespace PalcoNet
                 SqlParameter ret = new SqlParameter("@ret", DbType.Int32);
                 ret.Direction = ParameterDirection.ReturnValue;
                 cmd.Parameters.Add(ret);
+
+                cmd.ExecuteNonQuery();
                 nueva = new EmpresaEspectaculo((int)ret.Value, nombre, telefono, mail, domicilio, altura, piso, departamento, ciudad, codigoPostal, CUIT, codUsuario);
             }
             return nueva;
+        }
+        public static byte checkIfExistInDataBase(SqlConnection DB, string nombre, string CUIT)
+        {
+            byte existe;
+            using (SqlCommand cmd = new SqlCommand("cheshire_jack.existeEmpresa", DB))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter("@razonSocial", nombre)); 
+                cmd.Parameters.Add(new SqlParameter("@CUIT", CUIT));
+                SqlParameter ret = new SqlParameter("@ret", DbType.Boolean);
+                ret.Direction = ParameterDirection.ReturnValue;
+                cmd.Parameters.Add(ret);
+
+                cmd.ExecuteNonQuery();
+
+                existe = (byte) ret.Value;
+            }
+            return existe;
         }
 
         public static bool CheckCUIT(string CUIT)
