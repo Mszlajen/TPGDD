@@ -837,3 +837,45 @@ CREATE VIEW cheshire_jack.vw_premios AS
 SELECT p.cod_premio, p.nombre Nombre, p.descripcion Descripcion, p.stock Disponibles, p.valor Costo
 FROM cheshire_jack.premios p
 WHERE p.stock > 0
+
+GO
+--Devuelve la cantidad de paginas llenas del historial
+CREATE FUNCTION cheshire_jack.obtenerTotalDePaginasDeHistorial
+(@codCliente INT, @tamPagina INT) 
+RETURNS INT
+AS BEGIN
+	DECLARE @cant INT
+	SELECT @cant = COUNT(*) / @tamPagina FROM cheshire_jack.compras WHERE @codCliente = cod_cliente
+	RETURN @cant
+END
+
+GO
+CREATE PROCEDURE cheshire_jack.obtenerPaginaDeHistorial
+(@codCliente INT, @nroPagina INT, @tamPagina INT)
+AS BEGIN
+	SELECT TOP (@tamPagina * @nroPagina) descripcion Descripcion, fecha_evento [Fecha Evento], cantidad Cantidad, fecha [Fecha Compra], 
+	metodo_pago [Metodo de Pago]
+	INTO #paginas
+	FROM cheshire_jack.compras c JOIN cheshire_jack.publicaciones p 
+		ON c.cod_publicacion = p.cod_publicacion JOIN cheshire_jack.espectaculos e
+		ON p.cod_espectaculo = e.cod_espectaculo
+	WHERE cod_cliente = @codCliente
+
+	SELECT TOP (@tamPagina) * FROM #paginas ORDER BY [Fecha Compra] DESC
+END
+
+GO 
+CREATE PROCEDURE cheshire_jack.obtenerUltimaPaginaDeHistorial
+(@codCliente INT, @tamPagina INT)
+AS BEGIN
+	DECLARE @resto INT
+	SELECT @resto = COUNT(*) % @tamPagina FROM cheshire_jack.compras WHERE cod_cliente = @codCliente
+	
+	SELECT TOP (@resto) descripcion Descripcion, fecha_evento [Fecha Evento], cantidad Cantidad, fecha [Fecha Compra], 
+	metodo_pago [Metodo de Pago]
+	FROM cheshire_jack.compras c JOIN cheshire_jack.publicaciones p 
+		ON c.cod_publicacion = p.cod_publicacion JOIN cheshire_jack.espectaculos e
+		ON p.cod_espectaculo = e.cod_espectaculo
+	WHERE cod_cliente = @codCliente
+	ORDER BY [Fecha Compra] DESC
+END

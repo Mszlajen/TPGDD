@@ -76,6 +76,8 @@ namespace PalcoNet
                     return new Abm_Empresa_Espectaculo.Selection();
                 case "Canje de Puntos":
                     return new Canje_Puntos.PointExchange(codUsuario);
+                case "Historial Cliente":
+                    return new Historial_Cliente.History(codUsuario);
                 default:
                     return new Form();
 

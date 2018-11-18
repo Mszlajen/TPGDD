@@ -29,20 +29,14 @@
         private void InitializeComponent()
         {
             this.label1 = new System.Windows.Forms.Label();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.PayMethod = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.EventDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.EventDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Address = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.AddressNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.HistoryGrid = new System.Windows.Forms.DataGridView();
             this.FirstButton = new System.Windows.Forms.Button();
             this.LastButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.PageNumText = new System.Windows.Forms.Label();
             this.NextButton = new System.Windows.Forms.Button();
             this.PreviousButton = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HistoryGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -54,69 +48,16 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Compras";
             // 
-            // dataGridView1
+            // HistoryGrid
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.PayMethod,
-            this.Date,
-            this.EventDescription,
-            this.EventDate,
-            this.Address,
-            this.AddressNum});
-            this.dataGridView1.Location = new System.Drawing.Point(13, 30);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(673, 190);
-            this.dataGridView1.TabIndex = 1;
-            // 
-            // PayMethod
-            // 
-            this.PayMethod.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.PayMethod.HeaderText = "Metodo de pago";
-            this.PayMethod.Name = "PayMethod";
-            this.PayMethod.ReadOnly = true;
-            this.PayMethod.Width = 79;
-            // 
-            // Date
-            // 
-            this.Date.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.Date.HeaderText = "Fecha";
-            this.Date.Name = "Date";
-            this.Date.ReadOnly = true;
-            this.Date.Width = 62;
-            // 
-            // EventDescription
-            // 
-            this.EventDescription.HeaderText = "Descripcion Espectaculo";
-            this.EventDescription.Name = "EventDescription";
-            this.EventDescription.ReadOnly = true;
-            // 
-            // EventDate
-            // 
-            this.EventDate.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.EventDate.HeaderText = "Fecha espectaculo";
-            this.EventDate.Name = "EventDate";
-            this.EventDate.ReadOnly = true;
-            this.EventDate.Width = 113;
-            // 
-            // Address
-            // 
-            this.Address.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.Address.HeaderText = "Direccion";
-            this.Address.Name = "Address";
-            this.Address.ReadOnly = true;
-            this.Address.Width = 77;
-            // 
-            // AddressNum
-            // 
-            this.AddressNum.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.AddressNum.HeaderText = "Altura";
-            this.AddressNum.Name = "AddressNum";
-            this.AddressNum.ReadOnly = true;
-            this.AddressNum.Width = 59;
+            this.HistoryGrid.AllowUserToAddRows = false;
+            this.HistoryGrid.AllowUserToDeleteRows = false;
+            this.HistoryGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.HistoryGrid.Location = new System.Drawing.Point(16, 29);
+            this.HistoryGrid.Name = "HistoryGrid";
+            this.HistoryGrid.ReadOnly = true;
+            this.HistoryGrid.Size = new System.Drawing.Size(673, 190);
+            this.HistoryGrid.TabIndex = 1;
             // 
             // FirstButton
             // 
@@ -126,6 +67,7 @@
             this.FirstButton.TabIndex = 2;
             this.FirstButton.Text = "Primera";
             this.FirstButton.UseVisualStyleBackColor = true;
+            this.FirstButton.Click += new System.EventHandler(this.FirstButton_Click);
             // 
             // LastButton
             // 
@@ -135,6 +77,7 @@
             this.LastButton.TabIndex = 3;
             this.LastButton.Text = "Ultima";
             this.LastButton.UseVisualStyleBackColor = true;
+            this.LastButton.Click += new System.EventHandler(this.LastButton_Click);
             // 
             // label2
             // 
@@ -148,7 +91,7 @@
             // PageNumText
             // 
             this.PageNumText.AutoSize = true;
-            this.PageNumText.Location = new System.Drawing.Point(360, 186);
+            this.PageNumText.Location = new System.Drawing.Point(360, 226);
             this.PageNumText.Name = "PageNumText";
             this.PageNumText.Size = new System.Drawing.Size(0, 13);
             this.PageNumText.TabIndex = 5;
@@ -161,6 +104,7 @@
             this.NextButton.TabIndex = 3;
             this.NextButton.Text = "Siguiente";
             this.NextButton.UseVisualStyleBackColor = true;
+            this.NextButton.Click += new System.EventHandler(this.NextButton_Click);
             // 
             // PreviousButton
             // 
@@ -170,8 +114,9 @@
             this.PreviousButton.TabIndex = 2;
             this.PreviousButton.Text = "Anterior";
             this.PreviousButton.UseVisualStyleBackColor = true;
+            this.PreviousButton.Click += new System.EventHandler(this.PreviousButton_Click);
             // 
-            // Form1
+            // History
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -182,11 +127,12 @@
             this.Controls.Add(this.LastButton);
             this.Controls.Add(this.PreviousButton);
             this.Controls.Add(this.FirstButton);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.HistoryGrid);
             this.Controls.Add(this.label1);
-            this.Name = "Form1";
-            this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.Name = "History";
+            this.Text = "Historial de Compras";
+            this.Load += new System.EventHandler(this.History_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.HistoryGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -195,13 +141,7 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PayMethod;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Date;
-        private System.Windows.Forms.DataGridViewTextBoxColumn EventDescription;
-        private System.Windows.Forms.DataGridViewTextBoxColumn EventDate;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Address;
-        private System.Windows.Forms.DataGridViewTextBoxColumn AddressNum;
+        private System.Windows.Forms.DataGridView HistoryGrid;
         private System.Windows.Forms.Button FirstButton;
         private System.Windows.Forms.Button LastButton;
         private System.Windows.Forms.Label label2;
