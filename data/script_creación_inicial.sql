@@ -701,8 +701,8 @@ AS BEGIN
 END
 
 GO --Funcion auxiliar para UpdateRolesXFuncionalidades
-CREATE FUNCTION cheshire_jack.SplitList (@list VARCHAR(MAX), @separator CHAR = ' ')
-RETURNS @table TABLE (Value VARCHAR(MAX))
+CREATE FUNCTION cheshire_jack.SplitList (@list NVARCHAR(MAX), @separator CHAR = ' ')
+RETURNS @table TABLE (Value NVARCHAR(MAX))
 AS BEGIN
   DECLARE @position INT, @previous INT
   SET @list = @list + @separator
@@ -951,4 +951,133 @@ AS BEGIN
 	COMMIT TRANSACTION
 
 	RETURN @nroFactura
+END
+
+GO
+CREATE VIEW cheshire_jack.vw_rubros AS
+SELECT cod_rubro, descripcion Nombre FROM cheshire_jack.rubros
+
+GO 
+CREATE FUNCTION cheshire_jack.SplitUbicacion
+(@ubicacion NVARCHAR(MAX), @separador CHAR)
+RETURNS @table TABLE (sinNumerar BIT, fila VARCHAR(3), asiento NUMERIC(18,0), precio NUMERIC(18,0), tipoAsiento INT)
+AS BEGIN
+	DECLARE @sinNumerar BIT, @fila VARCHAR(3), @asiento NUMERIC(18,0), @precio NUMERIC(18,0), @tipo INT
+
+	DECLARE @separadorSiguiente BIGINT = CHARINDEX(@separador, @ubicacion), @separadorAnterior BIGINT = 1
+
+	SET @sinNumerar = SUBSTRING(@ubicacion, 1, @separadorSiguiente - 1)
+	
+	SET @separadorAnterior = @separadorSiguiente
+	SET @separadorSiguiente = CHARINDEX(@separador, @ubicacion, @separadorSiguiente + 1)
+
+	SET @fila = SUBSTRING(@ubicacion, @separadorAnterior + 1, @separadorSiguiente - @separadorAnterior)
+
+	SET @separadorAnterior = @separadorSiguiente
+	SET @separadorSiguiente = CHARINDEX(@separador, @ubicacion, @separadorSiguiente + 1)
+
+	SET @asiento = CAST(SUBSTRING(@ubicacion, @separadorAnterior + 1, @separadorSiguiente - @separadorAnterior) AS NUMERIC(18,0))
+
+	SET @separadorAnterior = @separadorSiguiente
+	SET @separadorSiguiente = CHARINDEX(@separador, @ubicacion, @separadorSiguiente + 1)
+
+	SET @precio = CAST(SUBSTRING(@ubicacion, @separadorAnterior + 1, @separadorSiguiente - @separadorAnterior) AS NUMERIC(18,0))
+
+	SET @separadorAnterior = @separadorSiguiente
+	SET @separadorSiguiente = LEN(@ubicacion)
+
+	SET @tipo = CAST(SUBSTRING(@ubicacion, @separadorAnterior + 1, @separadorSiguiente - @separadorAnterior) AS INT)
+
+	INSERT INTO @table
+	VALUES(@sinNumerar, @fila, @asiento, @precio, @tipo)
+
+	RETURN
+END
+
+GO
+CREATE PROCEDURE cheshire_jack.crearEvento
+(@codEmpresa INT, @codRubro INT, @codGrado INT, @descripcion NVARCHAR(255), 
+@direccion NVARCHAR(255), @altura NUMERIC(18,0), @fechas VARCHAR(MAX), 
+@ubicaciones NVARCHAR(MAX), @estado INT, @fechaPublicacion DATETIME = NULL)
+AS BEGIN
+	DECLARE @codEspectaculo NUMERIC(18,0), @codPublicacion NUMERIC(18,0), 
+	@cantPublicaciones INT, @contador INT = 1
+	BEGIN TRANSACTION
+		INSERT INTO cheshire_jack.espectaculos
+		(cod_empresa, cod_rubro, descripcion, direccion, altura)
+		VALUES(@codEmpresa, @codRubro, @descripcion, @direccion, @altura)
+
+		SET @codEspectaculo = SCOPE_IDENTITY()
+
+		SELECT Value fecha INTO #fechas FROM SplitList(@fechas, '@')
+
+		SELECT @cantPublicaciones = COUNT(*) FROM #fechas
+		SET @codPublicacion = IDENT_CURRENT('cheshire_jack.publicaciones')
+
+		INSERT INTO cheshire_jack.publicaciones
+		(cod_espectaculo, cod_estado, cod_grado, fecha_publicacion, fecha_evento)
+		SELECT @codEspectaculo, @estado, @codGrado, @fechaPublicacion, fecha
+		FROM #fechas
+
+		CREATE TABLE #ubicaciones (
+			sinNumerar BIT, 
+			fila VARCHAR(3), 
+			asiento NUMERIC(18,0), 
+			precio NUMERIC(18,0),
+			tipo INT)
+
+		DECLARE @pSig BIGINT = CHARINDEX('@', @ubicaciones, 1), @pAnt BIGINT = 0
+
+		WHILE @pSig != 0
+		BEGIN
+			INSERT INTO #ubicaciones
+			SELECT * 
+			FROM cheshire_jack.SplitUbicacion(SUBSTRING(@ubicaciones, @pAnt + 1, @pSig - @pAnt - 1), ' ')
+
+			SET @pAnt = @pSig
+			SET @pSig = CHARINDEX('@', @ubicaciones, @pSig + 1)
+		END
+
+		WHILE @contador <= @cantPublicaciones
+		BEGIN
+			INSERT INTO cheshire_jack.ubicaciones
+			(cod_publicacion, nro_ubicacion, asiento, fila, sin_numerar, precio, cod_tipo)
+			SELECT @codPublicacion + @contador, ROW_NUMBER() OVER(ORDER BY (SELECT 1)), 
+					asiento, fila, sinNumerar, precio, tipo
+			FROM #ubicaciones
+
+			SET @contador += 1
+		END
+
+	COMMIT TRANSACTION
+
+	RETURN CAST(@codEspectaculo AS BIGINT)
+END
+
+GO
+CREATE PROCEDURE cheshire_jack.publicacionesDe
+(@codEmpresa INT, @estado INT = NULL)
+AS BEGIN
+	SELECT p.cod_publicacion, e.descripcion Descripcion, p.fecha_evento Fecha, 
+	gp.cod_grado, gp.nombre [Grado de Publicacion], r.cod_rubro, r.descripcion Rubro,
+	est.cod_estado, est.nombre Estado
+	FROM cheshire_jack.publicaciones p JOIN 
+	cheshire_jack.espectaculos e ON p.cod_espectaculo = e.cod_espectaculo JOIN
+	cheshire_jack.grados_de_publicacion gp ON gp.cod_grado = p.cod_grado JOIN
+	cheshire_jack.rubros r ON e.cod_rubro = r.cod_rubro JOIN
+	cheshire_jack.estados est ON p.cod_estado = est.cod_estado
+	WHERE e.cod_empresa = @codEmpresa AND (@estado IS NULL OR p.cod_estado = @estado)
+END
+
+GO
+CREATE VIEW cheshire_jack.vw_estados AS
+SELECT cod_estado, nombre FROM cheshire_jack.estados
+
+GO
+CREATE PROCEDURE cheshire_jack.modificarEstado
+(@codPublicacion NUMERIC(18,0), @estado INT)
+AS BEGIN
+	UPDATE cheshire_jack.publicaciones
+	SET cod_estado = @estado
+	WHERE @codPublicacion = cod_publicacion
 END

@@ -12,7 +12,7 @@ namespace PalcoNet.Editar_Publicacion
 {
     public partial class EditPublication : Form
     {
-        public EditPublication()
+        public EditPublication(int _codPublicacion)
         {
             InitializeComponent();
         }

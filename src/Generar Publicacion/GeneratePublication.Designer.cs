@@ -1,6 +1,6 @@
 ﻿namespace PalcoNet.Generar_Publicacion
 {
-    partial class Form1
+    partial class GeneratePublication
     {
         /// <summary>
         /// Required designer variable.
@@ -32,8 +32,8 @@
             this.DescriptionBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.EventDatePicker = new System.Windows.Forms.DateTimePicker();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.BatchDatesCheck = new System.Windows.Forms.CheckBox();
+            this.BatchDatesButton = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.CategoryBox = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -44,13 +44,17 @@
             this.SketchButton = new System.Windows.Forms.Button();
             this.PostButton = new System.Windows.Forms.Button();
             this.CancelButton = new System.Windows.Forms.Button();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.SeatsGrid = new System.Windows.Forms.DataGridView();
             this.Numbered = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Row = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Seat = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SeatType = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.AddressText = new System.Windows.Forms.TextBox();
+            this.AddressNroText = new System.Windows.Forms.TextBox();
+            ((System.ComponentModel.ISupportInitialize)(this.SeatsGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -67,7 +71,7 @@
             this.DescriptionBox.Location = new System.Drawing.Point(16, 30);
             this.DescriptionBox.Multiline = true;
             this.DescriptionBox.Name = "DescriptionBox";
-            this.DescriptionBox.Size = new System.Drawing.Size(248, 131);
+            this.DescriptionBox.Size = new System.Drawing.Size(248, 91);
             this.DescriptionBox.TabIndex = 1;
             // 
             // label2
@@ -81,30 +85,34 @@
             // 
             // EventDatePicker
             // 
+            this.EventDatePicker.CustomFormat = "";
+            this.EventDatePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.EventDatePicker.Location = new System.Drawing.Point(16, 188);
             this.EventDatePicker.Name = "EventDatePicker";
             this.EventDatePicker.Size = new System.Drawing.Size(200, 20);
             this.EventDatePicker.TabIndex = 3;
             // 
-            // checkBox1
+            // BatchDatesCheck
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(60, 168);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(119, 17);
-            this.checkBox1.TabIndex = 4;
-            this.checkBox1.Text = "Publicación por lote";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.BatchDatesCheck.AutoSize = true;
+            this.BatchDatesCheck.Location = new System.Drawing.Point(60, 168);
+            this.BatchDatesCheck.Name = "BatchDatesCheck";
+            this.BatchDatesCheck.Size = new System.Drawing.Size(119, 17);
+            this.BatchDatesCheck.TabIndex = 4;
+            this.BatchDatesCheck.Text = "Publicación por lote";
+            this.BatchDatesCheck.UseVisualStyleBackColor = true;
+            this.BatchDatesCheck.CheckedChanged += new System.EventHandler(this.BatchDatesCheck_CheckedChanged);
             // 
-            // button1
+            // BatchDatesButton
             // 
-            this.button1.Location = new System.Drawing.Point(226, 185);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(46, 23);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "Editar";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Visible = false;
+            this.BatchDatesButton.Location = new System.Drawing.Point(226, 185);
+            this.BatchDatesButton.Name = "BatchDatesButton";
+            this.BatchDatesButton.Size = new System.Drawing.Size(46, 23);
+            this.BatchDatesButton.TabIndex = 5;
+            this.BatchDatesButton.Text = "Editar";
+            this.BatchDatesButton.UseVisualStyleBackColor = true;
+            this.BatchDatesButton.Visible = false;
+            this.BatchDatesButton.Click += new System.EventHandler(this.BatchDatesButton_Click);
             // 
             // label3
             // 
@@ -149,7 +157,7 @@
             this.shapeContainer1.Name = "shapeContainer1";
             this.shapeContainer1.Shapes.AddRange(new Microsoft.VisualBasic.PowerPacks.Shape[] {
             this.lineShape1});
-            this.shapeContainer1.Size = new System.Drawing.Size(681, 313);
+            this.shapeContainer1.Size = new System.Drawing.Size(690, 313);
             this.shapeContainer1.TabIndex = 10;
             this.shapeContainer1.TabStop = false;
             // 
@@ -169,7 +177,6 @@
             this.label5.Size = new System.Drawing.Size(66, 13);
             this.label5.TabIndex = 12;
             this.label5.Text = "Ubicaciones";
-            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // SketchButton
             // 
@@ -179,6 +186,7 @@
             this.SketchButton.TabIndex = 16;
             this.SketchButton.Text = "Guardar como borrador";
             this.SketchButton.UseVisualStyleBackColor = true;
+            this.SketchButton.Click += new System.EventHandler(this.SketchButton_Click);
             // 
             // PostButton
             // 
@@ -188,6 +196,7 @@
             this.PostButton.TabIndex = 16;
             this.PostButton.Text = "Publicar";
             this.PostButton.UseVisualStyleBackColor = true;
+            this.PostButton.Click += new System.EventHandler(this.PostButton_Click);
             // 
             // CancelButton
             // 
@@ -197,42 +206,53 @@
             this.CancelButton.TabIndex = 16;
             this.CancelButton.Text = "Cancelar";
             this.CancelButton.UseVisualStyleBackColor = true;
+            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
-            // dataGridView1
+            // SeatsGrid
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.SeatsGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.SeatsGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Numbered,
             this.Row,
             this.Seat,
             this.Price,
             this.SeatType});
-            this.dataGridView1.Location = new System.Drawing.Point(294, 30);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(373, 206);
-            this.dataGridView1.TabIndex = 35;
+            this.SeatsGrid.Location = new System.Drawing.Point(294, 30);
+            this.SeatsGrid.Name = "SeatsGrid";
+            this.SeatsGrid.Size = new System.Drawing.Size(382, 206);
+            this.SeatsGrid.TabIndex = 35;
             // 
             // Numbered
             // 
-            this.Numbered.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Numbered.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Numbered.FalseValue = "0";
             this.Numbered.HeaderText = "Numerada";
             this.Numbered.Name = "Numbered";
-            this.Numbered.Width = 62;
+            this.Numbered.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Numbered.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.Numbered.TrueValue = "1";
+            this.Numbered.Width = 81;
             // 
             // Row
             // 
+            this.Row.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Row.HeaderText = "Fila";
             this.Row.Name = "Row";
+            this.Row.Width = 48;
             // 
             // Seat
             // 
+            this.Seat.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Seat.HeaderText = "Asiento";
             this.Seat.Name = "Seat";
+            this.Seat.Width = 67;
             // 
             // Price
             // 
+            this.Price.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Price.HeaderText = "Precio";
             this.Price.Name = "Price";
+            this.Price.Width = 62;
             // 
             // SeatType
             // 
@@ -241,12 +261,48 @@
             this.SeatType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.SeatType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
-            // Form1
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(12, 128);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(52, 13);
+            this.label6.TabIndex = 36;
+            this.label6.Text = "Dirección";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(183, 128);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(34, 13);
+            this.label7.TabIndex = 37;
+            this.label7.Text = "Altura";
+            // 
+            // AddressText
+            // 
+            this.AddressText.Location = new System.Drawing.Point(16, 145);
+            this.AddressText.Name = "AddressText";
+            this.AddressText.Size = new System.Drawing.Size(163, 20);
+            this.AddressText.TabIndex = 38;
+            // 
+            // AddressNroText
+            // 
+            this.AddressNroText.Location = new System.Drawing.Point(186, 145);
+            this.AddressNroText.Name = "AddressNroText";
+            this.AddressNroText.Size = new System.Drawing.Size(78, 20);
+            this.AddressNroText.TabIndex = 39;
+            // 
+            // GeneratePublication
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(681, 313);
-            this.Controls.Add(this.dataGridView1);
+            this.ClientSize = new System.Drawing.Size(690, 313);
+            this.Controls.Add(this.AddressNroText);
+            this.Controls.Add(this.AddressText);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.SeatsGrid);
             this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.PostButton);
             this.Controls.Add(this.SketchButton);
@@ -255,16 +311,18 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.CategoryBox);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.BatchDatesButton);
+            this.Controls.Add(this.BatchDatesCheck);
             this.Controls.Add(this.EventDatePicker);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.DescriptionBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.shapeContainer1);
-            this.Name = "Form1";
-            this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.Name = "GeneratePublication";
+            this.Text = "Generar Publicacion";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GeneratePublication_FormClosing);
+            this.Load += new System.EventHandler(this.GeneratePublication_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.SeatsGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -276,8 +334,8 @@
         private System.Windows.Forms.TextBox DescriptionBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.DateTimePicker EventDatePicker;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox BatchDatesCheck;
+        private System.Windows.Forms.Button BatchDatesButton;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox CategoryBox;
         private System.Windows.Forms.Label label4;
@@ -288,7 +346,11 @@
         private System.Windows.Forms.Button SketchButton;
         private System.Windows.Forms.Button PostButton;
         private System.Windows.Forms.Button CancelButton;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView SeatsGrid;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox AddressText;
+        private System.Windows.Forms.TextBox AddressNroText;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Numbered;
         private System.Windows.Forms.DataGridViewTextBoxColumn Row;
         private System.Windows.Forms.DataGridViewTextBoxColumn Seat;

@@ -72,37 +72,37 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
                 todoBien = false;
                 MessageBox.Show("La razon social no puede estar vacia");
             }
-            if (todoBien && (String.IsNullOrWhiteSpace(AddressBox.Text) || String.IsNullOrWhiteSpace(AddressNroBox.Text)))
+            if (String.IsNullOrWhiteSpace(AddressBox.Text) || String.IsNullOrWhiteSpace(AddressNroBox.Text))
             {
                 todoBien = false;
                 MessageBox.Show("La direccion no puede estar vacia");
             }
-            else if (todoBien && !int.TryParse(AddressNroBox.Text, out aux))
+            else if (!int.TryParse(AddressNroBox.Text, out aux))
             {
                 todoBien = false;
                 MessageBox.Show("La altura debe ser un numero");
             }
-            if (todoBien && String.IsNullOrWhiteSpace(PostalCodeBox.Text))
+            if (String.IsNullOrWhiteSpace(PostalCodeBox.Text))
             {
                 todoBien = false;
                 MessageBox.Show("El codigo postal no puede estar vacio");
             }
-            if (todoBien && String.IsNullOrWhiteSpace(CUITBox.Text))
+            if (String.IsNullOrWhiteSpace(CUITBox.Text))
             {
                 todoBien = false;
                 MessageBox.Show("El CUIT es un campo obligatorio");
             }
-            else if (todoBien && !EmpresaEspectaculo.CheckCUIT(CUITBox.Text))
+            else if (!EmpresaEspectaculo.CheckCUIT(CUITBox.Text))
             {
                 todoBien = false;
                 MessageBox.Show("El CUIT ingresado no es valido");
             }
-            if (todoBien && String.IsNullOrWhiteSpace(MailBox.Text))
+            if (String.IsNullOrWhiteSpace(MailBox.Text))
             {
                 todoBien = false;
                 MessageBox.Show("El mail es un campo obligatorio");
             }
-            else if (todoBien && !Regex.IsMatch(MailBox.Text, @"^.+@.+\.\w+"))
+            else if (!Regex.IsMatch(MailBox.Text, @"^.+@.+\.\w+"))
             {
                 todoBien = false;
                 MessageBox.Show("El mail no es valido");

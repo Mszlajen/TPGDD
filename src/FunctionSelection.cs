@@ -80,6 +80,10 @@ namespace PalcoNet
                     return new Historial_Cliente.History(codUsuario);
                 case "Generar Rendicion de Comisiones":
                     return new Generar_Rendicion_Comisiones.SelectCompany();
+                case "Generar Publicacion":
+                    return new Generar_Publicacion.GeneratePublication(codUsuario);
+                case "Editar Publicacion":
+                    return new Editar_Publicacion.SearchPublication(codUsuario);
                 default:
                     return new Form();
 
