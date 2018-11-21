@@ -39,35 +39,42 @@
             this.label2 = new System.Windows.Forms.Label();
             this.DescriptionBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Numbered = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.SeatsGrid = new System.Windows.Forms.DataGridView();
+            this.SaveButton = new System.Windows.Forms.Button();
+            this.shapeContainer1 = new Microsoft.VisualBasic.PowerPacks.ShapeContainer();
+            this.lineShape1 = new Microsoft.VisualBasic.PowerPacks.LineShape();
+            this.AddressNroText = new System.Windows.Forms.TextBox();
+            this.AddressText = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.DeleteButton = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.NotNumbered = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Row = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Seat = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SeatType = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.SaveButton = new System.Windows.Forms.Button();
-            this.shapeContainer1 = new Microsoft.VisualBasic.PowerPacks.ShapeContainer();
-            this.lineShape1 = new Microsoft.VisualBasic.PowerPacks.LineShape();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SeatsGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // CancelButton
             // 
-            this.CancelButton.Location = new System.Drawing.Point(520, 255);
+            this.CancelButton.Location = new System.Drawing.Point(553, 255);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(82, 40);
             this.CancelButton.TabIndex = 33;
             this.CancelButton.Text = "Cancelar";
             this.CancelButton.UseVisualStyleBackColor = true;
+            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // PostButton
             // 
-            this.PostButton.Location = new System.Drawing.Point(432, 255);
+            this.PostButton.Location = new System.Drawing.Point(465, 255);
             this.PostButton.Name = "PostButton";
             this.PostButton.Size = new System.Drawing.Size(82, 40);
             this.PostButton.TabIndex = 32;
             this.PostButton.Text = "Publicar";
             this.PostButton.UseVisualStyleBackColor = true;
+            this.PostButton.Click += new System.EventHandler(this.PostButton_Click);
             // 
             // label5
             // 
@@ -116,6 +123,7 @@
             // 
             // EventDatePicker
             // 
+            this.EventDatePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.EventDatePicker.Location = new System.Drawing.Point(12, 187);
             this.EventDatePicker.Name = "EventDatePicker";
             this.EventDatePicker.Size = new System.Drawing.Size(200, 20);
@@ -135,7 +143,7 @@
             this.DescriptionBox.Location = new System.Drawing.Point(12, 29);
             this.DescriptionBox.Multiline = true;
             this.DescriptionBox.Name = "DescriptionBox";
-            this.DescriptionBox.Size = new System.Drawing.Size(248, 131);
+            this.DescriptionBox.Size = new System.Drawing.Size(248, 95);
             this.DescriptionBox.TabIndex = 18;
             // 
             // label1
@@ -147,57 +155,33 @@
             this.label1.TabIndex = 17;
             this.label1.Text = "Descripción";
             // 
-            // dataGridView1
+            // SeatsGrid
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Numbered,
+            this.SeatsGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.SeatsGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.DeleteButton,
+            this.NotNumbered,
             this.Row,
             this.Seat,
             this.Price,
             this.SeatType});
-            this.dataGridView1.Location = new System.Drawing.Point(282, 27);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(373, 150);
-            this.dataGridView1.TabIndex = 34;
-            // 
-            // Numbered
-            // 
-            this.Numbered.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Numbered.HeaderText = "Numerada";
-            this.Numbered.Name = "Numbered";
-            this.Numbered.Width = 62;
-            // 
-            // Row
-            // 
-            this.Row.HeaderText = "Fila";
-            this.Row.Name = "Row";
-            // 
-            // Seat
-            // 
-            this.Seat.HeaderText = "Asiento";
-            this.Seat.Name = "Seat";
-            // 
-            // Price
-            // 
-            this.Price.HeaderText = "Precio";
-            this.Price.Name = "Price";
-            // 
-            // SeatType
-            // 
-            this.SeatType.HeaderText = "Tipo de Asiento";
-            this.SeatType.Name = "SeatType";
-            this.SeatType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.SeatType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.SeatsGrid.Location = new System.Drawing.Point(282, 27);
+            this.SeatsGrid.Name = "SeatsGrid";
+            this.SeatsGrid.Size = new System.Drawing.Size(449, 221);
+            this.SeatsGrid.TabIndex = 34;
+            this.SeatsGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SeatsGrid_CellContentClick);
+            this.SeatsGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.SeatsGrid_CellEndEdit);
+            this.SeatsGrid.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.SeatsGrid_RowsAdded);
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(344, 255);
+            this.SaveButton.Location = new System.Drawing.Point(377, 255);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(82, 40);
             this.SaveButton.TabIndex = 35;
             this.SaveButton.Text = "Guardar como borrador";
             this.SaveButton.UseVisualStyleBackColor = true;
+            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
             // shapeContainer1
             // 
@@ -206,7 +190,7 @@
             this.shapeContainer1.Name = "shapeContainer1";
             this.shapeContainer1.Shapes.AddRange(new Microsoft.VisualBasic.PowerPacks.Shape[] {
             this.lineShape1});
-            this.shapeContainer1.Size = new System.Drawing.Size(667, 308);
+            this.shapeContainer1.Size = new System.Drawing.Size(746, 308);
             this.shapeContainer1.TabIndex = 36;
             this.shapeContainer1.TabStop = false;
             // 
@@ -218,13 +202,98 @@
             this.lineShape1.Y1 = 13;
             this.lineShape1.Y2 = 296;
             // 
+            // AddressNroText
+            // 
+            this.AddressNroText.Location = new System.Drawing.Point(182, 144);
+            this.AddressNroText.Name = "AddressNroText";
+            this.AddressNroText.Size = new System.Drawing.Size(78, 20);
+            this.AddressNroText.TabIndex = 43;
+            // 
+            // AddressText
+            // 
+            this.AddressText.Location = new System.Drawing.Point(12, 144);
+            this.AddressText.Name = "AddressText";
+            this.AddressText.Size = new System.Drawing.Size(163, 20);
+            this.AddressText.TabIndex = 42;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(179, 127);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(34, 13);
+            this.label7.TabIndex = 41;
+            this.label7.Text = "Altura";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(8, 127);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(52, 13);
+            this.label6.TabIndex = 40;
+            this.label6.Text = "Dirección";
+            // 
+            // DeleteButton
+            // 
+            this.DeleteButton.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.DeleteButton.HeaderText = "Borrar";
+            this.DeleteButton.Name = "DeleteButton";
+            this.DeleteButton.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.DeleteButton.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.DeleteButton.Width = 60;
+            // 
+            // NotNumbered
+            // 
+            this.NotNumbered.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.NotNumbered.FalseValue = "0";
+            this.NotNumbered.HeaderText = "Sin Numerar";
+            this.NotNumbered.IndeterminateValue = "0";
+            this.NotNumbered.Name = "NotNumbered";
+            this.NotNumbered.TrueValue = "1";
+            this.NotNumbered.Width = 71;
+            // 
+            // Row
+            // 
+            this.Row.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Row.HeaderText = "Fila";
+            this.Row.Name = "Row";
+            this.Row.Width = 48;
+            // 
+            // Seat
+            // 
+            this.Seat.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Seat.HeaderText = "Asiento";
+            this.Seat.Name = "Seat";
+            this.Seat.Width = 67;
+            // 
+            // Price
+            // 
+            this.Price.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Price.HeaderText = "Precio";
+            this.Price.Name = "Price";
+            this.Price.Width = 62;
+            // 
+            // SeatType
+            // 
+            this.SeatType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.SeatType.HeaderText = "Tipo de Asiento";
+            this.SeatType.Name = "SeatType";
+            this.SeatType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.SeatType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.SeatType.Width = 97;
+            // 
             // EditPublication
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(667, 308);
+            this.ClientSize = new System.Drawing.Size(746, 308);
+            this.Controls.Add(this.AddressNroText);
+            this.Controls.Add(this.AddressText);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.SaveButton);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.SeatsGrid);
             this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.PostButton);
             this.Controls.Add(this.label5);
@@ -239,7 +308,8 @@
             this.Controls.Add(this.shapeContainer1);
             this.Name = "EditPublication";
             this.Text = "EditPublication";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.Load += new System.EventHandler(this.EditPublication_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.SeatsGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -258,15 +328,20 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox DescriptionBox;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Numbered;
+        private System.Windows.Forms.DataGridView SeatsGrid;
+        private System.Windows.Forms.Button SaveButton;
+        private Microsoft.VisualBasic.PowerPacks.ShapeContainer shapeContainer1;
+        private Microsoft.VisualBasic.PowerPacks.LineShape lineShape1;
+        private System.Windows.Forms.TextBox AddressNroText;
+        private System.Windows.Forms.TextBox AddressText;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.DataGridViewButtonColumn DeleteButton;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn NotNumbered;
         private System.Windows.Forms.DataGridViewTextBoxColumn Row;
         private System.Windows.Forms.DataGridViewTextBoxColumn Seat;
         private System.Windows.Forms.DataGridViewTextBoxColumn Price;
         private System.Windows.Forms.DataGridViewComboBoxColumn SeatType;
-        private System.Windows.Forms.Button SaveButton;
-        private Microsoft.VisualBasic.PowerPacks.ShapeContainer shapeContainer1;
-        private Microsoft.VisualBasic.PowerPacks.LineShape lineShape1;
 
     }
 }

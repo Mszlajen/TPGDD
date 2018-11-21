@@ -14,10 +14,12 @@ namespace PalcoNet
     public partial class changePassword : Form
     {
         private int codUsuario;
-        public changePassword(int _codUsuario)
+        private string text;
+        public changePassword(int _codUsuario, string texto)
         {
-            codUsuario = _codUsuario;
             InitializeComponent();
+            codUsuario = _codUsuario;
+            text = texto;
         }
 
         private void ShowPasswordBox_CheckStateChanged(object sender, EventArgs e)
@@ -42,6 +44,11 @@ namespace PalcoNet
                 MessageBox.Show("Cambio realizado");
                 this.Close();
             }
+        }
+
+        private void changePassword_Load(object sender, EventArgs e)
+        {
+            label1.Text = text;
         }
     }
 }

@@ -16,7 +16,6 @@ namespace PalcoNet.Canje_Puntos
         DataTable premios = new DataTable();
         int codUsuario, codCliente;
         double puntos = 0;
-        bool esCliente = true;
 
         public PointExchange(int _codUsuario)
         {
@@ -33,12 +32,11 @@ namespace PalcoNet.Canje_Puntos
             ExchangeGrid.DataSource = premios;
             ExchangeGrid.Columns["cod_premio"].Visible = false;
 
-            cmd.CommandText = "SELECT cod_cliente FROM cheshire_jack.clientes WHERE cod_usuario = @cod_usuario";
+            cmd.CommandText = "SELECT cod_cliente FROM cheshire_jack.clientes WHERE cod_usuario = @cod_usuario AND habilitado = 1";
             cmd.Parameters.Add(new SqlParameter("@cod_usuario", codUsuario));
             resultadoQuery = cmd.ExecuteReader();
             if (!resultadoQuery.Read())
             {
-                esCliente = false;
                 MessageBox.Show("Este usuario no tiene informacion de cliente y no podra terminar las operaciones");
             }
             else

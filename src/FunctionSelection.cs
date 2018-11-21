@@ -84,6 +84,10 @@ namespace PalcoNet
                     return new Generar_Publicacion.GeneratePublication(codUsuario);
                 case "Editar Publicacion":
                     return new Editar_Publicacion.SearchPublication(codUsuario);
+                case "Cambiar Contraseña":
+                    return new changePassword(codUsuario, "Ingrese su nueva contraseña");
+                case "Editar Usuario":
+                    return new Editar_Usuario.list();
                 default:
                     return new Form();
 

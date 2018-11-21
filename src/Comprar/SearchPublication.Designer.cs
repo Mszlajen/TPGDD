@@ -29,11 +29,6 @@
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Address = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.AddressNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Rubro = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.BuyButton = new System.Windows.Forms.DataGridViewButtonColumn();
             this.label1 = new System.Windows.Forms.Label();
             this.TagBox = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -49,6 +44,9 @@
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.PageNumText = new System.Windows.Forms.Label();
+            this.BuyButton = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.FromCheck = new System.Windows.Forms.CheckBox();
+            this.ToCheck = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -58,47 +56,11 @@
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Description,
-            this.Address,
-            this.AddressNum,
-            this.Rubro,
             this.BuyButton});
             this.dataGridView1.Location = new System.Drawing.Point(12, 146);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(667, 209);
             this.dataGridView1.TabIndex = 0;
-            // 
-            // Description
-            // 
-            this.Description.HeaderText = "Descripcion";
-            this.Description.Name = "Description";
-            this.Description.ReadOnly = true;
-            // 
-            // Address
-            // 
-            this.Address.HeaderText = "Dirección";
-            this.Address.Name = "Address";
-            this.Address.ReadOnly = true;
-            // 
-            // AddressNum
-            // 
-            this.AddressNum.HeaderText = "Altura";
-            this.AddressNum.Name = "AddressNum";
-            this.AddressNum.ReadOnly = true;
-            this.AddressNum.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // Rubro
-            // 
-            this.Rubro.HeaderText = "Rubro";
-            this.Rubro.Name = "Rubro";
-            this.Rubro.ReadOnly = true;
-            // 
-            // BuyButton
-            // 
-            this.BuyButton.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.BuyButton.HeaderText = "Comprar";
-            this.BuyButton.Name = "BuyButton";
-            this.BuyButton.Width = 52;
             // 
             // label1
             // 
@@ -156,17 +118,19 @@
             // FromPicker
             // 
             this.FromPicker.CustomFormat = " ";
+            this.FromPicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.FromPicker.Location = new System.Drawing.Point(15, 71);
             this.FromPicker.Name = "FromPicker";
-            this.FromPicker.Size = new System.Drawing.Size(200, 20);
+            this.FromPicker.Size = new System.Drawing.Size(156, 20);
             this.FromPicker.TabIndex = 7;
             // 
             // ToPicker
             // 
             this.ToPicker.CustomFormat = " ";
+            this.ToPicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.ToPicker.Location = new System.Drawing.Point(13, 111);
             this.ToPicker.Name = "ToPicker";
-            this.ToPicker.Size = new System.Drawing.Size(200, 20);
+            this.ToPicker.Size = new System.Drawing.Size(158, 20);
             this.ToPicker.TabIndex = 8;
             // 
             // ClearButton
@@ -233,11 +197,38 @@
             this.PageNumText.TabIndex = 11;
             this.PageNumText.Text = "Pagina #";
             // 
+            // BuyButton
+            // 
+            this.BuyButton.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.BuyButton.HeaderText = "Comprar";
+            this.BuyButton.Name = "BuyButton";
+            this.BuyButton.Width = 52;
+            // 
+            // FromCheck
+            // 
+            this.FromCheck.AutoSize = true;
+            this.FromCheck.Location = new System.Drawing.Point(178, 73);
+            this.FromCheck.Name = "FromCheck";
+            this.FromCheck.Size = new System.Drawing.Size(15, 14);
+            this.FromCheck.TabIndex = 12;
+            this.FromCheck.UseVisualStyleBackColor = true;
+            // 
+            // ToCheck
+            // 
+            this.ToCheck.AutoSize = true;
+            this.ToCheck.Location = new System.Drawing.Point(178, 116);
+            this.ToCheck.Name = "ToCheck";
+            this.ToCheck.Size = new System.Drawing.Size(15, 14);
+            this.ToCheck.TabIndex = 13;
+            this.ToCheck.UseVisualStyleBackColor = true;
+            // 
             // SearchPublication
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(691, 444);
+            this.Controls.Add(this.ToCheck);
+            this.Controls.Add(this.FromCheck);
             this.Controls.Add(this.PageNumText);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
@@ -265,11 +256,6 @@
         #endregion
 
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Description;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Address;
-        private System.Windows.Forms.DataGridViewTextBoxColumn AddressNum;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Rubro;
-        private System.Windows.Forms.DataGridViewButtonColumn BuyButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox TagBox;
         private System.Windows.Forms.Label label2;
@@ -285,5 +271,8 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Label PageNumText;
+        private System.Windows.Forms.DataGridViewButtonColumn BuyButton;
+        private System.Windows.Forms.CheckBox FromCheck;
+        private System.Windows.Forms.CheckBox ToCheck;
     }
 }

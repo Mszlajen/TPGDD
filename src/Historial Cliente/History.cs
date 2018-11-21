@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
-using System.Data;
 
 namespace PalcoNet.Historial_Cliente
 {
@@ -60,7 +59,7 @@ namespace PalcoNet.Historial_Cliente
 
         private void History_Load(object sender, EventArgs e)
         {
-            string queryString = "SELECT cod_cliente, cheshire_jack.obtenerTotalDePaginasDeHistorial(cod_cliente, @tamPagina) FROM cheshire_jack.clientes WHERE cod_usuario = @cod_usuario";
+            string queryString = "SELECT cod_cliente, cheshire_jack.obtenerTotalDePaginasDeHistorial(cod_cliente, @tamPagina) FROM cheshire_jack.clientes WHERE cod_usuario = @cod_usuario AND habilitado = 1";
             SqlCommand cmd = new SqlCommand(queryString, Program.DBconn);
             cmd.Parameters.Add(new SqlParameter("@cod_usuario", codUsuario));
             cmd.Parameters.Add(new SqlParameter("@tamPagina", tamPagina));

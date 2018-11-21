@@ -45,15 +45,16 @@
             this.PostButton = new System.Windows.Forms.Button();
             this.CancelButton = new System.Windows.Forms.Button();
             this.SeatsGrid = new System.Windows.Forms.DataGridView();
-            this.Numbered = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Row = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Seat = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SeatType = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.AddressText = new System.Windows.Forms.TextBox();
             this.AddressNroText = new System.Windows.Forms.TextBox();
+            this.DeleteButton = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.NotNumbered = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Row = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Seat = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SeatType = new System.Windows.Forms.DataGridViewComboBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.SeatsGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -157,7 +158,7 @@
             this.shapeContainer1.Name = "shapeContainer1";
             this.shapeContainer1.Shapes.AddRange(new Microsoft.VisualBasic.PowerPacks.Shape[] {
             this.lineShape1});
-            this.shapeContainer1.Size = new System.Drawing.Size(690, 313);
+            this.shapeContainer1.Size = new System.Drawing.Size(764, 313);
             this.shapeContainer1.TabIndex = 10;
             this.shapeContainer1.TabStop = false;
             // 
@@ -180,7 +181,7 @@
             // 
             // SketchButton
             // 
-            this.SketchButton.Location = new System.Drawing.Point(373, 256);
+            this.SketchButton.Location = new System.Drawing.Point(413, 254);
             this.SketchButton.Name = "SketchButton";
             this.SketchButton.Size = new System.Drawing.Size(82, 40);
             this.SketchButton.TabIndex = 16;
@@ -190,7 +191,7 @@
             // 
             // PostButton
             // 
-            this.PostButton.Location = new System.Drawing.Point(461, 256);
+            this.PostButton.Location = new System.Drawing.Point(501, 254);
             this.PostButton.Name = "PostButton";
             this.PostButton.Size = new System.Drawing.Size(82, 40);
             this.PostButton.TabIndex = 16;
@@ -200,7 +201,7 @@
             // 
             // CancelButton
             // 
-            this.CancelButton.Location = new System.Drawing.Point(549, 256);
+            this.CancelButton.Location = new System.Drawing.Point(589, 254);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(82, 40);
             this.CancelButton.TabIndex = 16;
@@ -212,54 +213,17 @@
             // 
             this.SeatsGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.SeatsGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Numbered,
+            this.DeleteButton,
+            this.NotNumbered,
             this.Row,
             this.Seat,
             this.Price,
             this.SeatType});
             this.SeatsGrid.Location = new System.Drawing.Point(294, 30);
             this.SeatsGrid.Name = "SeatsGrid";
-            this.SeatsGrid.Size = new System.Drawing.Size(382, 206);
+            this.SeatsGrid.Size = new System.Drawing.Size(450, 206);
             this.SeatsGrid.TabIndex = 35;
-            // 
-            // Numbered
-            // 
-            this.Numbered.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Numbered.FalseValue = "0";
-            this.Numbered.HeaderText = "Numerada";
-            this.Numbered.Name = "Numbered";
-            this.Numbered.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Numbered.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.Numbered.TrueValue = "1";
-            this.Numbered.Width = 81;
-            // 
-            // Row
-            // 
-            this.Row.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Row.HeaderText = "Fila";
-            this.Row.Name = "Row";
-            this.Row.Width = 48;
-            // 
-            // Seat
-            // 
-            this.Seat.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Seat.HeaderText = "Asiento";
-            this.Seat.Name = "Seat";
-            this.Seat.Width = 67;
-            // 
-            // Price
-            // 
-            this.Price.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Price.HeaderText = "Precio";
-            this.Price.Name = "Price";
-            this.Price.Width = 62;
-            // 
-            // SeatType
-            // 
-            this.SeatType.HeaderText = "Tipo de Asiento";
-            this.SeatType.Name = "SeatType";
-            this.SeatType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.SeatType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.SeatsGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SeatsGrid_CellContentClick);
             // 
             // label6
             // 
@@ -293,11 +257,57 @@
             this.AddressNroText.Size = new System.Drawing.Size(78, 20);
             this.AddressNroText.TabIndex = 39;
             // 
+            // DeleteButton
+            // 
+            this.DeleteButton.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.DeleteButton.HeaderText = "Borrar";
+            this.DeleteButton.Name = "DeleteButton";
+            this.DeleteButton.Width = 41;
+            // 
+            // NotNumbered
+            // 
+            this.NotNumbered.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.NotNumbered.FalseValue = "0";
+            this.NotNumbered.HeaderText = "Sin Numerar";
+            this.NotNumbered.Name = "NotNumbered";
+            this.NotNumbered.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.NotNumbered.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.NotNumbered.TrueValue = "1";
+            this.NotNumbered.Width = 90;
+            // 
+            // Row
+            // 
+            this.Row.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Row.HeaderText = "Fila";
+            this.Row.Name = "Row";
+            this.Row.Width = 48;
+            // 
+            // Seat
+            // 
+            this.Seat.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Seat.HeaderText = "Asiento";
+            this.Seat.Name = "Seat";
+            this.Seat.Width = 67;
+            // 
+            // Price
+            // 
+            this.Price.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Price.HeaderText = "Precio";
+            this.Price.Name = "Price";
+            this.Price.Width = 62;
+            // 
+            // SeatType
+            // 
+            this.SeatType.HeaderText = "Tipo de Asiento";
+            this.SeatType.Name = "SeatType";
+            this.SeatType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.SeatType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
             // GeneratePublication
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(690, 313);
+            this.ClientSize = new System.Drawing.Size(764, 313);
             this.Controls.Add(this.AddressNroText);
             this.Controls.Add(this.AddressText);
             this.Controls.Add(this.label7);
@@ -351,7 +361,8 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox AddressText;
         private System.Windows.Forms.TextBox AddressNroText;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Numbered;
+        private System.Windows.Forms.DataGridViewButtonColumn DeleteButton;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn NotNumbered;
         private System.Windows.Forms.DataGridViewTextBoxColumn Row;
         private System.Windows.Forms.DataGridViewTextBoxColumn Seat;
         private System.Windows.Forms.DataGridViewTextBoxColumn Price;

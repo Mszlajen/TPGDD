@@ -40,6 +40,8 @@ namespace PalcoNet.Editar_Publicacion
                 switch ((int)publicaciones.Rows[e.RowIndex]["cod_estado"])
                 {
                     case 1:
+                        Program.openPopUpWindow(this, new EditPublication(codEmpresa, publicaciones.Rows[e.RowIndex]));
+                        publicaciones.Clear();
                         break;
                     case 2:
                         if (MessageBox.Show("¿Desea finalizar la publicación?", "Confirmación", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -64,16 +66,19 @@ namespace PalcoNet.Editar_Publicacion
                 cmd.Parameters.Add(new SqlParameter("@estado", DBNull.Value));
                 publicaciones.Load(cmd.ExecuteReader());
                 cmd.Parameters.Clear();
-
-                cmd.CommandText = "SELECT cod_empresa FROM cheshire_jack.empresas WHERE cod_usuario = @codUsuario";
+                
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "cheshire_jack.getCodEmpresa";
                 cmd.Parameters.Add(new SqlParameter("@codUsuario", codUsuario));
-                cmd.CommandType = CommandType.Text;
-                SqlDataReader reader = cmd.ExecuteReader();
-                if (reader.Read())
-                    codEmpresa = reader.GetInt32(0);
-                else
+                cmd.Parameters.Add(new SqlParameter("@deshabilitados", 0));
+                SqlParameter ret = new SqlParameter("@ret", DbType.Int32);
+                ret.Direction = ParameterDirection.ReturnValue;
+                cmd.Parameters.Add(ret);
+                cmd.ExecuteNonQuery();
+                if ((int)ret.Value == 0)
                     MessageBox.Show("Este usuario no tiene informacion de empresa y no podra terminar las operaciones");
-                reader.Close();
+                else
+                    codEmpresa = (int)ret.Value;
             }
             estados.PrimaryKey = new DataColumn[] { estados.Columns["cod_estado"] };
 

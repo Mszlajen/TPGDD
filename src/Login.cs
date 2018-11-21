@@ -68,7 +68,7 @@ namespace PalcoNet
                             break;
                         case 6:
                             this.Enabled = false;
-                            Program.openPopUpWindow(this, new changePassword((int)parCodUsuario.Value));
+                            Program.openPopUpWindow(this, new changePassword((int)parCodUsuario.Value, "Su contraseña ha expirado.\nPor favor ingrese una nueva contraseña"));
                             goto case 5;
                         case 5:
                             string queryString = "cheshire_jack.usuarioTieneMultiplesRoles";

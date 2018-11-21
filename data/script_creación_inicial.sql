@@ -261,7 +261,9 @@ VALUES ('ABM Cliente'),
 ('Generar Publicacion'),
 ('Generar Rendicion de Comisiones'),
 ('Historial Cliente'),
-('Listado Estadistico')
+('Listado Estadistico'), 
+('Cambiar Contraseña'),
+('Editar Usuario')
 
 INSERT INTO cheshire_jack.RolesxFuncionalidades
 (cod_funcionalidad, cod_rol)
@@ -269,7 +271,9 @@ VALUES (6, 2),
 (7, 2),
 (8, 1),
 (9, 1),
-(11, 2)
+(11, 2),
+(13, 2),
+(13, 1)
 
 INSERT INTO cheshire_jack.RolesxFuncionalidades
 (cod_funcionalidad, cod_rol)
@@ -1003,6 +1007,7 @@ AS BEGIN
 	DECLARE @codEspectaculo NUMERIC(18,0), @codPublicacion NUMERIC(18,0), 
 	@cantPublicaciones INT, @contador INT = 1
 	BEGIN TRANSACTION
+	BEGIN TRY
 		INSERT INTO cheshire_jack.espectaculos
 		(cod_empresa, cod_rubro, descripcion, direccion, altura)
 		VALUES(@codEmpresa, @codRubro, @descripcion, @direccion, @altura)
@@ -1049,7 +1054,11 @@ AS BEGIN
 			SET @contador += 1
 		END
 
-	COMMIT TRANSACTION
+		COMMIT TRANSACTION
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION
+	END CATCH
 
 	RETURN CAST(@codEspectaculo AS BIGINT)
 END
@@ -1059,8 +1068,8 @@ CREATE PROCEDURE cheshire_jack.publicacionesDe
 (@codEmpresa INT, @estado INT = NULL)
 AS BEGIN
 	SELECT p.cod_publicacion, e.descripcion Descripcion, p.fecha_evento Fecha, 
-	gp.cod_grado, gp.nombre [Grado de Publicacion], r.cod_rubro, r.descripcion Rubro,
-	est.cod_estado, est.nombre Estado
+	gp.cod_grado, gp.nombre [Grado de Publicacion], r.cod_rubro, r.descripcion Rubro, 
+	e.direccion Direccion, e.altura Altura, est.cod_estado, est.nombre Estado
 	FROM cheshire_jack.publicaciones p JOIN 
 	cheshire_jack.espectaculos e ON p.cod_espectaculo = e.cod_espectaculo JOIN
 	cheshire_jack.grados_de_publicacion gp ON gp.cod_grado = p.cod_grado JOIN
@@ -1080,4 +1089,127 @@ AS BEGIN
 	UPDATE cheshire_jack.publicaciones
 	SET cod_estado = @estado
 	WHERE @codPublicacion = cod_publicacion
+END
+
+GO
+CREATE PROCEDURE cheshire_jack.ubicacionesDe
+(@codPublicacion NUMERIC(18,0))
+AS BEGIN
+	SELECT u.nro_ubicacion, u.sin_numerar [Sin Numerar], u.fila Fila, u.asiento Asiento, u.precio Precio, 
+	u.cod_tipo, tp.descripcion [Tipo de Asiento] FROM cheshire_jack.ubicaciones u 
+	JOIN cheshire_jack.tipos_de_ubicacion tp ON u.cod_tipo = tp.cod_tipo
+	WHERE u.cod_publicacion = @codPublicacion
+END
+
+GO
+CREATE PROCEDURE cheshire_jack.actualizarPublicacion
+(@codPublicacion NUMERIC(18,0), @descripcion NVARCHAR(255), @direccion VARCHAR(50), 
+@altura NUMERIC(18,0), @codRubro INT, @codGrado INT, @ubicaciones NVARCHAR(MAX), 
+@fecha DATETIME, @fechaPublicacion DATETIME, @codEstado INT, @modificarEspectaculo BIT,
+@modificarPublicaciones BIT)
+AS BEGIN
+	DECLARE @codEspectaculo NUMERIC(18,0), @codEspectaculoNuevo NUMERIC(18,0)
+	BEGIN TRANSACTION
+	BEGIN TRY
+		(SELECT @codEspectaculo = cod_espectaculo FROM cheshire_jack.publicaciones WHERE cod_publicacion = @codPublicacion)
+
+		UPDATE cheshire_jack.publicaciones
+		SET fecha_evento = @fecha
+		WHERE cod_publicacion = @codPublicacion
+
+		IF(@modificarEspectaculo = 0)
+		BEGIN
+			UPDATE cheshire_jack.espectaculos
+			SET descripcion = @descripcion, direccion = @direccion, altura = @altura
+			WHERE cod_espectaculo = @codEspectaculo
+
+			SET @codEspectaculoNuevo = @codEspectaculo
+		END
+		ELSE
+		BEGIN
+			INSERT INTO cheshire_jack.espectaculos
+			(cod_empresa, cod_espectaculo_viejo, cod_rubro, descripcion, direccion, altura)
+			SELECT cod_empresa, cod_espectaculo_viejo, @codRubro, @descripcion, @direccion, @altura
+			FROM cheshire_jack.espectaculos
+			WHERE cod_espectaculo = @codEspectaculo
+
+			SET @codEspectaculoNuevo = SCOPE_IDENTITY()
+		END
+
+		CREATE TABLE #ubicaciones (
+				sinNumerar BIT, 
+				fila VARCHAR(3), 
+				asiento NUMERIC(18,0), 
+				precio NUMERIC(18,0),
+				tipo INT)
+
+		DECLARE @pSig BIGINT = CHARINDEX('@', @ubicaciones, 1), @pAnt BIGINT = 0
+
+		WHILE @pSig != 0
+		BEGIN
+			INSERT INTO #ubicaciones
+			SELECT * 
+			FROM cheshire_jack.SplitUbicacion(SUBSTRING(@ubicaciones, @pAnt + 1, @pSig - @pAnt - 1), ' ')
+
+			SET @pAnt = @pSig
+			SET @pSig = CHARINDEX('@', @ubicaciones, @pSig + 1)
+		END
+		
+		IF(@modificarPublicaciones = 0)
+		BEGIN
+			UPDATE cheshire_jack.publicaciones 
+			SET cod_grado = @codGrado, cod_estado = @codEstado, fecha_publicacion = @fechaPublicacion, 
+				cod_espectaculo = @codEspectaculoNuevo
+			WHERE @codPublicacion = cod_publicacion
+		
+			DELETE FROM cheshire_jack.ubicaciones
+			WHERE cod_publicacion = @codPublicacion
+
+			INSERT INTO cheshire_jack.ubicaciones
+			(cod_publicacion, nro_ubicacion, asiento, fila, sin_numerar, precio, cod_tipo)
+			SELECT @codPublicacion, ROW_NUMBER() OVER(ORDER BY (SELECT 1)), 
+					asiento, fila, sinNumerar, precio, tipo
+			FROM #ubicaciones
+		END
+		ELSE 
+		BEGIN
+			UPDATE cheshire_jack.publicaciones 
+			SET cod_grado = @codGrado, cod_estado = @codEstado, fecha_publicacion = @fechaPublicacion, 
+				cod_espectaculo = @codEspectaculoNuevo
+			WHERE @codEspectaculo = cod_espectaculo
+
+			DELETE FROM cheshire_jack.ubicaciones
+			WHERE cod_publicacion IN (SELECT cod_publicacion FROM cheshire_jack.publicaciones WHERE cod_espectaculo = @codEspectaculoNuevo)
+
+			DECLARE @codPublicacionIterativo NUMERIC(18,0) = (SELECT MIN(cod_publicacion) FROM cheshire_jack.publicaciones WHERE cod_espectaculo = @codEspectaculoNuevo)
+
+			WHILE(@codPublicacionIterativo IS NOT NULL)
+			BEGIN
+				INSERT INTO cheshire_jack.ubicaciones
+				(cod_publicacion, nro_ubicacion, asiento, fila, sin_numerar, precio, cod_tipo)
+				SELECT @codPublicacionIterativo, ROW_NUMBER() OVER(ORDER BY (SELECT 1)), 
+						asiento, fila, sinNumerar, precio, tipo
+				FROM #ubicaciones
+
+				SELECT @codPublicacionIterativo = MIN(cod_publicacion) FROM cheshire_jack.publicaciones WHERE cod_espectaculo = @codEspectaculoNuevo AND cod_publicacion > @codPublicacionIterativo
+			END
+			
+		END
+		COMMIT TRANSACTION
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION
+	END CATCH
+	RETURN @codEspectaculoNuevo
+END
+
+GO
+CREATE FUNCTION cheshire_jack.getCodEmpresa
+(@codUsuario INT, @deshabilitados BIT = 0)
+RETURNS INT
+AS BEGIN
+	DECLARE @ret INT
+	SELECT @ret = cod_empresa FROM cheshire_jack.empresas 
+	WHERE cod_usuario = @codUsuario AND (@deshabilitados = 1 OR habilitado = 1)
+	RETURN COALESCE(@ret, 0)
 END

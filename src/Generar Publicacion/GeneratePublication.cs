@@ -27,18 +27,23 @@ namespace PalcoNet.Generar_Publicacion
 
         private void GeneratePublication_Load(object sender, EventArgs e)
         {
-            string queryString = "SELECT cod_empresa FROM cheshire_jack.empresas WHERE cod_usuario = @cod_usuario";
-            SqlCommand cmd = new SqlCommand(queryString, Program.DBconn);
-            cmd.Parameters.Add(new SqlParameter("@cod_usuario", codUsuario));
-            SqlDataReader resultadoQuery = cmd.ExecuteReader();
-            if (!resultadoQuery.Read())
+            SqlCommand cmd = new SqlCommand("cheshire_jack.getCodEmpresa", Program.DBconn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add(new SqlParameter("@codUsuario", codUsuario));
+            cmd.Parameters.Add(new SqlParameter("@deshabilitados", 0));
+            SqlParameter ret = new SqlParameter("@ret", DbType.Int32);
+            ret.Direction = ParameterDirection.ReturnValue;
+            cmd.Parameters.Add(ret);
+            cmd.ExecuteNonQuery();
+            if ((int)ret.Value == 0)
                 MessageBox.Show("Este usuario no tiene informacion de empresa y no podra terminar las operaciones");
             else
-                codEmpresa = resultadoQuery.GetInt32(0);
-            resultadoQuery.Close();
+                codEmpresa = (int) ret.Value;
+            cmd.Parameters.Clear();
 
+            cmd.CommandType = CommandType.Text;
             cmd.CommandText = "SELECT cod_grado, Nombre FROM cheshire_jack.vw_grados";
-            resultadoQuery = cmd.ExecuteReader();
+            SqlDataReader resultadoQuery = cmd.ExecuteReader();
             grados.Load(resultadoQuery);
             resultadoQuery.Close();
             
@@ -69,8 +74,7 @@ namespace PalcoNet.Generar_Publicacion
         {
             if (BatchDatesCheck.Checked)
             {
-                BatchDatesButton.Visible = 
-                    true;
+                BatchDatesButton.Visible = true;
                 EventDatePicker.Enabled = false;
             }
             else
@@ -109,19 +113,31 @@ namespace PalcoNet.Generar_Publicacion
         }
 
         private string getSeats()
-        { 
+        {
             StringBuilder result = new StringBuilder();
-            foreach(DataGridViewRow row in SeatsGrid.Rows)
+            DataGridViewComboBoxCell tipo;
+            foreach (DataGridViewRow row in SeatsGrid.Rows)
             {
                 if (row.IsNewRow)
                     break;
 
                 foreach (DataGridViewColumn column in SeatsGrid.Columns)
                 {
-                    if(column.Index != 4)
-                        result.AppendFormat("{0} ", row.Cells[column.Index].Value == null ? "0" : row.Cells[column.Index].Value.ToString());
-                    else
-                        result.AppendFormat("{0} ", tiposAsientos.Rows[row.Index]["cod_tipo"].ToString());
+                    switch (column.Index)
+                    {
+                        case 0:
+                            continue;
+                        case 5:
+                            tipo = (DataGridViewComboBoxCell)SeatsGrid.Rows[row.Index].Cells[column.Index];
+                            result.AppendFormat("{0} ", tiposAsientos.Rows[tipo.Items.IndexOf(tipo.Value)]["cod_tipo"].ToString());
+                            break;
+                        case 1:
+                            result.AppendFormat("{0} ", row.Cells[column.Index].Value == null ? "0" : row.Cells[column.Index].Value.ToString());
+                            break;
+                        default:
+                            result.AppendFormat("{0} ", row.Cells[column.Index].Value.ToString().Trim());
+                            break;
+                    }
                 }
                 result.Append("@");
             }
@@ -137,13 +153,13 @@ namespace PalcoNet.Generar_Publicacion
             {
                 if (row.IsNewRow)
                     break;
-                if (!masDeTres && (row.Cells[1].Value == null || ((string)row.Cells[1].Value).Length > 3))
+                if (!masDeTres && (row.Cells[2].Value == null || ((string)row.Cells[2].Value).Length > 3))
                     masDeTres = true;
-                if (!noNumeroAsiento && (String.IsNullOrWhiteSpace((string)row.Cells[2].Value) || !long.TryParse((string)row.Cells[2].Value, out aux)))
+                if (!noNumeroAsiento && (String.IsNullOrWhiteSpace((string)row.Cells[2].Value) || !long.TryParse((string)row.Cells[3].Value, out aux)))
                     noNumeroAsiento = true;
-                if (!noNumeroPrecio && (String.IsNullOrWhiteSpace((string)row.Cells[3].Value) || !long.TryParse((string)row.Cells[3].Value, out aux)))
+                if (!noNumeroPrecio && (String.IsNullOrWhiteSpace((string)row.Cells[4].Value) || !long.TryParse((string)row.Cells[4].Value, out aux)))
                     noNumeroPrecio = true;
-                if (!noTipo && String.IsNullOrWhiteSpace((string)row.Cells[4].Value))
+                if (!noTipo && String.IsNullOrWhiteSpace((string)row.Cells[5].Value))
                     noTipo = true;
             }
 
@@ -257,5 +273,10 @@ namespace PalcoNet.Generar_Publicacion
             tiposAsientos.Dispose();
         }
 
+        private void SeatsGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 0 && !SeatsGrid.Rows[e.RowIndex].IsNewRow)
+                SeatsGrid.Rows.RemoveAt(e.RowIndex);
+        }
     }
 }

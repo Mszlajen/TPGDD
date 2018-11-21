@@ -39,9 +39,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(13, 13);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(197, 26);
+            this.label1.Size = new System.Drawing.Size(78, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Su contraseña ha expirado. \r\nPor favor ingrese una nueva contraseña";
+            this.label1.Text = "Aca va el texto";
             // 
             // NewPasswordText
             // 
@@ -83,6 +83,7 @@
             this.Controls.Add(this.label1);
             this.Name = "changePassword";
             this.Text = "changePassword";
+            this.Load += new System.EventHandler(this.changePassword_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

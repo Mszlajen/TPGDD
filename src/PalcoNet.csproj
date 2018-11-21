@@ -151,6 +151,12 @@
     <Compile Include="Editar Publicacion\SearchPublication.Designer.cs">
       <DependentUpon>SearchPublication.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editar Usuario\list.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editar Usuario\list.Designer.cs">
+      <DependentUpon>list.cs</DependentUpon>
+    </Compile>
     <Compile Include="EmpresaEspectaculo.cs" />
     <Compile Include="FunctionSelection.cs">
       <SubType>Form</SubType>
@@ -271,6 +277,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Editar Publicacion\SearchPublication.resx">
       <DependentUpon>SearchPublication.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editar Usuario\list.resx">
+      <DependentUpon>list.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FunctionSelection.resx">
       <DependentUpon>FunctionSelection.cs</DependentUpon>
