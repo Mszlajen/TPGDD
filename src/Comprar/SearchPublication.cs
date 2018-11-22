@@ -12,14 +12,26 @@ namespace PalcoNet.Comprar
 {
     public partial class SearchPublication : Form
     {
+        DataTable publicaciones = new DataTable();
         public SearchPublication()
         {
             InitializeComponent();
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void SearchPublication_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void ClearButton_Click(object sender, EventArgs e)
+        {
+            ToCheck.Checked = false;
+            FromCheck.Checked = false;
+            FromPicker.Enabled = false;
+            ToPicker.Enabled = false;
+            DescriptionBox.Text = "";
+            TagBox.SelectedIndex = -1;
+            publicaciones.Clear();
         }
     }
 }

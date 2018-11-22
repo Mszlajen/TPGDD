@@ -82,7 +82,7 @@ namespace PalcoNet
                                   string ciudad, string codigoPostal, string CUIT, int codUsuario)
         {
             EmpresaEspectaculo nueva;
-            using(SqlCommand cmd = new SqlCommand("cheshire_jack.CrearEmpresa", DB))
+            using(SqlCommand cmd = new SqlCommand("cheshire_jack.crearEmpresa", DB))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add(new SqlParameter("@codUsuario", codUsuario));

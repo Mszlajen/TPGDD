@@ -6,7 +6,7 @@ GO
 
 CREATE TABLE cheshire_jack.usuarios (
 	cod_usuario INT PRIMARY KEY IDENTITY(1,1) NOT NULL, 
-	nombre_usuario VARCHAR(50) NOT NULL UNIQUE,
+	nombre_usuario VARCHAR(50) NOT NULL,
 	contrasenia CHAR(256) NOT NULL,
 	habilitado BIT NOT NULL DEFAULT(1),
 	ingresos_restantes TINYINT NOT NULL DEFAULT(3),
@@ -86,7 +86,7 @@ CREATE TABLE cheshire_jack.clientes (
 	cod_cliente INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	tipo_documento VARCHAR(50) NOT NULL,
 	nro_documento NUMERIC(18,0) NOT NULL,
-	CUIL CHAR(14) NOT NULL UNIQUE,
+	CUIL CHAR(14) NOT NULL,
 	apellido NVARCHAR(255) NOT NULL,
 	nombre NVARCHAR(255) NOT NULL,
 	fecha_nacimiento DATETIME NOT NULL,
@@ -100,14 +100,13 @@ CREATE TABLE cheshire_jack.clientes (
 	codigo_postal NVARCHAR(255),
 	fecha_creacion DATETIME,
 	cod_usuario INT,
-	habilitado BIT NOT NULL DEFAULT(1),
-	UNIQUE(tipo_documento, nro_documento)
+	habilitado BIT NOT NULL DEFAULT(1)
 	)
 
 CREATE TABLE cheshire_jack.empresas (
 	cod_empresa INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	razon_social NVARCHAR(255) NOT NULL UNIQUE,
-	CUIT NVARCHAR(14) NOT NULL UNIQUE,
+	razon_social NVARCHAR(255) NOT NULL,
+	CUIT NVARCHAR(14) NOT NULL,
 	fecha_creacion DATETIME,
 	mail NVARCHAR(255) CHECK(mail LIKE '_%@_%._%'),
 	telefono CHAR(14),
@@ -227,6 +226,12 @@ ADD FOREIGN KEY (nro_factura) REFERENCES cheshire_jack.facturas(nro_factura)
 
 ALTER TABLE cheshire_jack.tarjetas_de_credito
 ADD FOREIGN KEY (cod_cliente) REFERENCES cheshire_jack.clientes(cod_cliente)
+
+CREATE INDEX CUIT ON cheshire_jack.clientes(CUIL)
+CREATE INDEX documento ON cheshire_jack.clientes(tipo_documento, nro_documento)
+CREATE INDEX CUIL ON cheshire_jack.empresas(CUIT)
+CREATE INDEX razon_social ON cheshire_jack.empresas(razon_social)
+CREATE INDEX usuario ON cheshire_jack.usuarios(nombre_usuario)
 
 INSERT INTO cheshire_jack.grados_de_publicacion
 (nombre, comision, peso)
@@ -790,7 +795,7 @@ mail 'E-mail', COALESCE(telefono, 'S. D.') Telefono, habilitado Habilitado
 FROM cheshire_jack.empresas
 
 GO
-CREATE PROCEDURE cheshire_jack.CrearEmpresa
+CREATE PROCEDURE cheshire_jack.crearEmpresa
 (@codUsuario INT, @nombre NVARCHAR(255), @ciudad NVARCHAR(255), @domicilio NVARCHAR(255), 
 @altura NUMERIC(18,0), @piso NUMERIC(18,0), @dept NVARCHAR(50), @codigoPostal NVARCHAR(50), 
 @mail NVARCHAR(255), @telefono CHAR(14), @CUIT NVARCHAR(14))
@@ -803,6 +808,7 @@ AS BEGIN
 		INSERT INTO cheshire_jack.empresas
 		(razon_social, ciudad, domicilio_calle, nro_calle, piso, dept, codigo_postal, mail, telefono, CUIT, cod_usuario)
 		VALUES(@nombre, @ciudad, @domicilio, @altura, @piso, @dept, @codigoPostal, @mail, @telefono, @CUIT, @codUsuario)
+			
 	COMMIT TRANSACTION
 
 	RETURN SCOPE_IDENTITY()
@@ -811,7 +817,7 @@ END
 GO 
 /*
 RETORNO:
-	0 - No existe empresa con esos datos
+	0 - No existe empresa con esos datos o no se encuentra habilitada
 	1 - Ya existe alguien con ese CUIT
 	2 - Ya existe alguien con esa Razon Social
 */
@@ -821,8 +827,8 @@ RETURNS TINYINT
 AS BEGIN 
 	DECLARE @result TINYINT = 0
 
-	SELECT @result = 1 FROM cheshire_jack.empresas WHERE CUIT = @CUIT
-	SELECT @result = 2 FROM cheshire_jack.empresas WHERE razon_social = @razonSocial
+	SELECT @result = 1 FROM cheshire_jack.empresas WHERE CUIT = @CUIT AND habilitado = 1
+	SELECT @result = 2 FROM cheshire_jack.empresas WHERE razon_social = @razonSocial AND habilitado = 1
 
 	RETURN @result
 END
@@ -830,7 +836,7 @@ END
 GO
 /*
 RETORNO:
-	0 - No existe empresa con esos datos
+	0 - No existe cliente con esos datos o no se encuentra habilitado
 	1 - Ya existe alguien con ese CUIL
 	2 - Ya existe alguien con ese documento
 */
@@ -840,8 +846,8 @@ RETURNS TINYINT
 AS BEGIN
 	DECLARE @result TINYINT = 0
 
-	SELECT @result = 1 FROM cheshire_jack.clientes WHERE CUIL = @CUIL 
-	SELECT @result = 2 FROM cheshire_jack.clientes WHERE tipo_documento = @tipoDocumento AND nro_documento = @nroDocumento
+	SELECT @result = 1 FROM cheshire_jack.clientes WHERE CUIL = @CUIL AND habilitado = 1 
+	SELECT @result = 2 FROM cheshire_jack.clientes WHERE tipo_documento = @tipoDocumento AND nro_documento = @nroDocumento AND habilitado = 1
 
 	RETURN @result
 END
@@ -854,7 +860,7 @@ AS BEGIN
 	DECLARE @result BIT = 0
 
 	SELECT @result = 1 FROM cheshire_jack.usuarios
-	WHERE nombre_usuario = @nombre
+	WHERE nombre_usuario = @nombre AND habilitado = 1
 
 	RETURN @result
 END
@@ -1213,3 +1219,97 @@ AS BEGIN
 	WHERE cod_usuario = @codUsuario AND (@deshabilitados = 1 OR habilitado = 1)
 	RETURN COALESCE(@ret, 0)
 END
+
+GO 
+CREATE PROCEDURE cheshire_jack.listadoPuntosVencidos
+(@anio INT, @trimestre TINYINT)
+AS BEGIN
+	SELECT TOP 5 nombre Nombre, apellido Apellido, tipo_documento [Tipo de Documento],
+	nro_documento [Nro de Documento], telefono Telefono, mail [E-Mail]
+	FROM cheshire_jack.puntos p JOIN cheshire_jack.clientes c 
+	ON p.cod_cliente = c.cod_cliente WHERE p.anio_vencimiento = @anio 
+	ORDER BY p.cantidad DESC
+END
+
+GO
+CREATE PROCEDURE cheshire_jack.listadoLocalidadesNoVendidas
+(@anio INT, @trimestre TINYINT)
+AS BEGIN
+	SELECT 1
+END
+
+GO 
+CREATE PROCEDURE cheshire_jack.listadoMayoresCompradores
+(@anio INT, @trimestre TINYINT)
+AS BEGIN
+	SELECT 1
+END
+
+/*
+GO
+CREATE PROCEDURE cheshire_jack.actualizarEmpresa
+(@codEmpresa INT, @nombre NVARCHAR(255), @ciudad NVARCHAR(255), @domicilio NVARCHAR(255), 
+@altura NUMERIC(18,0), @piso NUMERIC(18,0), @dept NVARCHAR(50), @codigoPostal NVARCHAR(50), 
+@mail NVARCHAR(255), @telefono CHAR(14), @CUIT NVARCHAR(14), @habilitado BIT)
+AS BEGIN
+	UPDATE cheshire_jack.empresas 
+	SET ciudad = @ciudad, domicilio_calle = @domicilio,
+    nro_calle = @altura, piso = @piso, dept = @dept,
+	codigo_postal = @codigoPostal, mail = @mail, CUIT = @CUIT,
+	habilitado = @habilitado WHERE cod_empresa = @codEmpresa
+END
+
+GO
+CREATE VIEW cheshire_jack.vw_publicaciones AS
+SELECT p.cod_publicacion, p.fecha_evento [Fecha Evento], p.fecha_publicacion,
+e.descripcion Descripcion, e.direccion Direccion, e.altura Altura, gp.cod_grado, 
+gp.nombre Grado, gp.peso, r.cod_rubro, r.descripcion Rubro
+FROM cheshire_jack.publicaciones p JOIN cheshire_jack.espectaculos e 
+ON p.cod_espectaculo = e.cod_espectaculo JOIN cheshire_jack.empresas emp 
+ON emp.cod_empresa = e.cod_empresa JOIN cheshire_jack.grados_de_publicacion gp
+ON p.cod_grado = gp.cod_grado JOIN cheshire_jack.rubros r
+ON e.cod_rubro = r.cod_rubro JOIN cheshire_jack.estados est
+ON p.cod_estado = est.cod_estado
+WHERE emp.habilitado = 1 AND est.cod_estado = 2
+
+GO
+GO
+CREATE FUNCTION cheshire_jack.obtenerTotalDePaginasCompras
+(@fechaHoy DATETIME, @tamPagina INT, cod_rubro INT, desde DATETIME, hasta DATETIME, descripcion NVARCHAR(255)) 
+RETURNS INT
+AS BEGIN
+	DECLARE @cant INT
+	SELECT @cant = COUNT(*) FROM cheshire_jack.vw_publicaciones WHERE [Fecha Evento] > @fechaHoy
+	IF @cant % @tamPagina = 0
+		SET @cant /= @tamPagina
+	ELSE
+		SET @cant = @cant / @tamPagina + 1
+	RETURN @cant
+END
+
+GO
+CREATE PROCEDURE cheshire_jack.obtenerPaginaDeCompras
+(@fechaHoy DATETIME, @nroPagina INT, @tamPagina INT)
+AS BEGIN
+	SELECT TOP (@tamPagina * @nroPagina) *
+	INTO #paginas
+	FROM cheshire_jack.vw_publicaciones 
+	WHERE [Fecha Evento] > @fechaHoy
+	ORDER BY peso DESC, cod_publicacion ASC
+
+	SELECT TOP (@tamPagina) * FROM #paginas ORDER BY cod_publicacion DESC
+END
+
+GO 
+CREATE PROCEDURE cheshire_jack.obtenerUltimaPaginaDeCompras
+(@fechaHoy DATETIME, @tamPagina INT)
+AS BEGIN
+	DECLARE @resto INT
+	SELECT @resto = COUNT(*) % @tamPagina FROM cheshire_jack.vw_publicaciones WHERE [Fecha Evento] > @fechaHoy
+	
+	SELECT TOP (CASE WHEN @resto = 0 THEN @tamPagina ELSE @resto END) *
+	FROM cheshire_jack.vw_publicaciones WHERE [Fecha Evento] > @fechaHoy
+	ORDER BY peso ASC, cod_publicacion DESC
+END
+
+*/

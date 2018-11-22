@@ -112,9 +112,10 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
             {
                 if (edicion)
                 {
-                    if (empresa.nombre != SocialReasonBox.Text && EmpresaEspectaculo.checkIfExistInDataBase(Program.DBconn, SocialReasonBox.Text, CUITBox.Text) == 2)
+                    byte yaExiste = EmpresaEspectaculo.checkIfExistInDataBase(Program.DBconn, SocialReasonBox.Text, CUITBox.Text);
+                    if (EnabledBox.Checked && yaExiste == 2)
                         MessageBox.Show("Ya hay una empresa registrada con esa razon social");
-                    else if (empresa.CUIT != CUITBox.Text && EmpresaEspectaculo.checkIfExistInDataBase(Program.DBconn, SocialReasonBox.Text, CUITBox.Text) == 1)
+                    else if (EnabledBox.Checked && yaExiste == 1)
                         MessageBox.Show("Ya hay una empresa registrada con ese CUIT");
                     else
                         empresa.updateValues(SocialReasonBox.Text, PhoneBox.Text, MailBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text, CityBox.Text, PostalCodeBox.Text, CUITBox.Text, EnabledBox.Checked).UpdateToDataBase(Program.DBconn);

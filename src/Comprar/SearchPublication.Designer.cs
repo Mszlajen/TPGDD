@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.BuyButton = new System.Windows.Forms.DataGridViewButtonColumn();
             this.label1 = new System.Windows.Forms.Label();
             this.TagBox = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -44,7 +45,6 @@
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.PageNumText = new System.Windows.Forms.Label();
-            this.BuyButton = new System.Windows.Forms.DataGridViewButtonColumn();
             this.FromCheck = new System.Windows.Forms.CheckBox();
             this.ToCheck = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -61,6 +61,13 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(667, 209);
             this.dataGridView1.TabIndex = 0;
+            // 
+            // BuyButton
+            // 
+            this.BuyButton.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.BuyButton.HeaderText = "Comprar";
+            this.BuyButton.Name = "BuyButton";
+            this.BuyButton.Width = 52;
             // 
             // label1
             // 
@@ -118,6 +125,7 @@
             // FromPicker
             // 
             this.FromPicker.CustomFormat = " ";
+            this.FromPicker.Enabled = false;
             this.FromPicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.FromPicker.Location = new System.Drawing.Point(15, 71);
             this.FromPicker.Name = "FromPicker";
@@ -127,6 +135,7 @@
             // ToPicker
             // 
             this.ToPicker.CustomFormat = " ";
+            this.ToPicker.Enabled = false;
             this.ToPicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.ToPicker.Location = new System.Drawing.Point(13, 111);
             this.ToPicker.Name = "ToPicker";
@@ -141,6 +150,7 @@
             this.ClearButton.TabIndex = 9;
             this.ClearButton.Text = "Limpiar";
             this.ClearButton.UseVisualStyleBackColor = true;
+            this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
             // SearchButton
             // 
@@ -177,7 +187,6 @@
             this.button3.TabIndex = 10;
             this.button3.Text = "Ultima";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button4
             // 
@@ -196,13 +205,6 @@
             this.PageNumText.Size = new System.Drawing.Size(50, 13);
             this.PageNumText.TabIndex = 11;
             this.PageNumText.Text = "Pagina #";
-            // 
-            // BuyButton
-            // 
-            this.BuyButton.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.BuyButton.HeaderText = "Comprar";
-            this.BuyButton.Name = "BuyButton";
-            this.BuyButton.Width = 52;
             // 
             // FromCheck
             // 
@@ -247,6 +249,7 @@
             this.Controls.Add(this.dataGridView1);
             this.Name = "SearchPublication";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.SearchPublication_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

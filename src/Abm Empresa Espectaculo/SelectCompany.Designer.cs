@@ -38,6 +38,7 @@
             this.Editar = new System.Windows.Forms.DataGridViewButtonColumn();
             this.CleanButton = new System.Windows.Forms.Button();
             this.SearchButton = new System.Windows.Forms.Button();
+            this.AvabilityCheck = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.CompanyGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -45,7 +46,7 @@
             // 
             this.NameBox.Location = new System.Drawing.Point(12, 30);
             this.NameBox.Name = "NameBox";
-            this.NameBox.Size = new System.Drawing.Size(359, 20);
+            this.NameBox.Size = new System.Drawing.Size(280, 20);
             this.NameBox.TabIndex = 0;
             // 
             // label1
@@ -131,11 +132,24 @@
             this.SearchButton.UseVisualStyleBackColor = true;
             this.SearchButton.Click += new System.EventHandler(this.SearchButton_Click);
             // 
+            // AvabilityCheck
+            // 
+            this.AvabilityCheck.AutoSize = true;
+            this.AvabilityCheck.Checked = true;
+            this.AvabilityCheck.CheckState = System.Windows.Forms.CheckState.Indeterminate;
+            this.AvabilityCheck.Location = new System.Drawing.Point(298, 32);
+            this.AvabilityCheck.Name = "AvabilityCheck";
+            this.AvabilityCheck.Size = new System.Drawing.Size(73, 17);
+            this.AvabilityCheck.TabIndex = 11;
+            this.AvabilityCheck.Text = "Habilitado";
+            this.AvabilityCheck.UseVisualStyleBackColor = true;
+            // 
             // SelectCompany
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(561, 312);
+            this.Controls.Add(this.AvabilityCheck);
             this.Controls.Add(this.SearchButton);
             this.Controls.Add(this.CleanButton);
             this.Controls.Add(this.CompanyGrid);
@@ -166,5 +180,6 @@
         private System.Windows.Forms.Button CleanButton;
         private System.Windows.Forms.Button SearchButton;
         private System.Windows.Forms.DataGridViewButtonColumn Editar;
+        private System.Windows.Forms.CheckBox AvabilityCheck;
     }
 }

@@ -27,7 +27,6 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
             {
                 cmd.Connection = Program.DBconn;
                 string queryString = "SELECT * FROM cheshire_jack.vw_empresas WHERE 1=1 ";
-                // Los textos libres no funcionan por alguna razon
                 if (!String.IsNullOrWhiteSpace(NameBox.Text))
                 {
                     queryString += "AND [Razon Social] LIKE @razonSocial ";
@@ -42,6 +41,11 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
                 {
                     queryString += "AND [E-mail] LIKE @mail ";
                     cmd.Parameters.Add(new SqlParameter("@mail", "%" + MailBox.Text + "%"));
+                }
+                if (AvabilityCheck.CheckState == CheckState.Checked || AvabilityCheck.CheckState == CheckState.Unchecked)
+                {
+                    cmd.Parameters.AddWithValue("@habilitado", AvabilityCheck.Checked);
+                   queryString += "AND habilitado = @habilitado ";
                 }
                 cmd.CommandText = queryString;
                 empresas.Load(cmd.ExecuteReader());
@@ -61,7 +65,7 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
                     row.Cells["Ciudad"].Value.ToString(), row.Cells["Codigo Postal"].Value.ToString(), row.Cells["CUIT"].Value.ToString(),
                     (int)row.Cells["cod_usuario"].Value, (bool)row.Cells["Habilitado"].Value);
                 Program.openPopUpWindow(this, new CreateCompany(empresa));
-                updateGrid();
+                empresas.Clear();
             }
         }
 
@@ -72,6 +76,8 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
 
         private void SelectCompany_Load(object sender, EventArgs e)
         {
+            using(SqlCommand cmd = new SqlCommand("SELECT * FROM cheshire_jack.vw_empresas WHERE cod_empresa = 0", Program.DBconn))
+                empresas.Load(cmd.ExecuteReader());
             CompanyGrid.DataSource = empresas;
         }
 

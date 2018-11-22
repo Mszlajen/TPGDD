@@ -65,14 +65,43 @@ namespace PalcoNet.Editar_Usuario
                 Program.openPopUpWindow(this, new changePassword((int)usuarios.Rows[e.RowIndex]["cod_usuario"], "Ingrese la nueva contraseña"));
             else if (e.ColumnIndex == UsersGrid.Columns["Habilitado"].Index)
             {
-                usuarios.Rows[e.RowIndex]["Habilitado"] = !(bool)usuarios.Rows[e.RowIndex]["Habilitado"];
-                using (SqlCommand cmd = new SqlCommand("UPDATE cheshire_jack.usuarios SET habilitado = @habilitado WHERE cod_usuario = @codUsuario", Program.DBconn))
+                //usuarios.Rows[e.RowIndex]["Habilitado"] = !(bool)usuarios.Rows[e.RowIndex]["Habilitado"];
+                if ((bool)usuarios.Rows[e.RowIndex]["Habilitado"])
                 {
-                    cmd.Parameters.Add(new SqlParameter("@habilitado", (bool)usuarios.Rows[e.RowIndex]["Habilitado"]));
-                    cmd.Parameters.Add(new SqlParameter("@codUsuario", (int)usuarios.Rows[e.RowIndex]["cod_usuario"]));
-                    cmd.ExecuteNonQuery();
+                    usuarios.Rows[e.RowIndex]["Habilitado"] = false;
+                    using (SqlCommand cmd = new SqlCommand("UPDATE cheshire_jack.usuarios SET habilitado = @habilitado WHERE cod_usuario = @codUsuario", Program.DBconn))
+                    {
+                        cmd.Parameters.Add(new SqlParameter("@habilitado", (bool)usuarios.Rows[e.RowIndex]["Habilitado"]));
+                        cmd.Parameters.Add(new SqlParameter("@codUsuario", (int)usuarios.Rows[e.RowIndex]["cod_usuario"]));
+                        cmd.ExecuteNonQuery();
+                    }
                 }
-            }
+                else
+                {
+                    using (SqlCommand cmd = new SqlCommand("cheshire_jack.existeUsuario", Program.DBconn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add(new SqlParameter("@nombre", usuarios.Rows[e.RowIndex]["Usuario"].ToString()));
+                        SqlParameter ret = new SqlParameter("@ret", DbType.Boolean);
+                        ret.Direction = ParameterDirection.ReturnValue;
+                        cmd.Parameters.Add(ret);
+                        cmd.ExecuteNonQuery();
+                        if ((bool)ret.Value)
+                            MessageBox.Show("No se puede habilitar porque existe otro usuario con el mismo nombre");
+                        else
+                        {
+                            cmd.Parameters.Clear();
+                            cmd.CommandType = CommandType.Text;
+                            usuarios.Rows[e.RowIndex]["Habilitado"] = true;
+                            cmd.CommandText = "UPDATE cheshire_jack.usuarios SET habilitado = @habilitado WHERE cod_usuario = @codUsuario";
+                            cmd.Parameters.Add(new SqlParameter("@habilitado", (bool)usuarios.Rows[e.RowIndex]["Habilitado"]));
+                            cmd.Parameters.Add(new SqlParameter("@codUsuario", (int)usuarios.Rows[e.RowIndex]["cod_usuario"]));
+                            cmd.ExecuteNonQuery();
+                        }
+
+                    }
+                }
+           }
 
         }
     }
