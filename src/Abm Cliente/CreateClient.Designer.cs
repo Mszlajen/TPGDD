@@ -62,6 +62,8 @@
             this.SaveButton = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
             this.CreationDatePicker = new System.Windows.Forms.DateTimePicker();
+            this.AddCardDataButton = new System.Windows.Forms.Button();
+            this.label15 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -69,9 +71,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(13, 13);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 13);
+            this.label1.Size = new System.Drawing.Size(54, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Apellido";
+            this.label1.Text = "Apellido(*)";
             // 
             // SurnameBox
             // 
@@ -85,9 +87,9 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(13, 53);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(44, 13);
+            this.label7.Size = new System.Drawing.Size(54, 13);
             this.label7.TabIndex = 2;
-            this.label7.Text = "Nombre";
+            this.label7.Text = "Nombre(*)";
             // 
             // FirstNameBox
             // 
@@ -101,9 +103,9 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(13, 93);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(129, 13);
+            this.label8.Size = new System.Drawing.Size(139, 13);
             this.label8.TabIndex = 4;
-            this.label8.Text = "Tipo y Nro de Documento";
+            this.label8.Text = "Tipo y Nro de Documento(*)";
             // 
             // DocumentTypeBox
             // 
@@ -128,9 +130,9 @@
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(15, 159);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(31, 13);
+            this.label9.Size = new System.Drawing.Size(41, 13);
             this.label9.TabIndex = 7;
-            this.label9.Text = "CUIL";
+            this.label9.Text = "CUIL(*)";
             // 
             // CUILBox
             // 
@@ -144,18 +146,18 @@
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(15, 198);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(108, 13);
+            this.label10.Size = new System.Drawing.Size(118, 13);
             this.label10.TabIndex = 9;
-            this.label10.Text = "Fecha de Nacimiento";
+            this.label10.Text = "Fecha de Nacimiento(*)";
             // 
             // label11
             // 
             this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(301, 13);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(36, 13);
+            this.label11.Size = new System.Drawing.Size(46, 13);
             this.label11.TabIndex = 11;
-            this.label11.Text = "E-Mail";
+            this.label11.Text = "E-Mail(*)";
             // 
             // MailBox
             // 
@@ -185,9 +187,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(299, 93);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(52, 13);
+            this.label3.Size = new System.Drawing.Size(62, 13);
             this.label3.TabIndex = 15;
-            this.label3.Text = "Dirección";
+            this.label3.Text = "Dirección(*)";
             // 
             // AddressBox
             // 
@@ -198,6 +200,7 @@
             // 
             // BirthDatePicker
             // 
+            this.BirthDatePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.BirthDatePicker.Location = new System.Drawing.Point(18, 215);
             this.BirthDatePicker.Name = "BirthDatePicker";
             this.BirthDatePicker.Size = new System.Drawing.Size(200, 20);
@@ -234,9 +237,9 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(498, 93);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(24, 13);
+            this.label4.Size = new System.Drawing.Size(34, 13);
             this.label4.TabIndex = 19;
-            this.label4.Text = "Nro";
+            this.label4.Text = "Nro(*)";
             // 
             // DeptBox
             // 
@@ -275,9 +278,9 @@
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(298, 134);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(53, 13);
+            this.label12.Size = new System.Drawing.Size(63, 13);
             this.label12.TabIndex = 22;
-            this.label12.Text = "Localidad";
+            this.label12.Text = "Localidad(*)";
             // 
             // LocalityBox
             // 
@@ -291,9 +294,9 @@
             this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(501, 136);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(72, 13);
+            this.label13.Size = new System.Drawing.Size(82, 13);
             this.label13.TabIndex = 24;
-            this.label13.Text = "Codigo Postal";
+            this.label13.Text = "Codigo Postal(*)";
             // 
             // PostalCodeBox
             // 
@@ -315,7 +318,7 @@
             // EnableBox
             // 
             this.EnableBox.AutoSize = true;
-            this.EnableBox.Location = new System.Drawing.Point(304, 194);
+            this.EnableBox.Location = new System.Drawing.Point(549, 249);
             this.EnableBox.Name = "EnableBox";
             this.EnableBox.Size = new System.Drawing.Size(64, 17);
             this.EnableBox.TabIndex = 27;
@@ -325,7 +328,7 @@
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(528, 233);
+            this.SaveButton.Location = new System.Drawing.Point(426, 232);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(96, 48);
             this.SaveButton.TabIndex = 26;
@@ -344,16 +347,38 @@
             // 
             // CreationDatePicker
             // 
+            this.CreationDatePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.CreationDatePicker.Location = new System.Drawing.Point(18, 260);
             this.CreationDatePicker.Name = "CreationDatePicker";
             this.CreationDatePicker.Size = new System.Drawing.Size(200, 20);
             this.CreationDatePicker.TabIndex = 10;
+            // 
+            // AddCardDataButton
+            // 
+            this.AddCardDataButton.Location = new System.Drawing.Point(301, 180);
+            this.AddCardDataButton.Name = "AddCardDataButton";
+            this.AddCardDataButton.Size = new System.Drawing.Size(97, 47);
+            this.AddCardDataButton.TabIndex = 28;
+            this.AddCardDataButton.Text = "Añadir informacion de tarjeta";
+            this.AddCardDataButton.UseVisualStyleBackColor = true;
+            this.AddCardDataButton.Click += new System.EventHandler(this.AddCardDataButton_Click);
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(425, 198);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(174, 13);
+            this.label15.TabIndex = 29;
+            this.label15.Text = "Los campos con (*) son obligatorios";
             // 
             // CreateClient
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(638, 293);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.AddCardDataButton);
             this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.CreationDatePicker);
             this.Controls.Add(this.label14);
@@ -430,5 +455,7 @@
         private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.DateTimePicker CreationDatePicker;
+        private System.Windows.Forms.Button AddCardDataButton;
+        private System.Windows.Forms.Label label15;
     }
 }

@@ -30,12 +30,16 @@ namespace PalcoNet.Abm_Rol
 
         private void CreateRole_Load(object sender, EventArgs e)
         {
-            string queryString = "SELECT cod_funcionalidad, descripcion FROM cheshire_jack.funcionalidades";
+            string queryString = "SELECT cod_funcionalidad, descripcion Funcionalidad FROM cheshire_jack.funcionalidades";
             using(SqlCommand cmd = new SqlCommand(queryString, Program.DBconn))
                 funcionalidades.Load(cmd.ExecuteReader());
 
-            foreach(DataRow row in funcionalidades.Rows)
-                FunctionsList.Items.Add(row["descripcion"]);
+            ListGrid.DataSource = funcionalidades;
+            ListGrid.Columns["cod_funcionalidad"].Visible = false;
+            ListGrid.Columns["Funcionalidad"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+            foreach (DataGridViewRow row in ListGrid.Rows)
+                row.Cells[0].Value = false;
 
             if (havingRole)
             {
@@ -58,7 +62,7 @@ namespace PalcoNet.Abm_Rol
                     foreach (DataRow func in funcionalidades.Rows)
                     {
                         if (funcXrol.Rows.Contains(func["cod_funcionalidad"]))
-                            FunctionsList.SetItemChecked(i, true);
+                            ListGrid.Rows[i].Cells[0].Value = true;
                         i++;
                     }
                 }
@@ -75,6 +79,17 @@ namespace PalcoNet.Abm_Rol
             funcionalidades.Dispose();
         }
 
+        private byte countChecked()
+        {
+            byte count = 0;
+            foreach (DataGridViewRow row in ListGrid.Rows)
+            {
+                if ((bool)row.Cells[0].Value)
+                    count++;
+            }
+            return count;
+        }
+
         private void AcceptButton_Click(object sender, EventArgs e)
         {
             bool todoBien = true;
@@ -83,17 +98,12 @@ namespace PalcoNet.Abm_Rol
                 MessageBox.Show("No puede dejarse el nombre vacio.");
                 todoBien = false;
             }
-            if (todoBien && FunctionsList.CheckedIndices.Count == 0)
-            {
-                if(MessageBox.Show("Dejo el role sin funcionalidades. ¿Está seguro que quiere continuar?", "confirmacion", MessageBoxButtons.YesNo) == DialogResult.No)
-                    todoBien = false;
-            }
-            if (todoBien && availabilityCheck.Enabled && !availabilityCheck.Checked)
+            if (availabilityCheck.Enabled && !availabilityCheck.Checked)
             {
                 if (MessageBox.Show("Se le quitara el rol a todos los usuarios. ¿Está seguro que quiere continuar?", "confirmacion", MessageBoxButtons.YesNo) == DialogResult.No)
                     todoBien = false;
             }
-            if (todoBien)
+            if (todoBien && (countChecked() != 0 || MessageBox.Show("Dejo el role sin funcionalidades. ¿Está seguro que quiere continuar?", "confirmacion", MessageBoxButtons.YesNo) == DialogResult.Yes))
             {
                 if (havingRole)
                     role.updateValues(RoleNameBox.Text, availabilityCheck.Checked, SignUpCheck.Checked).updateToDataBase(Program.DBconn);
@@ -102,12 +112,10 @@ namespace PalcoNet.Abm_Rol
 
                 List<int> cod_funcionalidades = new List<int>();
                 
-                DataRow curRow;
-                foreach (string nombre in FunctionsList.CheckedItems)
+                foreach (DataGridViewRow row in ListGrid.Rows)
                 {
-                    string selectString = "'" + nombre + "' = descripcion";
-                    curRow = funcionalidades.Select(selectString)[0];
-                    cod_funcionalidades.Add((int) curRow["cod_funcionalidad"]);
+                    if((bool)row.Cells[0].Value)
+                        cod_funcionalidades.Add((int) row.Cells["cod_funcionalidad"].Value);
                 }
 
                 role.updateFunctionsToDataBase(Program.DBconn, cod_funcionalidades);

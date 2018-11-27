@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abm Cliente\AddCreditCard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abm Cliente\AddCreditCard.Designer.cs">
+      <DependentUpon>AddCreditCard.cs</DependentUpon>
+    </Compile>
     <Compile Include="Abm Cliente\CreateClient.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -120,6 +126,7 @@
     <Compile Include="Canje Puntos\PointExchange.Designer.cs">
       <DependentUpon>PointExchange.cs</DependentUpon>
     </Compile>
+    <Compile Include="Card.cs" />
     <Compile Include="changePassword.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -227,6 +234,9 @@
       <DependentUpon>Settings1.settings</DependentUpon>
     </Compile>
     <Compile Include="usuario.cs" />
+    <EmbeddedResource Include="Abm Cliente\AddCreditCard.resx">
+      <DependentUpon>AddCreditCard.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Abm Cliente\CreateClient.resx">
       <DependentUpon>CreateClient.cs</DependentUpon>
     </EmbeddedResource>

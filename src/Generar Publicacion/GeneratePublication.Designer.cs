@@ -45,16 +45,17 @@
             this.PostButton = new System.Windows.Forms.Button();
             this.CancelButton = new System.Windows.Forms.Button();
             this.SeatsGrid = new System.Windows.Forms.DataGridView();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.AddressText = new System.Windows.Forms.TextBox();
-            this.AddressNroText = new System.Windows.Forms.TextBox();
             this.DeleteButton = new System.Windows.Forms.DataGridViewButtonColumn();
             this.NotNumbered = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Row = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Seat = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SeatType = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.AddressText = new System.Windows.Forms.TextBox();
+            this.AddressNroText = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.SeatsGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -63,9 +64,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(13, 13);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(63, 13);
+            this.label1.Size = new System.Drawing.Size(73, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Descripción";
+            this.label1.Text = "Descripción(*)";
             // 
             // DescriptionBox
             // 
@@ -80,9 +81,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 168);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(37, 13);
+            this.label2.Size = new System.Drawing.Size(47, 13);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Fecha";
+            this.label2.Text = "Fecha(*)";
             // 
             // EventDatePicker
             // 
@@ -96,7 +97,7 @@
             // BatchDatesCheck
             // 
             this.BatchDatesCheck.AutoSize = true;
-            this.BatchDatesCheck.Location = new System.Drawing.Point(60, 168);
+            this.BatchDatesCheck.Location = new System.Drawing.Point(65, 167);
             this.BatchDatesCheck.Name = "BatchDatesCheck";
             this.BatchDatesCheck.Size = new System.Drawing.Size(119, 17);
             this.BatchDatesCheck.TabIndex = 4;
@@ -120,9 +121,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(13, 212);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(36, 13);
+            this.label3.Size = new System.Drawing.Size(46, 13);
             this.label3.TabIndex = 6;
-            this.label3.Text = "Rubro";
+            this.label3.Text = "Rubro(*)";
             // 
             // CategoryBox
             // 
@@ -138,9 +139,9 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(16, 256);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(36, 13);
+            this.label4.Size = new System.Drawing.Size(46, 13);
             this.label4.TabIndex = 8;
-            this.label4.Text = "Grado";
+            this.label4.Text = "Grado(*)";
             // 
             // GradeBox
             // 
@@ -158,7 +159,7 @@
             this.shapeContainer1.Name = "shapeContainer1";
             this.shapeContainer1.Shapes.AddRange(new Microsoft.VisualBasic.PowerPacks.Shape[] {
             this.lineShape1});
-            this.shapeContainer1.Size = new System.Drawing.Size(764, 313);
+            this.shapeContainer1.Size = new System.Drawing.Size(764, 326);
             this.shapeContainer1.TabIndex = 10;
             this.shapeContainer1.TabStop = false;
             // 
@@ -175,9 +176,9 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(291, 9);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(66, 13);
+            this.label5.Size = new System.Drawing.Size(76, 13);
             this.label5.TabIndex = 12;
-            this.label5.Text = "Ubicaciones";
+            this.label5.Text = "Ubicaciones(*)";
             // 
             // SketchButton
             // 
@@ -225,38 +226,6 @@
             this.SeatsGrid.TabIndex = 35;
             this.SeatsGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SeatsGrid_CellContentClick);
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 128);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(52, 13);
-            this.label6.TabIndex = 36;
-            this.label6.Text = "Dirección";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(183, 128);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(34, 13);
-            this.label7.TabIndex = 37;
-            this.label7.Text = "Altura";
-            // 
-            // AddressText
-            // 
-            this.AddressText.Location = new System.Drawing.Point(16, 145);
-            this.AddressText.Name = "AddressText";
-            this.AddressText.Size = new System.Drawing.Size(163, 20);
-            this.AddressText.TabIndex = 38;
-            // 
-            // AddressNroText
-            // 
-            this.AddressNroText.Location = new System.Drawing.Point(186, 145);
-            this.AddressNroText.Name = "AddressNroText";
-            this.AddressNroText.Size = new System.Drawing.Size(78, 20);
-            this.AddressNroText.TabIndex = 39;
-            // 
             // DeleteButton
             // 
             this.DeleteButton.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
@@ -273,7 +242,7 @@
             this.NotNumbered.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.NotNumbered.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.NotNumbered.TrueValue = "1";
-            this.NotNumbered.Width = 90;
+            this.NotNumbered.Width = 83;
             // 
             // Row
             // 
@@ -303,11 +272,53 @@
             this.SeatType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.SeatType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(12, 128);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(62, 13);
+            this.label6.TabIndex = 36;
+            this.label6.Text = "Dirección(*)";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(183, 128);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(44, 13);
+            this.label7.TabIndex = 37;
+            this.label7.Text = "Altura(*)";
+            // 
+            // AddressText
+            // 
+            this.AddressText.Location = new System.Drawing.Point(16, 145);
+            this.AddressText.Name = "AddressText";
+            this.AddressText.Size = new System.Drawing.Size(163, 20);
+            this.AddressText.TabIndex = 38;
+            // 
+            // AddressNroText
+            // 
+            this.AddressNroText.Location = new System.Drawing.Point(186, 145);
+            this.AddressNroText.Name = "AddressNroText";
+            this.AddressNroText.Size = new System.Drawing.Size(78, 20);
+            this.AddressNroText.TabIndex = 39;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(204, 304);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(174, 13);
+            this.label8.TabIndex = 40;
+            this.label8.Text = "Los campos con (*) son obligatorios";
+            // 
             // GeneratePublication
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(764, 313);
+            this.ClientSize = new System.Drawing.Size(764, 326);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.AddressNroText);
             this.Controls.Add(this.AddressText);
             this.Controls.Add(this.label7);
@@ -367,5 +378,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Seat;
         private System.Windows.Forms.DataGridViewTextBoxColumn Price;
         private System.Windows.Forms.DataGridViewComboBoxColumn SeatType;
+        private System.Windows.Forms.Label label8;
     }
 }

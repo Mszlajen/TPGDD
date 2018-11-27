@@ -31,13 +31,12 @@
             this.label1 = new System.Windows.Forms.Label();
             this.NameText = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.PercentNumeric = new System.Windows.Forms.NumericUpDown();
-            this.WeightNumeric = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
             this.SaveButton = new System.Windows.Forms.Button();
             this.CancelButton = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.PercentNumeric)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WeightNumeric)).BeginInit();
+            this.PercentText = new System.Windows.Forms.TextBox();
+            this.WeightText = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -45,9 +44,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(13, 13);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 13);
+            this.label1.Size = new System.Drawing.Size(54, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Nombre";
+            this.label1.Text = "Nombre(*)";
             // 
             // NameText
             // 
@@ -61,42 +60,18 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(10, 59);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(103, 13);
+            this.label2.Size = new System.Drawing.Size(113, 13);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Porcentaje de cobro";
-            // 
-            // PercentNumeric
-            // 
-            this.PercentNumeric.Location = new System.Drawing.Point(13, 75);
-            this.PercentNumeric.Maximum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            0});
-            this.PercentNumeric.Name = "PercentNumeric";
-            this.PercentNumeric.Size = new System.Drawing.Size(55, 20);
-            this.PercentNumeric.TabIndex = 4;
-            // 
-            // WeightNumeric
-            // 
-            this.WeightNumeric.Location = new System.Drawing.Point(139, 75);
-            this.WeightNumeric.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.WeightNumeric.Name = "WeightNumeric";
-            this.WeightNumeric.Size = new System.Drawing.Size(42, 20);
-            this.WeightNumeric.TabIndex = 5;
+            this.label2.Text = "Porcentaje de cobro(*)";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(136, 59);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(31, 13);
+            this.label3.Size = new System.Drawing.Size(41, 13);
             this.label3.TabIndex = 6;
-            this.label3.Text = "Peso";
+            this.label3.Text = "Peso(*)";
             // 
             // SaveButton
             // 
@@ -118,24 +93,46 @@
             this.CancelButton.UseVisualStyleBackColor = true;
             this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
+            // PercentText
+            // 
+            this.PercentText.Location = new System.Drawing.Point(16, 76);
+            this.PercentText.Name = "PercentText";
+            this.PercentText.Size = new System.Drawing.Size(72, 20);
+            this.PercentText.TabIndex = 9;
+            // 
+            // WeightText
+            // 
+            this.WeightText.Location = new System.Drawing.Point(139, 76);
+            this.WeightText.Name = "WeightText";
+            this.WeightText.Size = new System.Drawing.Size(75, 20);
+            this.WeightText.TabIndex = 10;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(26, 144);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(174, 13);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "Los campos con (*) son obligatorios";
+            // 
             // CreateGrade
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(234, 150);
+            this.ClientSize = new System.Drawing.Size(234, 166);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.WeightText);
+            this.Controls.Add(this.PercentText);
             this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.WeightNumeric);
-            this.Controls.Add(this.PercentNumeric);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.NameText);
             this.Controls.Add(this.label1);
             this.Name = "CreateGrade";
             this.Text = "CreateGrade";
             this.Load += new System.EventHandler(this.CreateGrade_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.PercentNumeric)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.WeightNumeric)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -146,10 +143,11 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox NameText;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.NumericUpDown PercentNumeric;
-        private System.Windows.Forms.NumericUpDown WeightNumeric;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.TextBox PercentText;
+        private System.Windows.Forms.TextBox WeightText;
+        private System.Windows.Forms.Label label4;
     }
 }

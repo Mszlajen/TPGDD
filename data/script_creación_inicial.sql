@@ -1227,7 +1227,7 @@ AS BEGIN
 	SELECT TOP 5 nombre Nombre, apellido Apellido, tipo_documento [Tipo de Documento],
 	nro_documento [Nro de Documento], telefono Telefono, mail [E-Mail]
 	FROM cheshire_jack.puntos p JOIN cheshire_jack.clientes c 
-	ON p.cod_cliente = c.cod_cliente WHERE p.anio_vencimiento = @anio 
+	ON p.cod_cliente = c.cod_cliente WHERE p.anio_vencimiento = @anio + 1
 	ORDER BY p.cantidad DESC
 END
 
@@ -1235,14 +1235,49 @@ GO
 CREATE PROCEDURE cheshire_jack.listadoLocalidadesNoVendidas
 (@anio INT, @trimestre TINYINT)
 AS BEGIN
-	SELECT 1
+	SELECT TOP 5 emp.cod_empresa, COUNT(*) Total
+	INTO #peoresVendedores 
+	FROM cheshire_jack.empresas emp JOIN cheshire_jack.espectaculos esp ON emp.cod_empresa = esp.cod_empresa
+	JOIN cheshire_jack.publicaciones pub ON pub.cod_espectaculo = esp.cod_espectaculo
+	JOIN cheshire_jack.ubicaciones ubi ON pub.cod_publicacion = ubi.cod_publicacion
+	WHERE cheshire_jack.fechaEnTrimestre(pub.fecha_evento, @anio, @trimestre) = 1 AND
+	NOT EXISTS (SELECT 1 FROM cheshire_jack.compras WHERE pub.cod_publicacion = cod_publicacion AND ubi.nro_ubicacion = nro_ubicacion)
+	GROUP BY emp.cod_empresa
+
+	SELECT pv.Total, emp.razon_social, emp.CUIT, esp.descripcion, gra.nombre Grado, 
+	pub.fecha_evento, ubi.asiento, ubi.fila 
+	FROM #peoresVendedores PV
+	JOIN cheshire_jack.empresas emp ON PV.cod_empresa = emp.cod_empresa 
+	JOIN cheshire_jack.espectaculos esp ON PV.cod_empresa = esp.cod_empresa
+	JOIN cheshire_jack.publicaciones pub ON pub.cod_espectaculo = esp.cod_espectaculo
+	JOIN cheshire_jack.grados_de_publicacion gra ON pub.cod_grado = gra.cod_grado
+	JOIN cheshire_jack.ubicaciones ubi ON pub.cod_publicacion = ubi.cod_publicacion
+	WHERE cheshire_jack.fechaEnTrimestre(pub.fecha_evento, @anio, @trimestre) = 1 AND
+	NOT EXISTS (SELECT 1 FROM cheshire_jack.compras WHERE pub.cod_publicacion = cod_publicacion AND ubi.nro_ubicacion = nro_ubicacion)
+	ORDER BY Total DESC, fecha_evento DESC, peso DESC
 END
 
 GO 
 CREATE PROCEDURE cheshire_jack.listadoMayoresCompradores
 (@anio INT, @trimestre TINYINT)
 AS BEGIN
-	SELECT 1
+	SELECT TOP 5 cod_cliente, COUNT(cod_compra) cantCompras
+	INTO #mayoresCompradores
+	FROM cheshire_jack.compras
+	WHERE cheshire_jack.fechaEnTrimestre(fecha, @anio, @trimestre) = 1
+	GROUP BY cod_cliente
+
+	SELECT apellido, nombre, tipo_documento [Tipo de Documento], 
+	nro_documento [Nro de Documento], razon_social Empresa, COUNT(DISTINCT com.cod_publicacion) [Cant de Publicaciones],
+	cantCompras [Total de Compras]
+	FROM cheshire_jack.clientes cli JOIN #mayoresCompradores MC ON MC.cod_cliente = cli.cod_cliente
+		JOIN cheshire_jack.compras com ON MC.cod_cliente = com.cod_cliente
+		JOIN cheshire_jack.publicaciones pub ON com.cod_publicacion = pub.cod_publicacion
+		JOIN cheshire_jack.espectaculos esp ON esp.cod_espectaculo = pub.cod_espectaculo
+		JOIN cheshire_jack.empresas emp ON emp.cod_empresa = esp.cod_empresa 
+	WHERE cheshire_jack.fechaEnTrimestre(com.fecha, @anio, @trimestre) = 1
+	GROUP BY apellido, nombre, tipo_documento, nro_documento, razon_social, cantCompras
+	ORDER BY cantCompras DESC
 END
 
 /*

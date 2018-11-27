@@ -16,6 +16,7 @@ namespace PalcoNet
                 codPostal;
         DateTime fechaNacimiento; 
         public DateTime fechaCreacion;
+        Card tarjeta;
 
         public Cliente(int _codCliente, string _nombre, string _apellido, string _tipoDocumento,
                        string _nroDocumento, string _CUIL, string _mail, string _telefono,

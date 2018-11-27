@@ -73,14 +73,14 @@ namespace PalcoNet.Abm_Rol
 
         public void updateFunctionsToDataBase(SqlConnection DB, List<int> codigos_funcionalidades)
         {
-            string concat = "";
+            StringBuilder concat = new StringBuilder();
             foreach (int code in codigos_funcionalidades)
-                concat += code.ToString() + " ";
+                concat.Append(code.ToString() + " ");
             using (SqlCommand cmd = new SqlCommand("cheshire_jack.UpdateRolesXFuncionalidades", DB))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add(new SqlParameter("@cod_rol", codigo));
-                cmd.Parameters.Add(new SqlParameter("@funcionalidades", concat));
+                cmd.Parameters.Add(new SqlParameter("@funcionalidades", concat.ToString()));
                 cmd.ExecuteNonQuery();
             }
         }
