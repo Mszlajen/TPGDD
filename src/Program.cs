@@ -75,6 +75,11 @@ namespace PalcoNet
 
             return builder.ToString();
         }
+
+        public static bool checkIfOnlyNumbers(String text)
+        {
+            return text.All(c => 57 >= c && c >= 48);
+        }
     }
 
     static class ConfigurationFile

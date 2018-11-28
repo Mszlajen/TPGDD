@@ -58,7 +58,7 @@
             this.label13 = new System.Windows.Forms.Label();
             this.PostalCodeBox = new System.Windows.Forms.TextBox();
             this.ClearButton = new System.Windows.Forms.Button();
-            this.EnableBox = new System.Windows.Forms.CheckBox();
+            this.EnabledBox = new System.Windows.Forms.CheckBox();
             this.SaveButton = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
             this.CreationDatePicker = new System.Windows.Forms.DateTimePicker();
@@ -111,6 +111,8 @@
             // 
             this.DocumentTypeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.DocumentTypeBox.FormattingEnabled = true;
+            this.DocumentTypeBox.Items.AddRange(new object[] {
+            "DNI"});
             this.DocumentTypeBox.Location = new System.Drawing.Point(18, 109);
             this.DocumentTypeBox.Name = "DocumentTypeBox";
             this.DocumentTypeBox.Size = new System.Drawing.Size(121, 21);
@@ -315,16 +317,16 @@
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
-            // EnableBox
+            // EnabledBox
             // 
-            this.EnableBox.AutoSize = true;
-            this.EnableBox.Location = new System.Drawing.Point(549, 249);
-            this.EnableBox.Name = "EnableBox";
-            this.EnableBox.Size = new System.Drawing.Size(64, 17);
-            this.EnableBox.TabIndex = 27;
-            this.EnableBox.Text = "Habilitar";
-            this.EnableBox.UseVisualStyleBackColor = true;
-            this.EnableBox.Visible = false;
+            this.EnabledBox.AutoSize = true;
+            this.EnabledBox.Location = new System.Drawing.Point(549, 249);
+            this.EnabledBox.Name = "EnabledBox";
+            this.EnabledBox.Size = new System.Drawing.Size(64, 17);
+            this.EnabledBox.TabIndex = 27;
+            this.EnabledBox.Text = "Habilitar";
+            this.EnabledBox.UseVisualStyleBackColor = true;
+            this.EnabledBox.Visible = false;
             // 
             // SaveButton
             // 
@@ -382,7 +384,7 @@
             this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.CreationDatePicker);
             this.Controls.Add(this.label14);
-            this.Controls.Add(this.EnableBox);
+            this.Controls.Add(this.EnabledBox);
             this.Controls.Add(this.ClearButton);
             this.Controls.Add(this.PostalCodeBox);
             this.Controls.Add(this.label13);
@@ -414,6 +416,7 @@
             this.Controls.Add(this.shapeContainer1);
             this.Name = "CreateClient";
             this.Text = "Crear Cliente";
+            this.Load += new System.EventHandler(this.CreateClient_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -451,7 +454,7 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox PostalCodeBox;
         private System.Windows.Forms.Button ClearButton;
-        private System.Windows.Forms.CheckBox EnableBox;
+        private System.Windows.Forms.CheckBox EnabledBox;
         private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.DateTimePicker CreationDatePicker;

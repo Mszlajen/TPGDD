@@ -68,10 +68,11 @@ namespace PalcoNet.Abm_Cliente
                                               row.Cells["Domicilio Calle"].Value.ToString(), row.Cells["Altura"].Value.ToString(),
                                               row.Cells["Piso"].Value.ToString(), row.Cells["Departamento"].Value.ToString(),
                                               row.Cells["Localidad"].Value.ToString(), row.Cells["Codigo Postal"].Value.ToString(),
-                                              (DateTime)row.Cells["Fecha de Nacimiento"].Value);
+                                              (DateTime)row.Cells["Fecha de Nacimiento"].Value, (bool)row.Cells["Habilitado"].Value);
                 if (!String.IsNullOrWhiteSpace(fechaCreacion))
                     cliente.fechaCreacion = (DateTime) row.Cells["Fecha de Creacion"].Value;
                 Program.openPopUpWindow(this, new CreateClient(cliente));
+                clientes.Clear();
             }
         }
 

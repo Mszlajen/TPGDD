@@ -30,7 +30,7 @@ namespace PalcoNet
             }
             return this;
         }
-        public static Usuario CreateToDataBase(SqlConnection DB, string nombre,string contraseñia)
+        public static Usuario CreateToDataBase(SqlConnection DB, string nombre,string contraseñia, bool automatico = true)
         {
             Usuario nuevo;
             using (SqlCommand cmd = new SqlCommand("cheshire_jack.crearUsuario", DB))
@@ -38,7 +38,7 @@ namespace PalcoNet
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.Add(new SqlParameter("@nombreUsuario", nombre));
                 cmd.Parameters.Add(new SqlParameter("@contrasenia", Program.sha256(contraseñia)));
-                cmd.Parameters.Add(new SqlParameter("@automatico", true));
+                cmd.Parameters.Add(new SqlParameter("@automatico", automatico));
                 SqlParameter ret = new SqlParameter("@ret", DbType.Int32);
                 ret.Direction = ParameterDirection.ReturnValue;
                 cmd.Parameters.Add(ret);

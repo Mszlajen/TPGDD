@@ -92,7 +92,7 @@ CREATE TABLE cheshire_jack.clientes (
 	fecha_nacimiento DATETIME NOT NULL,
 	mail NVARCHAR(255) CHECK(mail LIKE '_%@_%._%') NOT NULL,
 	telefono CHAR(14),
-	localidad NVARCHAR(255),
+	localidad NVARCHAR(255) NOT NULL DEFAULT('Sin Definir'),
 	domicilio_calle NVARCHAR(255) NOT NULL,
 	nro_calle NUMERIC(18,0) NOT NULL CHECK(nro_calle > 0),
 	piso TINYINT,
@@ -110,7 +110,7 @@ CREATE TABLE cheshire_jack.empresas (
 	fecha_creacion DATETIME,
 	mail NVARCHAR(255) CHECK(mail LIKE '_%@_%._%'),
 	telefono CHAR(14),
-	ciudad NVARCHAR(255),
+	ciudad NVARCHAR(255) NOT NULL DEFAULT('Sin Definir'),
 	domicilio_calle NVARCHAR(50) NOT NULL,
 	nro_calle NUMERIC(18,0) NOT NULL CHECK(nro_calle > 0),
 	piso NUMERIC(18,0),
@@ -176,7 +176,9 @@ CREATE TABLE cheshire_jack.tarjetas_de_credito (
 	cod_cliente INT NOT NULL,
 	hash_nro_tarjeta char(256) NOT NULL,
 	ultimos_digitos char(4) NOT NULL,
-	cod_seguridad char(4) NOT NULL
+	cod_seguridad char(4) NOT NULL,
+	mes_vencimiento TINYINT NOT NULL CHECK(mes_vencimiento BETWEEN 1 AND 12),
+	anio_vencimiento INT NOT NULL CHECK(anio_vencimiento > 0)
 	)
 
 CREATE TABLE cheshire_jack.usuariosXRoles (
@@ -302,23 +304,14 @@ SELECT DISTINCT Espec_Empresa_Razon_Social, Espec_Empresa_Cuit, Espec_Empresa_Fe
 				Espec_Empresa_Piso, Espec_Empresa_Depto, Espec_Empresa_Cod_Postal
 FROM gd_esquema.Maestra
 
-SELECT DISTINCT Cli_Nombre, Cli_Apeliido, Cli_Fecha_Nac, 'DNI' AS Tipo_documento, Cli_Dni, 
-				Cli_Mail, Cli_Dom_Calle, Cli_Nro_Calle, Cli_Piso, Cli_Depto, 
-				Cli_Cod_Postal
-INTO #Clientes
-FROM gd_esquema.Maestra
-WHERE Cli_Nombre IS NOT NULL
-
 INSERT INTO cheshire_jack.clientes
 (nombre, apellido, fecha_nacimiento, tipo_documento, nro_documento, 
 mail, domicilio_calle, nro_calle, piso, dept, codigo_postal, CUIL)
-SELECT Cli_Nombre, Cli_Apeliido, Cli_Fecha_Nac, Tipo_documento, Cli_Dni, 
+SELECT DISTINCT Cli_Nombre, Cli_Apeliido, Cli_Fecha_Nac, 'DNI', Cli_Dni, 
 				Cli_Mail, Cli_Dom_Calle, Cli_Nro_Calle, Cli_Piso, Cli_Depto, 
-				Cli_Cod_Postal, 'S. D.' + CAST(ROW_NUMBER() OVER (ORDER BY (SELECT 100)) AS CHAR)
-FROM #Clientes
+				Cli_Cod_Postal, 'S. D.'
+FROM gd_esquema.Maestra
 WHERE Cli_Nombre IS NOT NULL
-
-DROP TABLE #Clientes
 
 DECLARE @cantidadClientes INT, @usuarioActual INT, @cantidadEmpresas INT
 
@@ -600,17 +593,41 @@ END
 GO
 CREATE PROCEDURE cheshire_jack.crearCliente
 (@nombre NVARCHAR(255), @apellido NVARCHAR(255), @tipoDocumento NVARCHAR(255), @nroDocumento NUMERIC(18,0), 
-@CUIL NVARCHAR(255), @telefono NVARCHAR(255), @domicilio NVARCHAR(255), @nroCalle NUMERIC(18,0), @piso NUMERIC(18,0),
-@dept NVARCHAR(255), @localidad NVARCHAR(255), @codPostal NVARCHAR(255), @fechaCreacion DATETIME, @fechaNacimiento DATETIME, 
-@codUsuario INT)
+@CUIL NVARCHAR(255), @mail NVARCHAR(255), @telefono NVARCHAR(255), @domicilio NVARCHAR(255), @nroCalle NUMERIC(18,0), 
+@piso NUMERIC(18,0), @dept NVARCHAR(255), @localidad NVARCHAR(255), @codPostal NVARCHAR(255), @fechaCreacion DATETIME, 
+@fechaNacimiento DATETIME, @nombreUsuario VARCHAR(50), @contrasenia CHAR(256), @automatico BIT, @nroTarjeta CHAR(256), 
+@ultimosDigitos CHAR(4), @codSeguridad CHAR(4), @mesVencimiento TINYINT, @anioVencimiento INT)
 AS BEGIN
-	INSERT INTO cheshire_jack.clientes
-	(nombre, apellido, telefono, CUIL, tipo_documento, nro_documento, domicilio_calle, 
-	nro_calle, piso, dept, localidad, codigo_postal, fecha_creacion, fecha_nacimiento, cod_usuario)
-	VALUES (@nombre, @apellido, @telefono, @CUIL, @tipoDocumento, @nroDocumento, @domicilio, @nroCalle,
-			@piso, @dept, @localidad, @codPostal, @fechaCreacion, @fechaNacimiento, @codUsuario)
+	DECLARE @codUsuario INT, @codCliente INT = -1
+	
+	BEGIN TRANSACTION
+		INSERT INTO cheshire_jack.usuarios
+		(nombre_usuario, contrasenia)
+		VALUES(@nombreUsuario, @contrasenia)
 
-	RETURN SCOPE_IDENTITY()
+		EXEC @codUsuario = cheshire_jack.crearUsuario @nombreUsuario, @contrasenia, @automatico
+
+		INSERT INTO cheshire_jack.usuariosXRoles
+		(cod_usuario, cod_rol)
+		VALUES(@codUsuario, 2)
+
+		INSERT INTO cheshire_jack.clientes
+		(nombre, apellido, telefono, CUIL, mail, tipo_documento, nro_documento, domicilio_calle, 
+		nro_calle, piso, dept, localidad, codigo_postal, fecha_creacion, fecha_nacimiento, cod_usuario)
+		VALUES (@nombre, @apellido, @telefono, @CUIL, @mail, @tipoDocumento, @nroDocumento, @domicilio, @nroCalle,
+				@piso, @dept, @localidad, @codPostal, @fechaCreacion, @fechaNacimiento, @codUsuario)
+		
+		SET @codCliente = SCOPE_IDENTITY()
+
+		IF(@nroTarjeta IS NOT NULL)
+		BEGIN
+			INSERT INTO cheshire_jack.tarjetas_de_credito
+			(cod_cliente, hash_nro_tarjeta, ultimos_digitos, cod_seguridad, mes_vencimiento, anio_vencimiento)
+			VALUES(@codCliente, @nroTarjeta, @ultimosDigitos, @codSeguridad, @mesVencimiento, @anioVencimiento)
+		END
+	COMMIT TRANSACTION
+
+	RETURN @codCliente
 END
 
 GO
@@ -781,26 +798,30 @@ CREATE VIEW cheshire_jack.vw_clientes AS
 SELECT cod_cliente, cod_usuario, apellido AS Apellido, nombre AS Nombre, 
 tipo_documento AS 'Tipo de Documento', nro_documento 'Nro de Documento', 
 CUIL, CAST(fecha_nacimiento AS DATE) AS 'Fecha de Nacimiento', mail AS 'E-mail', 
-telefono AS Telefono, COALESCE(localidad, 'S. D.') AS Localidad, domicilio_calle AS 'Domicilio Calle',
+telefono AS Telefono, localidad AS Localidad, domicilio_calle AS 'Domicilio Calle',
 nro_calle AS Altura, piso AS Piso, dept AS Departamento, codigo_postal AS 'Codigo Postal',
-fecha_creacion AS 'Fecha de Creacion' 
+fecha_creacion AS 'Fecha de Creacion', habilitado Habilitado
 FROM cheshire_jack.clientes
 
 GO
 CREATE VIEW cheshire_jack.vw_empresas AS
 SELECT cod_empresa, cod_usuario, razon_social 'Razon Social', CUIT, 
-COALESCE(ciudad, 'S. D.') Ciudad, domicilio_calle Domicilio, 
+ciudad Ciudad, domicilio_calle Domicilio, 
 nro_calle Altura, piso Piso, dept Departamento, codigo_postal 'Codigo Postal', 
-mail 'E-mail', COALESCE(telefono, 'S. D.') Telefono, habilitado Habilitado
+mail 'E-mail', telefono Telefono, habilitado Habilitado
 FROM cheshire_jack.empresas
 
 GO
 CREATE PROCEDURE cheshire_jack.crearEmpresa
-(@codUsuario INT, @nombre NVARCHAR(255), @ciudad NVARCHAR(255), @domicilio NVARCHAR(255), 
+(@nombre NVARCHAR(255), @ciudad NVARCHAR(255), @domicilio NVARCHAR(255), 
 @altura NUMERIC(18,0), @piso NUMERIC(18,0), @dept NVARCHAR(50), @codigoPostal NVARCHAR(50), 
-@mail NVARCHAR(255), @telefono CHAR(14), @CUIT NVARCHAR(14))
+@mail NVARCHAR(255), @telefono CHAR(14), @CUIT NVARCHAR(14), @nombreUsuario VARCHAR(50), 
+@contrasenia VARCHAR(256), @automatico BIT)
 AS BEGIN
+	DECLARE @codEmpresa INT = -1, @codUsuario INT = -1
 	BEGIN TRANSACTION
+		EXEC @codUsuario = cheshire_jack.crearUsuario @nombreUsuario, @contrasenia, @automatico
+		
 		INSERT INTO cheshire_jack.usuariosXRoles
 		(cod_usuario, cod_rol)
 		VALUES(@codUsuario, 1)
@@ -809,9 +830,10 @@ AS BEGIN
 		(razon_social, ciudad, domicilio_calle, nro_calle, piso, dept, codigo_postal, mail, telefono, CUIT, cod_usuario)
 		VALUES(@nombre, @ciudad, @domicilio, @altura, @piso, @dept, @codigoPostal, @mail, @telefono, @CUIT, @codUsuario)
 			
+		SET @codEmpresa = SCOPE_IDENTITY()
 	COMMIT TRANSACTION
 
-	RETURN SCOPE_IDENTITY()
+	RETURN @codEmpresa
 END
 
 GO 
@@ -1281,19 +1303,6 @@ AS BEGIN
 END
 
 /*
-GO
-CREATE PROCEDURE cheshire_jack.actualizarEmpresa
-(@codEmpresa INT, @nombre NVARCHAR(255), @ciudad NVARCHAR(255), @domicilio NVARCHAR(255), 
-@altura NUMERIC(18,0), @piso NUMERIC(18,0), @dept NVARCHAR(50), @codigoPostal NVARCHAR(50), 
-@mail NVARCHAR(255), @telefono CHAR(14), @CUIT NVARCHAR(14), @habilitado BIT)
-AS BEGIN
-	UPDATE cheshire_jack.empresas 
-	SET ciudad = @ciudad, domicilio_calle = @domicilio,
-    nro_calle = @altura, piso = @piso, dept = @dept,
-	codigo_postal = @codigoPostal, mail = @mail, CUIT = @CUIT,
-	habilitado = @habilitado WHERE cod_empresa = @codEmpresa
-END
-
 GO
 CREATE VIEW cheshire_jack.vw_publicaciones AS
 SELECT p.cod_publicacion, p.fecha_evento [Fecha Evento], p.fecha_publicacion,

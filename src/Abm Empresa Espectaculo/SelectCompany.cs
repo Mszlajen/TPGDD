@@ -63,7 +63,7 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
                     row.Cells["Telefono"].Value.ToString(), row.Cells["E-mail"].Value.ToString(), row.Cells["Domicilio"].Value.ToString(),
                     row.Cells["Altura"].Value.ToString(), row.Cells["Piso"].Value.ToString(), row.Cells["Departamento"].Value.ToString(),
                     row.Cells["Ciudad"].Value.ToString(), row.Cells["Codigo Postal"].Value.ToString(), row.Cells["CUIT"].Value.ToString(),
-                    (int)row.Cells["cod_usuario"].Value, (bool)row.Cells["Habilitado"].Value);
+                    (bool)row.Cells["Habilitado"].Value);
                 Program.openPopUpWindow(this, new CreateCompany(empresa));
                 empresas.Clear();
             }
@@ -86,6 +86,7 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
             NameBox.Text = "";
             MailBox.Text = "";
             CUITBox.Text = "";
+            AvabilityCheck.CheckState = CheckState.Indeterminate;
             empresas.Clear();
         }
     }

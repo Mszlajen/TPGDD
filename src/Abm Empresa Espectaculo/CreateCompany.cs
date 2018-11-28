@@ -50,7 +50,7 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
             {
                 SocialReasonBox.Text = empresa.nombre;
                 PhoneBox.Text = empresa.telefono;
-                MailBox.Text = empresa.mail;
+                MailBox.Text = empresa.mail;    
                 AddressBox.Text = empresa.domicilio;
                 AddressNroBox.Text = empresa.altura;
                 FloorBox.Text = empresa.piso;
@@ -107,15 +107,20 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
                 todoBien = false;
                 MessageBox.Show("El mail no es valido");
             }
+            if(!(String.IsNullOrWhiteSpace(PhoneBox.Text) || Program.checkIfOnlyNumbers(PhoneBox.Text)))
+            {
+                todoBien = false;
+                MessageBox.Show("El telefono solo pueden ser numeros");
+            }
 
             if (todoBien)
             {
                 if (edicion)
                 {
                     byte yaExiste = EmpresaEspectaculo.checkIfExistInDataBase(Program.DBconn, SocialReasonBox.Text, CUITBox.Text);
-                    if (EnabledBox.Checked && yaExiste == 2)
+                    if (EnabledBox.Checked && (!empresa.habilitado || empresa.nombre != SocialReasonBox.Text) && yaExiste == 2)
                         MessageBox.Show("Ya hay una empresa registrada con esa razon social");
-                    else if (EnabledBox.Checked && yaExiste == 1)
+                    else if (EnabledBox.Checked && (!empresa.habilitado || empresa.CUIT != CUITBox.Text) && yaExiste == 1)
                         MessageBox.Show("Ya hay una empresa registrada con ese CUIT");
                     else
                         empresa.updateValues(SocialReasonBox.Text, PhoneBox.Text, MailBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text, CityBox.Text, PostalCodeBox.Text, CUITBox.Text, EnabledBox.Checked).UpdateToDataBase(Program.DBconn);
@@ -127,9 +132,9 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
                     switch(EmpresaEspectaculo.checkIfExistInDataBase(Program.DBconn, SocialReasonBox.Text, CUITBox.Text))
                     {
                         case 0:
-                            Usuario nuevoUsuario = Usuario.CreateToDataBase(Program.DBconn, SocialReasonBox.Text.Substring(0, Math.Min(SocialReasonBox.Text.Length, 50)), Program.getRandomPassword(5));
-                            EmpresaEspectaculo.CreateToDataBase(Program.DBconn, SocialReasonBox.Text, PhoneBox.Text, MailBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text, CityBox.Text, PostalCodeBox.Text, CUITBox.Text, nuevoUsuario.codUsuario);
-                            MessageBox.Show("Usuario: " + nuevoUsuario.usuario + " | Contraseña: " + nuevoUsuario.contrasenia);
+                            string usuario = SocialReasonBox.Text.Substring(0, Math.Min(SocialReasonBox.Text.Length, 30)) + Program.getRandomPassword(10), contrasenia = Program.getRandomPassword(5);
+                            EmpresaEspectaculo.CreateToDataBase(Program.DBconn, SocialReasonBox.Text, PhoneBox.Text, MailBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text, CityBox.Text, PostalCodeBox.Text, CUITBox.Text, usuario, Program.sha256(contrasenia), true);
+                            MessageBox.Show("Usuario: " + usuario + " | Contraseña: " + contrasenia);
                             break;
                         case 1:
                             MessageBox.Show("Ya existe una empresa con ese CUIT");

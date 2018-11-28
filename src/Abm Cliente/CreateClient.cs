@@ -8,26 +8,29 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data.SqlClient;
 
 namespace PalcoNet.Abm_Cliente
 {
     public partial class CreateClient : Form
     {
-        bool registroDeUsuario = false;
+        public bool registroDeUsuario = false;
         bool edicion = false;
         Cliente cliente;
-        Card tarjeta;
-        bool tengoTarjeta = false;
+        Card tarjeta = null;
 
         public CreateClient()
         {
             InitializeComponent();
         }
         
-        public CreateClient(Cliente _cliente)
+        public CreateClient(Cliente _cliente, bool registro = false)
         {
             InitializeComponent();
-            edicion = true;
+            if (registro)
+                registroDeUsuario = true;
+            else
+                edicion = true;
             cliente = _cliente;
         }
 
@@ -110,10 +113,50 @@ namespace PalcoNet.Abm_Cliente
                 todoBien = false;
                 MessageBox.Show("El codigo postal no puede estar vacio");
             }
-
-            if (todoBien)
+            if(!(String.IsNullOrWhiteSpace(PhoneBox.Text) || Program.checkIfOnlyNumbers(PhoneBox.Text)))
             {
+                MessageBox.Show("El numero debe ser unicamente caracteres numericos");
+                todoBien = false;
+            }
 
+            if (todoBien && (tarjeta != null || 
+                MessageBox.Show("No ha cargado datos de la tarjeta, ¿desea continuar?", "Confirmacion", MessageBoxButtons.YesNo) == DialogResult.Yes))
+            {
+                if (edicion)
+                {
+                    byte yaExiste = Cliente.checkIfExistInDataBase(Program.DBconn, DocumentTypeBox.SelectedItem.ToString(), DocumentNroBox.Text, CUILBox.Text);
+                    if (EnabledBox.Checked && (!cliente.habilitado || DocumentTypeBox.Text != cliente.tipoDocumento || DocumentNroBox.Text != cliente.nroDocumento) && yaExiste == 2)
+                        MessageBox.Show("Ya hay un cliente registrado con ese documento");
+                    else if (EnabledBox.Checked && (!cliente.habilitado || CUILBox.Text != cliente.CUIL) && yaExiste == 1)
+                        MessageBox.Show("Ya hay un cliente registrado con ese CUIL");
+                    else
+                        cliente.UpdateValues(FirstNameBox.Text, SurnameBox.Text, DocumentTypeBox.Text, DocumentNroBox.Text, CUILBox.Text, MailBox.Text, PhoneBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text, LocalityBox.Text, PostalCodeBox.Text, BirthDatePicker.Value, CreationDatePicker.Value, EnabledBox.Checked).UpdateToDataBase(Program.DBconn);
+                }
+                else if (registroDeUsuario)
+                { }
+                else
+                {
+                    switch (Cliente.checkIfExistInDataBase(Program.DBconn, DocumentTypeBox.SelectedItem.ToString(), DocumentNroBox.Text, CUILBox.Text))
+                    {
+                        case 0:
+                            string nombreUsuario = FirstNameBox.Text.Substring(0, Math.Min(4, FirstNameBox.Text.Length)) + SurnameBox.Text.Substring(0, Math.Min(42, SurnameBox.Text.Length)) + Program.getRandomPassword(4);
+                            string contrasenia = Program.getRandomPassword(5);
+                            Cliente.CreateToDataBase(Program.DBconn, FirstNameBox.Text, SurnameBox.Text,
+                                DocumentTypeBox.Text, DocumentNroBox.Text, CUILBox.Text,
+                                MailBox.Text, PhoneBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text,
+                                DeptBox.Text, LocalityBox.Text, PostalCodeBox.Text, BirthDatePicker.Value,
+                                CreationDatePicker.Value, nombreUsuario, Program.sha256(contrasenia), true, tarjeta);
+                            MessageBox.Show("Usuario: " + nombreUsuario + " | Contraseña: " + contrasenia);
+                            break;
+                        case 1:
+                            MessageBox.Show("Ya existe un cliente con ese CUIL");
+                            break;
+                        case 2:
+                            MessageBox.Show("Ya existe un cliente con ese documento");
+                            break;
+                    }
+                    
+                }
             }
         }
 
@@ -127,10 +170,35 @@ namespace PalcoNet.Abm_Cliente
             if (tarjeta == null)
                 tarjeta = new Card();
 
-            if (Program.openPopUpWindow(this, new AddCreditCard(tarjeta)) == DialogResult.OK)
-                tengoTarjeta = true;
+            if (Program.openPopUpWindow(this, new AddCreditCard(tarjeta)) == DialogResult.Cancel)
+                tarjeta = null;
         }
 
-
+        private void CreateClient_Load(object sender, EventArgs e)
+        {
+            if (edicion)
+            {
+                SurnameBox.Text = cliente.apellido;
+                FirstNameBox.Text = cliente.nombre;
+                DocumentTypeBox.Text = cliente.tipoDocumento;
+                DocumentNroBox.Enabled = true;
+                DocumentNroBox.Text = cliente.nroDocumento;
+                BirthDatePicker.Value = cliente.fechaNacimiento;
+                if (CreationDatePicker.MinDate < cliente.fechaCreacion)
+                    CreationDatePicker.Value = cliente.fechaCreacion;
+                CUILBox.Text = cliente.CUIL;
+                MailBox.Text = cliente.mail;
+                PhoneBox.Text = cliente.telefono;
+                AddressBox.Text = cliente.domicilio;
+                AddressNroBox.Text = cliente.nroCalle;
+                FloorBox.Text = cliente.piso;
+                DeptBox.Text = cliente.dept;
+                LocalityBox.Text = cliente.localidad;
+                PostalCodeBox.Text = cliente.codPostal;
+                EnabledBox.Visible = true;
+                EnabledBox.Checked = cliente.habilitado;
+                AddCardDataButton.Enabled = false;
+            }
+        }
     }
 }
