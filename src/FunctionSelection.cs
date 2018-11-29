@@ -88,6 +88,8 @@ namespace PalcoNet
                     return new changePassword(codUsuario, "Ingrese su nueva contraseña");
                 case "Editar Usuario":
                     return new Editar_Usuario.list();
+                case "Comprar":
+                    return new Comprar.SearchPublication(codUsuario);
                 default:
                     return new Form();
 

@@ -15,7 +15,6 @@ namespace PalcoNet.Historial_Cliente
     {
         DataTable pagina = new DataTable();
         int codUsuario, codCliente = 0, paginaActual = 1, cantidadPaginas = 1;
-        const int tamPagina = 20;
         public History(int _codUsuario)
         {
             InitializeComponent();
@@ -30,7 +29,7 @@ namespace PalcoNet.Historial_Cliente
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add(new SqlParameter("@codCliente", codCliente));
                 cmd.Parameters.Add(new SqlParameter("@nroPagina", numeroPagina));
-                cmd.Parameters.Add(new SqlParameter("@tamPagina", tamPagina));
+                cmd.Parameters.Add(new SqlParameter("@tamPagina", Settings1.Default.PageSize));
 
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 adapter.Fill(pagina);
@@ -47,7 +46,7 @@ namespace PalcoNet.Historial_Cliente
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add(new SqlParameter("@codCliente", codCliente));
-                cmd.Parameters.Add(new SqlParameter("@tamPagina", tamPagina));
+                cmd.Parameters.Add(new SqlParameter("@tamPagina", Settings1.Default.PageSize));
 
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 adapter.Fill(pagina);
@@ -62,7 +61,7 @@ namespace PalcoNet.Historial_Cliente
             string queryString = "SELECT cod_cliente, cheshire_jack.obtenerTotalDePaginasDeHistorial(cod_cliente, @tamPagina) FROM cheshire_jack.clientes WHERE cod_usuario = @cod_usuario AND habilitado = 1";
             SqlCommand cmd = new SqlCommand(queryString, Program.DBconn);
             cmd.Parameters.Add(new SqlParameter("@cod_usuario", codUsuario));
-            cmd.Parameters.Add(new SqlParameter("@tamPagina", tamPagina));
+            cmd.Parameters.Add(new SqlParameter("@tamPagina", Settings1.Default.PageSize));
             SqlDataReader resultadoQuery = cmd.ExecuteReader();
             if (!resultadoQuery.Read())
                 MessageBox.Show("Este usuario no tiene informacion de cliente y no podra terminar las operaciones");

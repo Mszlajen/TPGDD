@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.PageGrid = new System.Windows.Forms.DataGridView();
             this.BuyButton = new System.Windows.Forms.DataGridViewButtonColumn();
             this.label1 = new System.Windows.Forms.Label();
             this.TagBox = new System.Windows.Forms.ComboBox();
@@ -42,25 +42,27 @@
             this.SearchButton = new System.Windows.Forms.Button();
             this.FirstButton = new System.Windows.Forms.Button();
             this.PreviousButton = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.LastButton = new System.Windows.Forms.Button();
+            this.NextButton = new System.Windows.Forms.Button();
             this.PageNumText = new System.Windows.Forms.Label();
             this.FromCheck = new System.Windows.Forms.CheckBox();
             this.ToCheck = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.NumLabel = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.PageGrid)).BeginInit();
             this.SuspendLayout();
             // 
-            // dataGridView1
+            // PageGrid
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.PageGrid.AllowUserToAddRows = false;
+            this.PageGrid.AllowUserToDeleteRows = false;
+            this.PageGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.PageGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.BuyButton});
-            this.dataGridView1.Location = new System.Drawing.Point(12, 146);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(667, 209);
-            this.dataGridView1.TabIndex = 0;
+            this.PageGrid.Location = new System.Drawing.Point(12, 146);
+            this.PageGrid.Name = "PageGrid";
+            this.PageGrid.Size = new System.Drawing.Size(667, 209);
+            this.PageGrid.TabIndex = 0;
+            this.PageGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.PageGrid_CellContentClick);
             // 
             // BuyButton
             // 
@@ -160,42 +162,51 @@
             this.SearchButton.TabIndex = 9;
             this.SearchButton.Text = "Buscar";
             this.SearchButton.UseVisualStyleBackColor = true;
+            this.SearchButton.Click += new System.EventHandler(this.SearchButton_Click);
             // 
             // FirstButton
             // 
+            this.FirstButton.Enabled = false;
             this.FirstButton.Location = new System.Drawing.Point(15, 362);
             this.FirstButton.Name = "FirstButton";
             this.FirstButton.Size = new System.Drawing.Size(75, 49);
             this.FirstButton.TabIndex = 10;
             this.FirstButton.Text = "Primera";
             this.FirstButton.UseVisualStyleBackColor = true;
+            this.FirstButton.Click += new System.EventHandler(this.FirstButton_Click);
             // 
             // PreviousButton
             // 
+            this.PreviousButton.Enabled = false;
             this.PreviousButton.Location = new System.Drawing.Point(96, 361);
             this.PreviousButton.Name = "PreviousButton";
             this.PreviousButton.Size = new System.Drawing.Size(75, 49);
             this.PreviousButton.TabIndex = 10;
             this.PreviousButton.Text = "Anterior";
             this.PreviousButton.UseVisualStyleBackColor = true;
+            this.PreviousButton.Click += new System.EventHandler(this.PreviousButton_Click);
             // 
-            // button3
+            // LastButton
             // 
-            this.button3.Location = new System.Drawing.Point(604, 361);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 49);
-            this.button3.TabIndex = 10;
-            this.button3.Text = "Ultima";
-            this.button3.UseVisualStyleBackColor = true;
+            this.LastButton.Enabled = false;
+            this.LastButton.Location = new System.Drawing.Point(604, 361);
+            this.LastButton.Name = "LastButton";
+            this.LastButton.Size = new System.Drawing.Size(75, 49);
+            this.LastButton.TabIndex = 10;
+            this.LastButton.Text = "Ultima";
+            this.LastButton.UseVisualStyleBackColor = true;
+            this.LastButton.Click += new System.EventHandler(this.LastButton_Click);
             // 
-            // button4
+            // NextButton
             // 
-            this.button4.Location = new System.Drawing.Point(523, 362);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 49);
-            this.button4.TabIndex = 10;
-            this.button4.Text = "Siguiente";
-            this.button4.UseVisualStyleBackColor = true;
+            this.NextButton.Enabled = false;
+            this.NextButton.Location = new System.Drawing.Point(523, 362);
+            this.NextButton.Name = "NextButton";
+            this.NextButton.Size = new System.Drawing.Size(75, 49);
+            this.NextButton.TabIndex = 10;
+            this.NextButton.Text = "Siguiente";
+            this.NextButton.UseVisualStyleBackColor = true;
+            this.NextButton.Click += new System.EventHandler(this.NextButton_Click);
             // 
             // PageNumText
             // 
@@ -214,6 +225,7 @@
             this.FromCheck.Size = new System.Drawing.Size(15, 14);
             this.FromCheck.TabIndex = 12;
             this.FromCheck.UseVisualStyleBackColor = true;
+            this.FromCheck.CheckedChanged += new System.EventHandler(this.FromCheck_CheckedChanged);
             // 
             // ToCheck
             // 
@@ -223,17 +235,28 @@
             this.ToCheck.Size = new System.Drawing.Size(15, 14);
             this.ToCheck.TabIndex = 13;
             this.ToCheck.UseVisualStyleBackColor = true;
+            this.ToCheck.CheckedChanged += new System.EventHandler(this.ToCheck_CheckedChanged);
+            // 
+            // NumLabel
+            // 
+            this.NumLabel.AutoSize = true;
+            this.NumLabel.Location = new System.Drawing.Point(336, 362);
+            this.NumLabel.Name = "NumLabel";
+            this.NumLabel.Size = new System.Drawing.Size(44, 13);
+            this.NumLabel.TabIndex = 14;
+            this.NumLabel.Text = "Numero";
             // 
             // SearchPublication
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(691, 444);
+            this.Controls.Add(this.NumLabel);
             this.Controls.Add(this.ToCheck);
             this.Controls.Add(this.FromCheck);
             this.Controls.Add(this.PageNumText);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.NextButton);
+            this.Controls.Add(this.LastButton);
             this.Controls.Add(this.PreviousButton);
             this.Controls.Add(this.FirstButton);
             this.Controls.Add(this.SearchButton);
@@ -246,11 +269,11 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.TagBox);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.PageGrid);
             this.Name = "SearchPublication";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.SearchPublication_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PageGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -258,7 +281,7 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView PageGrid;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox TagBox;
         private System.Windows.Forms.Label label2;
@@ -271,11 +294,12 @@
         private System.Windows.Forms.Button SearchButton;
         private System.Windows.Forms.Button FirstButton;
         private System.Windows.Forms.Button PreviousButton;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button LastButton;
+        private System.Windows.Forms.Button NextButton;
         private System.Windows.Forms.Label PageNumText;
         private System.Windows.Forms.DataGridViewButtonColumn BuyButton;
         private System.Windows.Forms.CheckBox FromCheck;
         private System.Windows.Forms.CheckBox ToCheck;
+        private System.Windows.Forms.Label NumLabel;
     }
 }

@@ -1302,7 +1302,7 @@ AS BEGIN
 	ORDER BY cantCompras DESC
 END
 
-/*
+
 GO
 CREATE VIEW cheshire_jack.vw_publicaciones AS
 SELECT p.cod_publicacion, p.fecha_evento [Fecha Evento], p.fecha_publicacion,
@@ -1312,18 +1312,24 @@ FROM cheshire_jack.publicaciones p JOIN cheshire_jack.espectaculos e
 ON p.cod_espectaculo = e.cod_espectaculo JOIN cheshire_jack.empresas emp 
 ON emp.cod_empresa = e.cod_empresa JOIN cheshire_jack.grados_de_publicacion gp
 ON p.cod_grado = gp.cod_grado JOIN cheshire_jack.rubros r
-ON e.cod_rubro = r.cod_rubro JOIN cheshire_jack.estados est
-ON p.cod_estado = est.cod_estado
-WHERE emp.habilitado = 1 AND est.cod_estado = 2
+ON e.cod_rubro = r.cod_rubro 
+WHERE emp.habilitado = 1 AND p.cod_estado = 2
 
 GO
-GO
 CREATE FUNCTION cheshire_jack.obtenerTotalDePaginasCompras
-(@fechaHoy DATETIME, @tamPagina INT, cod_rubro INT, desde DATETIME, hasta DATETIME, descripcion NVARCHAR(255)) 
+(@fechaHoy DATETIME, @tamPagina INT, @cod_rubro INT, @desde DATETIME, 
+@hasta DATETIME, @descripcion NVARCHAR(255)) 
 RETURNS INT
 AS BEGIN
 	DECLARE @cant INT
-	SELECT @cant = COUNT(*) FROM cheshire_jack.vw_publicaciones WHERE [Fecha Evento] > @fechaHoy
+	SELECT @cant = COUNT(*) 
+	FROM cheshire_jack.vw_publicaciones 
+	WHERE [Fecha Evento] > @fechaHoy AND 
+	(@cod_rubro IS NULL OR cod_rubro = @cod_rubro) AND
+	(@desde IS NULL OR [Fecha Evento] >= @desde) AND
+	(@hasta IS NULL OR @hasta >= [Fecha Evento]) AND
+	(@descripcion IS NULL OR Descripcion LIKE ('%' + @descripcion + '%'))
+
 	IF @cant % @tamPagina = 0
 		SET @cant /= @tamPagina
 	ELSE
@@ -1333,27 +1339,61 @@ END
 
 GO
 CREATE PROCEDURE cheshire_jack.obtenerPaginaDeCompras
-(@fechaHoy DATETIME, @nroPagina INT, @tamPagina INT)
+(@fechaHoy DATETIME, @nroPagina INT, @tamPagina INT, @cod_rubro INT, @desde DATETIME, 
+@hasta DATETIME, @descripcion NVARCHAR(255))
 AS BEGIN
 	SELECT TOP (@tamPagina * @nroPagina) *
 	INTO #paginas
 	FROM cheshire_jack.vw_publicaciones 
-	WHERE [Fecha Evento] > @fechaHoy
+	WHERE [Fecha Evento] > @fechaHoy AND 
+	(@cod_rubro IS NULL OR cod_rubro = @cod_rubro) AND
+	(@desde IS NULL OR [Fecha Evento] >= @desde) AND
+	(@hasta IS NULL OR @hasta >= [Fecha Evento]) AND
+	(@descripcion IS NULL OR Descripcion LIKE ('%' + @descripcion + '%'))
 	ORDER BY peso DESC, cod_publicacion ASC
 
-	SELECT TOP (@tamPagina) * FROM #paginas ORDER BY cod_publicacion DESC
+	SELECT TOP (@tamPagina) * FROM #paginas ORDER BY peso ASC, cod_publicacion DESC
 END
 
 GO 
 CREATE PROCEDURE cheshire_jack.obtenerUltimaPaginaDeCompras
-(@fechaHoy DATETIME, @tamPagina INT)
+(@fechaHoy DATETIME, @tamPagina INT, @cod_rubro INT, @desde DATETIME, 
+@hasta DATETIME, @descripcion NVARCHAR(255))
 AS BEGIN
 	DECLARE @resto INT
-	SELECT @resto = COUNT(*) % @tamPagina FROM cheshire_jack.vw_publicaciones WHERE [Fecha Evento] > @fechaHoy
+	SELECT @resto = COUNT(*) % @tamPagina 
+	FROM cheshire_jack.vw_publicaciones 
+	WHERE [Fecha Evento] > @fechaHoy AND 
+	(@cod_rubro IS NULL OR cod_rubro = @cod_rubro) AND
+	(@desde IS NULL OR [Fecha Evento] >= @desde) AND
+	(@hasta IS NULL OR @hasta >= [Fecha Evento]) AND
+	(@descripcion IS NULL OR Descripcion LIKE ('%' + @descripcion + '%'))
 	
 	SELECT TOP (CASE WHEN @resto = 0 THEN @tamPagina ELSE @resto END) *
-	FROM cheshire_jack.vw_publicaciones WHERE [Fecha Evento] > @fechaHoy
+	FROM cheshire_jack.vw_publicaciones 
+	WHERE [Fecha Evento] > @fechaHoy AND 
+	(@cod_rubro IS NULL OR cod_rubro = @cod_rubro) AND
+	(@desde IS NULL OR [Fecha Evento] >= @desde) AND
+	(@hasta IS NULL OR @hasta >= [Fecha Evento]) AND
+	(@descripcion IS NULL OR Descripcion LIKE ('%' + @descripcion + '%'))
 	ORDER BY peso ASC, cod_publicacion DESC
 END
 
-*/
+GO
+ALTER PROCEDURE cheshire_jack.buscarUbicaciones
+(@codPublicacion NUMERIC(18,0), @tipoUbicacion INT = NULL)
+AS BEGIN
+	SELECT u.nro_ubicacion, TdP.descripcion [Tipo de Ubicacion], u.fila Fila, u.asiento Asiento, 
+	~u.sin_numerar Numerada, u.precio Precio
+	FROM cheshire_jack.ubicaciones u 
+	JOIN cheshire_jack.tipos_de_ubicacion TdP ON u.cod_tipo = TdP.cod_tipo
+	WHERE cod_publicacion = @codPublicacion AND 
+		NOT EXISTS (SELECT 1 FROM cheshire_jack.compras c 
+						WHERE c.cod_publicacion = u.cod_publicacion 
+						AND c.nro_ubicacion = u.nro_ubicacion)
+		AND (@tipoUbicacion IS NULL OR u.cod_tipo = @tipoUbicacion)
+END
+
+GO 
+CREATE VIEW cheshire_jack.vw_tipos_de_ubicacion AS
+SELECT cod_tipo, descripcion nombre FROM cheshire_jack.tipos_de_ubicacion
