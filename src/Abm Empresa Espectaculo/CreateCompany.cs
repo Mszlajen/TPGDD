@@ -140,7 +140,9 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
                             }
                             else
                             {
-                                string usuario = SocialReasonBox.Text.Substring(0, Math.Min(SocialReasonBox.Text.Length, 30)) + Program.getRandomPassword(10), contrasenia = Program.getRandomPassword(5);
+                                string usuario = SocialReasonBox.Text.Substring(0, Math.Min(SocialReasonBox.Text.Length, 50)), contrasenia = Program.getRandomPassword(5);
+                                while (Usuario.checkIfExistInDataBase(Program.DBconn, usuario))
+                                    usuario = SocialReasonBox.Text.Substring(0, Math.Min(SocialReasonBox.Text.Length, 30)) + Program.getRandomPassword(5);
                                 EmpresaEspectaculo.CreateToDataBase(Program.DBconn, SocialReasonBox.Text, PhoneBox.Text, MailBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text, CityBox.Text, PostalCodeBox.Text, CUITBox.Text, usuario, Program.sha256(contrasenia), true);
                                 MessageBox.Show("Usuario: " + usuario + " | Contraseña: " + contrasenia);
                             }

@@ -144,7 +144,9 @@ namespace PalcoNet.Abm_Cliente
                             }
                             else
                             {
-                                string nombreUsuario = FirstNameBox.Text.Substring(0, Math.Min(4, FirstNameBox.Text.Length)) + SurnameBox.Text.Substring(0, Math.Min(42, SurnameBox.Text.Length)) + Program.getRandomPassword(4);
+                                string nombreUsuario = FirstNameBox.Text.Substring(0, Math.Min(4, FirstNameBox.Text.Length)) + SurnameBox.Text.Substring(0, Math.Min(42, SurnameBox.Text.Length));
+                                while (Usuario.checkIfExistInDataBase(Program.DBconn, nombreUsuario))
+                                    nombreUsuario = FirstNameBox.Text.Substring(0, Math.Min(4, FirstNameBox.Text.Length)) + SurnameBox.Text.Substring(0, Math.Min(42, SurnameBox.Text.Length)) + Program.getRandomPassword(4);
                                 string contrasenia = Program.getRandomPassword(5);
                                 Cliente.CreateToDataBase(Program.DBconn, FirstNameBox.Text, SurnameBox.Text,
                                     DocumentTypeBox.Text, DocumentNroBox.Text, CUILBox.Text,
