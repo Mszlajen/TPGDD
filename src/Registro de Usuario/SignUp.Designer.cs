@@ -39,6 +39,7 @@
             this.SignUpButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
+            this.ShowPasswordBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -77,7 +78,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 102);
+            this.label3.Location = new System.Drawing.Point(12, 123);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(33, 13);
             this.label3.TabIndex = 4;
@@ -87,7 +88,7 @@
             // 
             this.RoleBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.RoleBox.FormattingEnabled = true;
-            this.RoleBox.Location = new System.Drawing.Point(16, 118);
+            this.RoleBox.Location = new System.Drawing.Point(16, 139);
             this.RoleBox.Name = "RoleBox";
             this.RoleBox.Size = new System.Drawing.Size(185, 21);
             this.RoleBox.TabIndex = 5;
@@ -98,7 +99,7 @@
             this.DataCompletedBox.AutoCheck = false;
             this.DataCompletedBox.AutoSize = true;
             this.DataCompletedBox.Enabled = false;
-            this.DataCompletedBox.Location = new System.Drawing.Point(15, 146);
+            this.DataCompletedBox.Location = new System.Drawing.Point(53, 168);
             this.DataCompletedBox.Name = "DataCompletedBox";
             this.DataCompletedBox.Size = new System.Drawing.Size(117, 17);
             this.DataCompletedBox.TabIndex = 6;
@@ -108,26 +109,27 @@
             // CompleteDataButton
             // 
             this.CompleteDataButton.Enabled = false;
-            this.CompleteDataButton.Location = new System.Drawing.Point(15, 170);
+            this.CompleteDataButton.Location = new System.Drawing.Point(15, 191);
             this.CompleteDataButton.Name = "CompleteDataButton";
-            this.CompleteDataButton.Size = new System.Drawing.Size(117, 38);
+            this.CompleteDataButton.Size = new System.Drawing.Size(186, 38);
             this.CompleteDataButton.TabIndex = 7;
-            this.CompleteDataButton.Text = "Completar datos";
+            this.CompleteDataButton.Text = "Completar datos(*)";
             this.CompleteDataButton.UseVisualStyleBackColor = true;
             this.CompleteDataButton.Click += new System.EventHandler(this.CompleteDataButton_Click);
             // 
             // SignUpButton
             // 
-            this.SignUpButton.Location = new System.Drawing.Point(125, 226);
+            this.SignUpButton.Location = new System.Drawing.Point(125, 247);
             this.SignUpButton.Name = "SignUpButton";
             this.SignUpButton.Size = new System.Drawing.Size(76, 23);
             this.SignUpButton.TabIndex = 8;
             this.SignUpButton.Text = "Registrarse";
             this.SignUpButton.UseVisualStyleBackColor = true;
+            this.SignUpButton.Click += new System.EventHandler(this.SignUpButton_Click);
             // 
             // ClearButton
             // 
-            this.ClearButton.Location = new System.Drawing.Point(16, 226);
+            this.ClearButton.Location = new System.Drawing.Point(16, 247);
             this.ClearButton.Name = "ClearButton";
             this.ClearButton.Size = new System.Drawing.Size(76, 23);
             this.ClearButton.TabIndex = 8;
@@ -138,17 +140,29 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(13, 263);
+            this.label4.Location = new System.Drawing.Point(13, 284);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(174, 13);
             this.label4.TabIndex = 9;
             this.label4.Text = "Los campos con (*) son obligatorios";
             // 
+            // ShowPasswordBox
+            // 
+            this.ShowPasswordBox.AutoSize = true;
+            this.ShowPasswordBox.Location = new System.Drawing.Point(52, 100);
+            this.ShowPasswordBox.Name = "ShowPasswordBox";
+            this.ShowPasswordBox.Size = new System.Drawing.Size(118, 17);
+            this.ShowPasswordBox.TabIndex = 10;
+            this.ShowPasswordBox.Text = "Mostrar Contraseña";
+            this.ShowPasswordBox.UseVisualStyleBackColor = true;
+            this.ShowPasswordBox.CheckedChanged += new System.EventHandler(this.ShowPasswordBox_CheckedChanged);
+            // 
             // SignUp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(213, 285);
+            this.ClientSize = new System.Drawing.Size(213, 316);
+            this.Controls.Add(this.ShowPasswordBox);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.ClearButton);
             this.Controls.Add(this.SignUpButton);
@@ -181,5 +195,6 @@
         private System.Windows.Forms.Button SignUpButton;
         private System.Windows.Forms.Button ClearButton;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.CheckBox ShowPasswordBox;
     }
 }

@@ -8,13 +8,16 @@ using System.Data.SqlClient;
 
 namespace PalcoNet
 {
-    public class EmpresaEspectaculo : TipoDeUsuario<EmpresaEspectaculo>
+    public class EmpresaEspectaculo : DatosUsuario
     {
         public int codEmpresa;
         public string nombre, telefono, mail, domicilio, 
                altura, piso, departamento, ciudad, 
                codigoPostal, CUIT;
         public bool habilitado;
+        
+        public EmpresaEspectaculo()
+        { }
         public EmpresaEspectaculo(int _codEmpresa, string _nombre, string _telefono, string _mail,
                                   string _domicilio, string _altura, string _piso, string _departamento,
                                   string _ciudad, string _codigoPostal, string _CUIT, 
@@ -52,7 +55,7 @@ namespace PalcoNet
             return this;
         }
 
-        override public EmpresaEspectaculo UpdateToDataBase(SqlConnection DB)
+        public EmpresaEspectaculo UpdateToDataBase(SqlConnection DB)
         {
             string queryString = "UPDATE cheshire_jack.empresas " +
                 "SET ciudad = @ciudad, domicilio_calle = @domicilio, " +
@@ -85,6 +88,15 @@ namespace PalcoNet
                 cmd.ExecuteNonQuery();
             }
             return this;
+        }
+
+        override public DatosUsuario CreateToDataBase
+            (SqlConnection DB, string nombreUsuario, string contrasenia, bool automatico)
+        {
+
+            return EmpresaEspectaculo.CreateToDataBase
+                (DB, nombre, telefono, mail, domicilio, altura, piso, departamento, 
+                ciudad, codigoPostal, CUIT, nombreUsuario, contrasenia, automatico);
         }
 
         public static EmpresaEspectaculo CreateToDataBase(SqlConnection DB, string nombre, string telefono, string mail,

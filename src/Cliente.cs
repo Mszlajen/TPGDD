@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 
 namespace PalcoNet
 {
-    public class Cliente : TipoDeUsuario<Cliente>
+    public class Cliente : DatosUsuario
     {
         int codCliente;
         public string nombre, apellido, tipoDocumento, nroDocumento, CUIL, 
@@ -18,7 +18,9 @@ namespace PalcoNet
         public DateTime fechaCreacion;
         public bool habilitado;
         public Card tarjeta;
-
+        
+        public Cliente()
+        { }
         public Cliente(int _codCliente, string _nombre, string _apellido, string _tipoDocumento,
                        string _nroDocumento, string _CUIL, string _mail, string _telefono,
                        string _domicilio, string _nroCalle, string _piso, string _dept,
@@ -63,6 +65,17 @@ namespace PalcoNet
             localidad = _localidad;
             codPostal = _codPostal;
             fechaNacimiento = _fechaNacimiento;
+        }
+
+        override public DatosUsuario CreateToDataBase
+            (SqlConnection DB, string nombreUsuario, string contrasenia, bool automatico)
+        {
+
+            return Cliente.CreateToDataBase
+                (DB, nombre, apellido, tipoDocumento, nroDocumento, CUIL, mail, 
+                telefono, domicilio, nroCalle, piso, dept, localidad, codPostal, 
+                fechaNacimiento, fechaCreacion, nombreUsuario, contrasenia, automatico, 
+                tarjeta);
         }
 
         public static Cliente CreateToDataBase(SqlConnection DB, string nombre, string apellido, string tipoDocumento,
@@ -130,7 +143,7 @@ namespace PalcoNet
             return nuevo;
         }
 
-        override public Cliente UpdateToDataBase(SqlConnection DB)
+        public Cliente UpdateToDataBase(SqlConnection DB)
         {
             string queryString = "UPDATE cheshire_jack.clientes " +
                                  "SET nombre = @nombre, apellido = @apellido, tipo_documento = @tipoDoc, nro_documento = @nroDoc, " +

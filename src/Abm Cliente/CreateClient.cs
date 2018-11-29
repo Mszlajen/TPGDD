@@ -132,21 +132,27 @@ namespace PalcoNet.Abm_Cliente
                     else
                         cliente.UpdateValues(FirstNameBox.Text, SurnameBox.Text, DocumentTypeBox.Text, DocumentNroBox.Text, CUILBox.Text, MailBox.Text, PhoneBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text, LocalityBox.Text, PostalCodeBox.Text, BirthDatePicker.Value, CreationDatePicker.Value, EnabledBox.Checked).UpdateToDataBase(Program.DBconn);
                 }
-                else if (registroDeUsuario)
-                { }
                 else
                 {
                     switch (Cliente.checkIfExistInDataBase(Program.DBconn, DocumentTypeBox.SelectedItem.ToString(), DocumentNroBox.Text, CUILBox.Text))
                     {
                         case 0:
-                            string nombreUsuario = FirstNameBox.Text.Substring(0, Math.Min(4, FirstNameBox.Text.Length)) + SurnameBox.Text.Substring(0, Math.Min(42, SurnameBox.Text.Length)) + Program.getRandomPassword(4);
-                            string contrasenia = Program.getRandomPassword(5);
-                            Cliente.CreateToDataBase(Program.DBconn, FirstNameBox.Text, SurnameBox.Text,
-                                DocumentTypeBox.Text, DocumentNroBox.Text, CUILBox.Text,
-                                MailBox.Text, PhoneBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text,
-                                DeptBox.Text, LocalityBox.Text, PostalCodeBox.Text, BirthDatePicker.Value,
-                                CreationDatePicker.Value, nombreUsuario, Program.sha256(contrasenia), true, tarjeta);
-                            MessageBox.Show("Usuario: " + nombreUsuario + " | Contraseña: " + contrasenia);
+                            if (registroDeUsuario)
+                            {
+                                cliente.UpdateValues(FirstNameBox.Text, SurnameBox.Text, DocumentTypeBox.Text, DocumentNroBox.Text, CUILBox.Text, MailBox.Text, PhoneBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text, LocalityBox.Text, PostalCodeBox.Text, BirthDatePicker.Value, CreationDatePicker.Value, EnabledBox.Checked);
+                                DialogResult = DialogResult.OK;
+                            }
+                            else
+                            {
+                                string nombreUsuario = FirstNameBox.Text.Substring(0, Math.Min(4, FirstNameBox.Text.Length)) + SurnameBox.Text.Substring(0, Math.Min(42, SurnameBox.Text.Length)) + Program.getRandomPassword(4);
+                                string contrasenia = Program.getRandomPassword(5);
+                                Cliente.CreateToDataBase(Program.DBconn, FirstNameBox.Text, SurnameBox.Text,
+                                    DocumentTypeBox.Text, DocumentNroBox.Text, CUILBox.Text,
+                                    MailBox.Text, PhoneBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text,
+                                    DeptBox.Text, LocalityBox.Text, PostalCodeBox.Text, BirthDatePicker.Value,
+                                    CreationDatePicker.Value, nombreUsuario, Program.sha256(contrasenia), true, tarjeta);
+                                MessageBox.Show("Usuario: " + nombreUsuario + " | Contraseña: " + contrasenia);
+                            }
                             break;
                         case 1:
                             MessageBox.Show("Ya existe un cliente con ese CUIL");

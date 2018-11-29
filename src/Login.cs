@@ -100,5 +100,6 @@ namespace PalcoNet
         {
             PasswordText.PasswordChar = ShowPasswordBox.Checked ? '\0' : '*';
         }
+
     }
 }

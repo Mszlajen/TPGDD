@@ -22,10 +22,13 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
             InitializeComponent();
         }
 
-        public CreateCompany(EmpresaEspectaculo _empresa)
+        public CreateCompany(EmpresaEspectaculo _empresa, bool registro = false)
         {
             InitializeComponent();
-            edicion = true;
+            if (registro)
+                registroDeUsuario = true;
+            else
+                edicion = true;
             empresa = _empresa;
             SaveButton.Text = "Guardar";
         }
@@ -125,16 +128,22 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
                     else
                         empresa.updateValues(SocialReasonBox.Text, PhoneBox.Text, MailBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text, CityBox.Text, PostalCodeBox.Text, CUITBox.Text, EnabledBox.Checked).UpdateToDataBase(Program.DBconn);
                 }
-                else if (registroDeUsuario)
-                { }
                 else
                 {
                     switch(EmpresaEspectaculo.checkIfExistInDataBase(Program.DBconn, SocialReasonBox.Text, CUITBox.Text))
                     {
                         case 0:
-                            string usuario = SocialReasonBox.Text.Substring(0, Math.Min(SocialReasonBox.Text.Length, 30)) + Program.getRandomPassword(10), contrasenia = Program.getRandomPassword(5);
-                            EmpresaEspectaculo.CreateToDataBase(Program.DBconn, SocialReasonBox.Text, PhoneBox.Text, MailBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text, CityBox.Text, PostalCodeBox.Text, CUITBox.Text, usuario, Program.sha256(contrasenia), true);
-                            MessageBox.Show("Usuario: " + usuario + " | Contraseña: " + contrasenia);
+                            if (registroDeUsuario)
+                            {
+                                empresa.updateValues(SocialReasonBox.Text, PhoneBox.Text, MailBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text, CityBox.Text, PostalCodeBox.Text, CUITBox.Text, EnabledBox.Checked);
+                                DialogResult = DialogResult.OK;
+                            }
+                            else
+                            {
+                                string usuario = SocialReasonBox.Text.Substring(0, Math.Min(SocialReasonBox.Text.Length, 30)) + Program.getRandomPassword(10), contrasenia = Program.getRandomPassword(5);
+                                EmpresaEspectaculo.CreateToDataBase(Program.DBconn, SocialReasonBox.Text, PhoneBox.Text, MailBox.Text, AddressBox.Text, AddressNroBox.Text, FloorBox.Text, DeptBox.Text, CityBox.Text, PostalCodeBox.Text, CUITBox.Text, usuario, Program.sha256(contrasenia), true);
+                                MessageBox.Show("Usuario: " + usuario + " | Contraseña: " + contrasenia);
+                            }
                             break;
                         case 1:
                             MessageBox.Show("Ya existe una empresa con ese CUIT");

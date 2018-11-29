@@ -50,9 +50,4 @@ namespace PalcoNet
             return nuevo;
         }
     }
-
-    public abstract class TipoDeUsuario<T>
-    {
-        public abstract T UpdateToDataBase(SqlConnection DB);
-    }
 }

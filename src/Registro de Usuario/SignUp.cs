@@ -14,7 +14,7 @@ namespace PalcoNet.Registro_de_Usuario
     public partial class SignUp : Form
     {
         private static SqlCommand getRoles = new SqlCommand("SELECT cod_rol, descripcion FROM cheshire_jack.roles WHERE habilitado = 1 AND registrable = 1", Program.DBconn);
-        private Usuario nuevo;
+        private DatosUsuario datos;
 
         public SignUp()
         {
@@ -42,7 +42,6 @@ namespace PalcoNet.Registro_de_Usuario
             DataCompletedBox.Checked    = false;
             DataCompletedBox.Enabled    = false;
             CompleteDataButton.Enabled  = false;
-            //Limpiar datos del usuario
         }
 
         private void RoleBox_SelectionChangeCommitted(object sender, EventArgs e)
@@ -53,22 +52,67 @@ namespace PalcoNet.Registro_de_Usuario
 
         private void CompleteDataButton_Click(object sender, EventArgs e)
         {
-            if (RoleBox.Text == "Empresa")
+            if (RoleBox.Text == "Empresa de Espectaculo")
             {
-                PalcoNet.Abm_Empresa_Espectaculo.CreateCompany registroDeDatos = new PalcoNet.Abm_Empresa_Espectaculo.CreateCompany();
-                registroDeDatos.registroDeUsuario = true;
-                this.Enabled = false;
-                registroDeDatos.ShowDialog();
-                this.Enabled = true;
+                EmpresaEspectaculo empr = new EmpresaEspectaculo();
+                if (Program.openPopUpWindow(this, new PalcoNet.Abm_Empresa_Espectaculo.CreateCompany(empr, true)) == DialogResult.OK)
+                {
+                    DataCompletedBox.Checked = true;
+                    datos = empr;
+                }
             }
-            else if (RoleBox.Text == "Cliente")
+            else if(RoleBox.Text == "Cliente")
             {
-                PalcoNet.Abm_Cliente.CreateClient registroDeDatos = new PalcoNet.Abm_Cliente.CreateClient();
-                registroDeDatos.registroDeUsuario = true;
-                this.Enabled = false;
-                registroDeDatos.ShowDialog();
-                this.Enabled = true;
+                Cliente client = new Cliente();
+                if (Program.openPopUpWindow(this, new PalcoNet.Abm_Cliente.CreateClient(client, true)) == DialogResult.OK)
+                {
+                    DataCompletedBox.Checked = true;
+                    datos = client;
+                }
             }
         }
+
+        private void SignUpButton_Click(object sender, EventArgs e)
+        {
+            bool todoBien = true;
+            if (String.IsNullOrWhiteSpace(UsernameBox.Text))
+            {
+                todoBien = false;
+                MessageBox.Show("El nombre de usuario no puede estar vacio");
+            }
+            else if (UsernameBox.Text.Length > 50)
+            {
+                todoBien = false;
+                MessageBox.Show("El nombre de usuario no puede exceder los 50 caracteres");
+            }
+            if (String.IsNullOrWhiteSpace(PasswordBox.Text))
+            {
+                todoBien = false;
+                MessageBox.Show("La contraseña no puede estar vacia");
+            }
+            if (!DataCompletedBox.Checked)
+            {
+                todoBien = false;
+                MessageBox.Show("Debe completar los datos");
+            }
+
+            if (todoBien)
+            {
+                datos.CreateToDataBase(Program.DBconn, UsernameBox.Text, Program.sha256(PasswordBox.Text), false);
+                MessageBox.Show("Usuario creado con exito");
+                DialogResult = DialogResult.OK;
+            }
+
+        }
+
+        private void ShowPasswordBox_CheckedChanged(object sender, EventArgs e)
+        {
+            PasswordBox.PasswordChar = ShowPasswordBox.Checked ? '\0' : '*';
+        }
     }
+}
+
+public abstract class DatosUsuario
+{
+    abstract public DatosUsuario CreateToDataBase(SqlConnection DB, string nombreUsuario, string contrasenia, bool automatico);
 }
