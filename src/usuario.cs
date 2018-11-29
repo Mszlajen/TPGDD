@@ -49,5 +49,21 @@ namespace PalcoNet
             }
             return nuevo;
         }
+
+        public static bool checkIfExistInDataBase(SqlConnection DB, string usuario)
+        {
+            bool retorno;
+            using (SqlCommand cmd = new SqlCommand("cheshire_jack.existeUsuario", DB))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter("@nombre", usuario));
+                SqlParameter ret = new SqlParameter("@ret", DbType.Boolean);
+                ret.Direction = ParameterDirection.ReturnValue;
+                cmd.Parameters.Add(ret);
+                cmd.ExecuteNonQuery();
+                retorno = (bool)ret.Value;
+            }
+            return retorno;
+        }
     }
 }

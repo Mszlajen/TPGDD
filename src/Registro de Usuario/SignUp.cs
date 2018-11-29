@@ -85,6 +85,11 @@ namespace PalcoNet.Registro_de_Usuario
                 todoBien = false;
                 MessageBox.Show("El nombre de usuario no puede exceder los 50 caracteres");
             }
+            else if (Usuario.checkIfExistInDataBase(Program.DBconn, UsernameBox.Text))
+            {
+                todoBien = false;
+                MessageBox.Show("El nombre de usuario se encuentra ocupado");
+            }
             if (String.IsNullOrWhiteSpace(PasswordBox.Text))
             {
                 todoBien = false;
