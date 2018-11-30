@@ -54,21 +54,18 @@ namespace PalcoNet.Registro_de_Usuario
         {
             if (RoleBox.Text == "Empresa de Espectaculo")
             {
-                EmpresaEspectaculo empr = new EmpresaEspectaculo();
-                if (Program.openPopUpWindow(this, new PalcoNet.Abm_Empresa_Espectaculo.CreateCompany(empr, true)) == DialogResult.OK)
-                {
+                if(datos == null)
+                    datos = new EmpresaEspectaculo();
+                if (Program.openPopUpWindow(this, new PalcoNet.Abm_Empresa_Espectaculo.CreateCompany((EmpresaEspectaculo)datos, true)) == DialogResult.OK)
                     DataCompletedBox.Checked = true;
-                    datos = empr;
-                }
+
             }
             else if(RoleBox.Text == "Cliente")
             {
-                Cliente client = new Cliente();
-                if (Program.openPopUpWindow(this, new PalcoNet.Abm_Cliente.CreateClient(client, true)) == DialogResult.OK)
-                {
+                if (datos == null)
+                    datos = new Cliente();
+                if (Program.openPopUpWindow(this, new PalcoNet.Abm_Cliente.CreateClient((Cliente)datos, true)) == DialogResult.OK)
                     DataCompletedBox.Checked = true;
-                    datos = client;
-                }
             }
         }
 
@@ -113,6 +110,11 @@ namespace PalcoNet.Registro_de_Usuario
         private void ShowPasswordBox_CheckedChanged(object sender, EventArgs e)
         {
             PasswordBox.PasswordChar = ShowPasswordBox.Checked ? '\0' : '*';
+        }
+
+        private void RoleBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            datos = null;
         }
     }
 }

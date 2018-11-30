@@ -92,6 +92,7 @@
             this.RoleBox.Name = "RoleBox";
             this.RoleBox.Size = new System.Drawing.Size(185, 21);
             this.RoleBox.TabIndex = 5;
+            this.RoleBox.SelectedIndexChanged += new System.EventHandler(this.RoleBox_SelectedIndexChanged);
             this.RoleBox.SelectionChangeCommitted += new System.EventHandler(this.RoleBox_SelectionChangeCommitted);
             // 
             // DataCompletedBox

@@ -86,10 +86,10 @@ namespace PalcoNet
     {
         static public String connectionString()
         {
-            return  "Data Source=LAPTOP-U8FGMPHG\\SQLSERVER2012;" +
-                    "Initial Catalog=GD2C2018;" +
-                    "User ID=gdEspectaculos2018;" +
-                    "Password=gd2018";
+            return  "Data Source=" + Settings1.Default.DataSource +
+                    ";Initial Catalog=" + Settings1.Default.InitialCatalog +
+                    ";User ID=" + Settings1.Default.UserId +
+                    ";Password=" + Settings1.Default.Password;
         }
     }
 }

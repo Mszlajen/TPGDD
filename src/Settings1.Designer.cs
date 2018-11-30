@@ -34,7 +34,7 @@ namespace PalcoNet {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("LAPTOP-U8FGMPHG\\\\SQLSERVER2012")]
+        [global::System.Configuration.DefaultSettingValueAttribute("LAPTOP-U8FGMPHG\\SQLSERVER2012")]
         public string DataSource {
             get {
                 return ((string)(this["DataSource"]));

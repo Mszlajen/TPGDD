@@ -372,13 +372,19 @@ INSERT INTO cheshire_jack.rubros
 SELECT DISTINCT Espectaculo_Rubro_Descripcion 
 FROM gd_esquema.Maestra
 
+INSERT INTO cheshire_jack.rubros
+(descripcion)
+VALUES('Musica'),
+('Deporte'),
+('Otros')
+
 INSERT INTO cheshire_jack.espectaculos
 (descripcion, cod_empresa, cod_rubro, cod_espectaculo_viejo, direccion, altura)
 SELECT DISTINCT Espectaculo_Descripcion, 
 				(SELECT cod_empresa FROM cheshire_jack.empresas E WHERE E.CUIT = M.Espec_Empresa_Cuit), 
 				(SELECT cod_rubro FROM cheshire_jack.rubros R WHERE R.descripcion = M.Espectaculo_Rubro_Descripcion),
 				Espectaculo_Cod,
-				'S.D',
+				'Sin Definir',
 				0
 FROM gd_esquema.Maestra M
 WHERE Espectaculo_Cod IS NOT NULL
@@ -621,9 +627,7 @@ AS BEGIN
 
 		IF(@nroTarjeta IS NOT NULL)
 		BEGIN
-			INSERT INTO cheshire_jack.tarjetas_de_credito
-			(cod_cliente, hash_nro_tarjeta, ultimos_digitos, cod_seguridad, mes_vencimiento, anio_vencimiento)
-			VALUES(@codCliente, @nroTarjeta, @ultimosDigitos, @codSeguridad, @mesVencimiento, @anioVencimiento)
+			EXEC cheshire_jack.guardarTarjeta @codCliente, @nroTarjeta, @ultimosDigitos, @codSeguridad, @mesVencimiento, @anioVencimiento
 		END
 	COMMIT TRANSACTION
 
@@ -651,7 +655,7 @@ AS BEGIN
 		DECLARE @automatica BIT, @intentos TINYINT, @habilitado BIT, @valida BIT
 		
 		SELECT @codUsuario = cod_usuario, @automatica = contrasenia_automatica, @intentos = ingresos_restantes, @habilitado = habilitado, @valida = contrasenia_valida
-		FROM cheshire_jack.usuarios WHERE @usuario = nombre_usuario
+		FROM cheshire_jack.usuarios WHERE @usuario = nombre_usuario 
 
 		IF(@intentos = 0)
 			RETURN 3
@@ -1380,7 +1384,7 @@ AS BEGIN
 END
 
 GO
-ALTER PROCEDURE cheshire_jack.buscarUbicaciones
+CREATE PROCEDURE cheshire_jack.buscarUbicaciones
 (@codPublicacion NUMERIC(18,0), @tipoUbicacion INT = NULL)
 AS BEGIN
 	SELECT u.nro_ubicacion, TdP.descripcion [Tipo de Ubicacion], u.fila Fila, u.asiento Asiento, 
@@ -1397,3 +1401,67 @@ END
 GO 
 CREATE VIEW cheshire_jack.vw_tipos_de_ubicacion AS
 SELECT cod_tipo, descripcion nombre FROM cheshire_jack.tipos_de_ubicacion
+
+GO
+CREATE FUNCTION cheshire_jack.codTarjetaDe
+(@codCliente INT, @fechaHoy DATETIME)
+RETURNS NUMERIC(18,0)
+AS BEGIN
+	DECLARE @codTarjeta NUMERIC(18,0)
+	
+	SELECT @codTarjeta = cod_tarjeta 
+	FROM cheshire_jack.tarjetas_de_credito
+	WHERE cod_cliente = @codCliente AND 
+		(anio_vencimiento > YEAR(@fechaHoy) OR 
+			(anio_vencimiento = YEAR(@fechaHoy) AND 
+				mes_vencimiento >= MONTH(@fechaHoy)))
+
+	RETURN @codTarjeta
+END
+
+GO 
+CREATE PROCEDURE cheshire_jack.guardarTarjeta
+(@codCliente INT, @nroTarjeta CHAR(256), @ultimosDigitos CHAR(4), @codSeguridad CHAR(4), 
+@mesVencimiento TINYINT, @anioVencimiento INT)
+AS BEGIN
+	INSERT INTO cheshire_jack.tarjetas_de_credito
+	(cod_cliente, hash_nro_tarjeta, ultimos_digitos, cod_seguridad, mes_vencimiento, anio_vencimiento)
+	VALUES(@codCliente, @nroTarjeta, @ultimosDigitos, @codSeguridad, @mesVencimiento, @anioVencimiento)
+
+	RETURN SCOPE_IDENTITY()
+END
+
+GO 
+CREATE PROCEDURE cheshire_jack.comprar
+(@codCliente INT, @codTarjeta NUMERIC(18,0), @codPublicacion NUMERIC(18,0), @ubicaciones VARCHAR(MAX), @fecha DATETIME)
+AS BEGIN
+	DECLARE @codCompra NUMERIC(18,0)
+	BEGIN TRANSACTION
+
+	SELECT Value ubicacion
+	INTO #ubicaciones
+	FROM cheshire_jack.SplitList(@ubicaciones, ' ')
+
+	INSERT INTO cheshire_jack.compras
+	(cantidad, cod_cliente, cod_metodo, cod_publicacion, nro_ubicacion, fecha, metodo_pago)
+	SELECT 1, @codCliente, @codTarjeta, @codPublicacion, ubicacion, @fecha, 'tarjeta_de_credito'
+	FROM #ubicaciones
+
+	SET @codCompra = SCOPE_IDENTITY()
+
+	IF(0 = (SELECT COUNT(*) 
+			FROM cheshire_jack.ubicaciones
+			WHERE cod_publicacion = @codPublicacion AND
+			NOT nro_ubicacion IN (SELECT nro_ubicacion 
+								FROM cheshire_jack.compras 
+								WHERE cod_publicacion = @codPublicacion)))
+	BEGIN
+		UPDATE cheshire_jack.publicaciones
+		SET cod_estado = 3
+		WHERE cod_publicacion = @codPublicacion
+	END
+
+	COMMIT TRANSACTION
+
+	RETURN @codCompra
+END

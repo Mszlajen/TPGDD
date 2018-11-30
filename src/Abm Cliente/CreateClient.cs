@@ -184,7 +184,7 @@ namespace PalcoNet.Abm_Cliente
 
         private void CreateClient_Load(object sender, EventArgs e)
         {
-            if (edicion)
+            if (edicion || (registroDeUsuario && !String.IsNullOrWhiteSpace(cliente.CUIL)))
             {
                 SurnameBox.Text = cliente.apellido;
                 FirstNameBox.Text = cliente.nombre;
@@ -203,9 +203,16 @@ namespace PalcoNet.Abm_Cliente
                 DeptBox.Text = cliente.dept;
                 LocalityBox.Text = cliente.localidad;
                 PostalCodeBox.Text = cliente.codPostal;
-                EnabledBox.Visible = true;
-                EnabledBox.Checked = cliente.habilitado;
-                AddCardDataButton.Enabled = false;
+                if (edicion)
+                {
+                    EnabledBox.Visible = true;
+                    EnabledBox.Checked = cliente.habilitado;
+                    AddCardDataButton.Enabled = false;
+                }
+                else
+                {
+                    SaveButton.Text = "Guardar";
+                }
             }
         }
     }

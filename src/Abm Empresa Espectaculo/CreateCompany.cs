@@ -49,7 +49,7 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
 
         private void CreateCompany_Load(object sender, EventArgs e)
         {
-            if (edicion)
+            if (edicion || (registroDeUsuario && !String.IsNullOrWhiteSpace(empresa.CUIT)))
             {
                 SocialReasonBox.Text = empresa.nombre;
                 PhoneBox.Text = empresa.telefono;
@@ -61,8 +61,15 @@ namespace PalcoNet.Abm_Empresa_Espectaculo
                 CityBox.Text = empresa.ciudad;
                 PostalCodeBox.Text = empresa.codigoPostal;
                 CUITBox.Text = empresa.CUIT;
-                EnabledBox.Visible = true;
-                EnabledBox.Checked = empresa.habilitado;
+                if (edicion)
+                {
+                    EnabledBox.Visible = true;
+                    EnabledBox.Checked = empresa.habilitado;
+                }
+                else
+                {
+                    SaveButton.Text = "Guardar";
+                }
             }
         }
 

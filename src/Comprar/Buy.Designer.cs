@@ -116,6 +116,7 @@
             this.BuyButton.TabIndex = 10;
             this.BuyButton.Text = "Comprar";
             this.BuyButton.UseVisualStyleBackColor = true;
+            this.BuyButton.Click += new System.EventHandler(this.BuyButton_Click);
             // 
             // SelectedOnlyCheck
             // 
